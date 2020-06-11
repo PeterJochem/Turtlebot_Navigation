@@ -1,0 +1,11 @@
+<launch>
+
+    <!-- Create ROS server params for the robot's geometry -->
+    <arg name="file_name" default="$(find tsim)/config/params.yaml"/>
+    <rosparam command="load" file="$(arg file_name)"/>
+
+    <node pkg = "turtlesim" name = "theTurtleSimNode" type = "turtlesim_node" />
+
+    <node pkg="tsim" name="mysim" type="turtle_rect"/>
+
+</launch>
