@@ -1,21 +1,26 @@
 <launch>
 
-  <!-- load the xacro into the parameter server -->
-  <param name="robot_description"
-       command="$(find xacro)/xacro $(find me495_urdf)/urdf/slidebot.urdf.xacro" />
+<!-- read value of arg -->
+<!-- Launch the joint_state_publisher gui to publish joint angles -->
+<arg name="use_jsp_gui" default="true"/>
 
-  <!-- The robot_state_publisher reads the urdf from /robot_description parameter
-       and listens to joint information on the /joint_states topic -->
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+<!-- load the xacro into the parameter server -->
+<param name="robot_description"
+command="$(find xacro)/xacro $(find me495_urdf)/urdf/slidebot.urdf.xacro" />
 
-  <!-- The joint state publisher will be launched with a gui, read the urdf from /robot_description
-       and publish the joint values on /joint_states -->
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-    <param name="use_gui" value="true" />
-  </node>
+<!-- The robot_state_publisher reads the urdf from /robot_description parameter
+and listens to joint information on the /joint_states topic -->
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
 
-  <!-- rviz will enable us to see the robot -->
-  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find me495_urdf)/rviz/view_robot.rviz"/>
+
+<!-- The joint state publisher will be launched with a gui, read the urdf from /robot_description
+and publish the joint values on /joint_states -->
+<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+	<param name="use_gui" value="$(arg use_jsp_gui)" />
+</node>
+
+<!-- rviz will enable us to see the robot -->
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find me495_urdf)/rviz/view_robot.rviz"/>
 
 </launch>
 
