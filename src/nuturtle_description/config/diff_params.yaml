@@ -1,0 +1,7 @@
+# This file describes the robot's physical dimensions
+wheel_width: 0.001       # The width of the wheels
+wheel_radius: 0.2      # The radius of the wheels
+wheel_base: 1.0        # The distance between the centers wheels 
+chassis_length: 1.0    # The length of the main chassis link
+chassis_thickness: 0.01 # The thickness of the plate that forms the chassis
+
