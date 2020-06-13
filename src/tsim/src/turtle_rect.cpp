@@ -9,6 +9,7 @@
 #include <tsim/PoseError.h>
 #include <tsim/traj_reset.h>
 #include <sstream>
+#include <stdlib.h>
 
 ros::ServiceClient teleport_client;
 ros::ServiceClient setPen_client;
@@ -47,6 +48,26 @@ FSM::FSM (void) {
  */
 geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
 	
+	ros::NodeHandle n;
+ 	
+	// Read the parameters from the server	
+	std::string s;		
+	
+	double height; 
+	double width;
+	double rot_vel;
+	double trans_vel;
+	double starting_x;
+	double starting_y;
+
+	n.getParam("/height", height);
+	n.getParam("/width", width);
+	n.getParam("/rot_vel", rot_vel);
+	n.getParam("/trans_vel", trans_vel);	
+	n.getParam("/x", starting_x);
+	n.getParam("/y", starting_y);
+
+
 	geometry_msgs::Twist nextTwist;
 	nextTwist.linear.x = 0.0;
   	nextTwist.linear.y = 0.0;
@@ -55,34 +76,114 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
   	nextTwist.angular.x = 0.0;
   	nextTwist.angular.y = 0.0;
   	nextTwist.angular.z = 0.0;
+	
+	std::cout << "function called " << right << std::endl;
 
 	if ( right == true ) {
 		
-		if (turn_90 == true) {
-			nextTwist.angular.z = 0.1;
-		}
+		// std::cout << "function called and turn_90 is " << turn_90 << std::endl;	
 
-		else if (currentPose.x > 4) {
+		if (turn_90 == true) {
+			nextTwist.angular.z = rot_vel;
+		
+			// std::cout << "case 1a\n";
+			if ( currentPose.theta > (3.14/2) ) {
+				turn_90 = false;
+				nextTwist.linear.x = trans_vel;
+				nextTwist.angular.z = 0;
+				right = false;
+				up = true;
+				// std::cout << "case 1b\n";
+			}
+		}
+		else if (currentPose.x >= (starting_x + width)) {
 			// set turn 90 to true
 			turn_90 = true;
-			nextTwist.angular.z = 0.1;
-
+			//nextTwist.angular.z = rot_vel;
+			// std::cout << "case 2\n";
 		}
-		else if (currentPose.x < 4) {
+		else if (currentPose.x < (starting_x + width)) {
 			// set linear to normal speed
-			nextTwist.linear.x = 1.0;
+			nextTwist.linear.x = trans_vel;
+			right = true;	
+			// std::cout << "case 3\n";
 		}
-
-
 	}	
 	else if(up == true) {
-		// 
+		
+		// std::cout << "moving up " << std::endl;
+		if (turn_90 == true) {
+                        nextTwist.angular.z = rot_vel;
+
+                        if ( currentPose.theta < 0 ) {
+				// std::cout << "angle less than 0" << std::endl;
+                                turn_90 = false;
+                                nextTwist.linear.x = trans_vel;
+				nextTwist.angular.z = 0;
+				up = false;
+				left = true;
+                        }
+                }
+                else if (currentPose.y >= (starting_y + height)) {
+                        // set turn 90 to true
+                        turn_90 = true;
+                        nextTwist.angular.z = rot_vel;
+
+                }
+                else if (currentPose.y < (starting_y + height)) {
+                        // set linear to normal speed
+                        nextTwist.linear.x = trans_vel;
+                } 
 	}
 	else if (left == true) {
-		//
+		
+		// std::cout << "left is true" << std::endl;
+			
+		if (turn_90 == true) {
+                        nextTwist.angular.z = rot_vel;
+
+                        if ( currentPose.theta > (-1 * 3.14/2) ) {
+                                turn_90 = false;
+                                nextTwist.linear.x = trans_vel;
+				nextTwist.angular.z = 0;
+                                left = false;
+                                down = true;
+                        }
+                }
+                else if (currentPose.x <= starting_x) {
+                        // set turn 90 to true
+                        turn_90 = true;
+                        //nextTwist.angular.z = rot_vel;
+			
+
+                }
+                else if (currentPose.x > starting_x ) {
+                        // set linear to normal speed
+                        nextTwist.linear.x = trans_vel;
+                }
 	}
 	else if (down == true) {
-		//
+
+                if (turn_90 == true) {
+                        nextTwist.angular.z = rot_vel;
+
+                        if ( currentPose.theta > 0 ) {
+                                turn_90 = false;
+                                nextTwist.linear.x = trans_vel;
+				nextTwist.angular.z = 0;
+                                down = false;
+                                right = true;
+                        }
+                }
+                else if (currentPose.y <= starting_y) {
+                        // set turn 90 to true
+                        turn_90 = true;
+                        nextTwist.angular.z = rot_vel;
+                }
+                else if (currentPose.y > starting_y ) {
+                        // set linear to normal speed
+                        nextTwist.linear.x = trans_vel;
+                }
 	}
 	
 	return nextTwist;
@@ -144,7 +245,17 @@ int main(int argc, char **argv) {
   ros::ServiceClient reset_client = n.serviceClient<tsim::traj_reset>("tsim/traj_reset");
   tsim::traj_reset srv;
   reset_client.call(srv);
-
+  //
+  /*
+  turtlesim::TeleportAbsolute tele_srv;
+  tele_srv.request.x = 5;
+  tele_srv.request.y = 5;
+  tele_srv.request.theta = 0.0;
+ 
+  ROS_INFO("traj_reset service called");
+  bool run = teleport_client.call(tele_srv);
+  */
+  ros::spinOnce();
   // Put pen down
   makeSetPen(true, sp);
   setPen_client.call(sp);
@@ -169,7 +280,13 @@ int main(int argc, char **argv) {
   int count = 0;
  	 
   while (ros::ok()) {
-   
+	
+	  if (count == 0) {
+		ros::service::waitForService("tsim/traj_reset", -1);	
+		ros::ServiceClient reset_client = n.serviceClient<tsim::traj_reset>("tsim/traj_reset");
+	  	tsim::traj_reset srv;
+  		// reset_client.call(srv);
+	}	
 
     // Get the turtle's current position
     // This is done by our subscription - it fills global variable

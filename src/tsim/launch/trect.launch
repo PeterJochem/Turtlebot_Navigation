@@ -7,6 +7,6 @@
     <node pkg = "turtlesim" name = "theTurtleSimNode" type = "turtlesim_node" required = "true" /> 
 
     <node pkg="tsim" name="turtle_rect" type="turtle_rect" output="screen"/>
-    <node pkg="tsim" name="test_client" type="client" output="screen"/>
+    <node pkg="tsim" name="test_client" type="serviceNode" output="screen"/>
 
 </launch>
