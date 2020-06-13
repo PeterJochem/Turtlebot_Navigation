@@ -4,8 +4,9 @@
     <arg name="file_name" default="$(find tsim)/config/params.yaml"/>
     <rosparam command="load" file="$(arg file_name)"/>
 
-    <node pkg = "turtlesim" name = "theTurtleSimNode" type = "turtlesim_node" />
+    <node pkg = "turtlesim" name = "theTurtleSimNode" type = "turtlesim_node" required = "true" /> 
 
-    <node pkg="tsim" name="mysim" type="turtle_rect"/>
+    <node pkg="tsim" name="turtle_rect" type="turtle_rect" output="screen"/>
+    <node pkg="tsim" name="test_client" type="client" output="screen"/>
 
 </launch>
