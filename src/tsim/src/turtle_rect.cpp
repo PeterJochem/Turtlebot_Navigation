@@ -18,7 +18,7 @@ turtlesim::Pose currentPose;
 
 /* Describe this class 
  */
-class FSM {
+class FSM_Feedback {
   
   // One state for each leg of the route	
   bool right;
@@ -28,15 +28,14 @@ class FSM {
   bool down;
 
   public:
-    void set_values (int,int);
-    FSM(void);
+    FSM_Feedback(void);
     geometry_msgs::Twist checkUpdate(turtlesim::Pose);	
      
 };
 
 /* This is the constructor for the FSM
  */
-FSM::FSM (void) {
+FSM_Feedback::FSM_Feedback (void) {
 	right = true;	
 	turn_90 = false;
 	up = false;
@@ -46,7 +45,7 @@ FSM::FSM (void) {
 
 /* Describe this method here
  */
-geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
+geometry_msgs::Twist FSM_Feedback::checkUpdate(turtlesim::Pose currentPose) {
 	
 	ros::NodeHandle n;
  	
@@ -67,7 +66,6 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
 	n.getParam("/x", starting_x);
 	n.getParam("/y", starting_y);
 
-
 	geometry_msgs::Twist nextTwist;
 	nextTwist.linear.x = 0.0;
   	nextTwist.linear.y = 0.0;
@@ -77,46 +75,36 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
   	nextTwist.angular.y = 0.0;
   	nextTwist.angular.z = 0.0;
 	
-	std::cout << "function called " << right << std::endl;
-
-	if ( right == true ) {
+	if (right == true) {
 		
-		// std::cout << "function called and turn_90 is " << turn_90 << std::endl;	
-
 		if (turn_90 == true) {
 			nextTwist.angular.z = rot_vel;
 		
-			// std::cout << "case 1a\n";
 			if ( currentPose.theta > (3.14/2) ) {
 				turn_90 = false;
 				nextTwist.linear.x = trans_vel;
 				nextTwist.angular.z = 0;
 				right = false;
 				up = true;
-				// std::cout << "case 1b\n";
 			}
 		}
 		else if (currentPose.x >= (starting_x + width)) {
 			// set turn 90 to true
 			turn_90 = true;
 			//nextTwist.angular.z = rot_vel;
-			// std::cout << "case 2\n";
 		}
 		else if (currentPose.x < (starting_x + width)) {
 			// set linear to normal speed
 			nextTwist.linear.x = trans_vel;
 			right = true;	
-			// std::cout << "case 3\n";
 		}
 	}	
 	else if(up == true) {
 		
-		// std::cout << "moving up " << std::endl;
 		if (turn_90 == true) {
                         nextTwist.angular.z = rot_vel;
 
-                        if ( currentPose.theta < 0 ) {
-				// std::cout << "angle less than 0" << std::endl;
+                        if (currentPose.theta < 0) {
                                 turn_90 = false;
                                 nextTwist.linear.x = trans_vel;
 				nextTwist.angular.z = 0;
@@ -136,13 +124,11 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
                 } 
 	}
 	else if (left == true) {
-		
-		// std::cout << "left is true" << std::endl;
 			
 		if (turn_90 == true) {
                         nextTwist.angular.z = rot_vel;
 
-                        if ( currentPose.theta > (-1 * 3.14/2) ) {
+                        if (currentPose.theta > (-1 * 3.14/2)) {
                                 turn_90 = false;
                                 nextTwist.linear.x = trans_vel;
 				nextTwist.angular.z = 0;
@@ -154,10 +140,8 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
                         // set turn 90 to true
                         turn_90 = true;
                         //nextTwist.angular.z = rot_vel;
-			
-
                 }
-                else if (currentPose.x > starting_x ) {
+                else if (currentPose.x > starting_x) {
                         // set linear to normal speed
                         nextTwist.linear.x = trans_vel;
                 }
@@ -189,6 +173,224 @@ geometry_msgs::Twist FSM::checkUpdate(turtlesim::Pose currentPose) {
 	return nextTwist;
 }
 
+
+/* Describe this class
+ */
+class FSM_Feedforward {
+
+  // One state for each leg of the route
+  bool right;
+  bool turn_90;
+  bool up;
+  bool left;
+  bool down;
+  int timeQuantas;
+  double frequency;	
+
+  public:
+    FSM_Feedforward(double);
+    geometry_msgs::Twist checkUpdate(turtlesim::Pose);
+};
+
+/* This is the constructor for the FSM
+ */
+FSM_Feedforward::FSM_Feedforward (double frequencyX) {
+        right = true;
+        turn_90 = false;
+        up = false;
+        left = false;
+        down = false;
+	timeQuantas = 0;
+	frequency = frequencyX;
+}
+
+/* Describe this method here
+ * Inputs:
+ * Returns: The next twist to be sent to the Turtlebot 
+ */
+geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
+
+        ros::NodeHandle n;
+
+        // Read the parameters from the server  
+        std::string s;
+
+        double height;
+        double width;
+        double rot_vel;
+        double trans_vel;
+        double starting_x;
+        double starting_y;
+
+        n.getParam("/height", height);
+        n.getParam("/width", width);
+        n.getParam("/rot_vel", rot_vel);
+        n.getParam("/trans_vel", trans_vel);
+        n.getParam("/x", starting_x);
+        n.getParam("/y", starting_y);
+
+        geometry_msgs::Twist nextTwist;
+        nextTwist.linear.x = 0.0;
+        nextTwist.linear.y = 0.0;
+        nextTwist.linear.z = 0.0;
+
+        nextTwist.angular.x = 0.0;
+        nextTwist.angular.y = 0.0;
+        nextTwist.angular.z = 0.0;
+
+
+	if ( (right == true) and (turn_90 ==  false) ) {
+		
+		// Distance = Rate * time
+		double schedLinear = width / trans_vel; 
+		double schedRotational = (3.14 / 2) / rot_vel;  
+		
+		if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
+			
+			turn_90 = true;
+			timeQuantas = 0;
+		}
+		else {
+			timeQuantas++;
+			nextTwist.linear.x = trans_vel;
+		}
+	}	
+	
+	else if ( (right == true) and (turn_90 == true) ) {
+		
+		// Distance = Rate * time
+                double schedLinear = width / trans_vel; 
+                double schedRotational = (3.14 / 2) / rot_vel;
+		
+		if ( (timeQuantas * (1.0/frequency) ) >= schedRotational ) {
+			turn_90 = false;
+                	right = false;
+			up = true;
+			timeQuantas = 0;
+		}
+		else {
+			nextTwist.angular.z = rot_vel;
+			timeQuantas++;	
+		}
+	}
+
+	if ( (up == true) and (turn_90 ==  false) ) {
+
+                // Distance = Rate * time
+                double schedLinear = height / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
+
+                        turn_90 = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        timeQuantas++;
+                        nextTwist.linear.x = trans_vel;
+                }
+        }
+
+        else if ( (up == true) and (turn_90 == true) ) {
+
+                // Distance = Rate * time
+                double schedLinear = height / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedRotational ) {
+                        turn_90 = false;
+                        up = false;
+                        left = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        nextTwist.angular.z = rot_vel;
+                        timeQuantas++;
+                }
+        }
+
+	if ( (left == true) and (turn_90 ==  false) ) {
+
+                // Distance = Rate * time
+                double schedLinear = width / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
+
+                        turn_90 = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        timeQuantas++;
+                        nextTwist.linear.x = trans_vel;
+                }
+        }
+
+        else if ( (left == true) and (turn_90 == true) ) {
+
+                // Distance = Rate * time
+                double schedLinear = width / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedRotational ) {
+                        turn_90 = false;
+                        left = false;
+                        down = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        nextTwist.angular.z = rot_vel;
+                        timeQuantas++;
+                }
+        }
+
+	if ( (down == true) and (turn_90 ==  false) ) {
+
+                // Distance = Rate * time
+                double schedLinear = height / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
+
+                        turn_90 = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        timeQuantas++;
+                        nextTwist.linear.x = trans_vel;
+                }
+        }
+
+        else if ( (down == true) and (turn_90 == true) ) {
+
+                // Distance = Rate * time
+                double schedLinear = height / trans_vel;
+                double schedRotational = (3.14 / 2) / rot_vel;
+
+                if ( (timeQuantas * (1.0/frequency) ) >= schedRotational ) {
+                        turn_90 = false;
+                        left = false;
+                        down = true;
+                        timeQuantas = 0;
+                }
+                else {
+                        nextTwist.angular.z = rot_vel;
+                        timeQuantas++;
+                }
+        }
+
+
+
+
+
+
+
+	return nextTwist;
+}
+
+
+
+
 /* Describe this method 
  */
 void makeSetPen(bool on, turtlesim::SetPen& sp) {
@@ -208,10 +410,31 @@ void makeSetPen(bool on, turtlesim::SetPen& sp) {
  */
 void poseCallback(const turtlesim::Pose::ConstPtr& pose) {
   	
-	// ROS_INFO("Posecallback called");	
 	currentPose = *pose;
 
 	return;
+}
+
+/* describe this function
+ */
+void logParams(void) {
+	
+	double height;
+        double width;
+        double rot_vel;
+        double trans_vel;
+        double starting_x;
+        double starting_y;
+	
+	ros::NodeHandle n;
+        ROS_INFO("/height is %d", n.getParam("/height", height) );
+        
+	ROS_INFO("/width is %d", n.getParam("/width", width) ); 
+	ROS_INFO("/rot_vel is %d", n.getParam("/rot_vel", rot_vel) );
+        ROS_INFO("/trans_vel is %d", n.getParam("/trans_vel", trans_vel) );
+	ROS_INFO("/x is %d", n.getParam("/x", starting_x) );
+        ROS_INFO("/y is %d", n.getParam("/y", starting_y) );
+	
 }
 
 /* Add description
@@ -222,16 +445,10 @@ int main(int argc, char **argv) {
 
   ros::NodeHandle n;
   
-  // Advertise the service
-  // ros::ServiceServer service = n.advertiseService("/tsim/traj_reset", traj_reset);
-  
-  // Read the parameters from the server
-        // Log each one as a ROS_INFO message
-  // Wait for the service to be created/available
+  logParams();
    
   ros::service::waitForService("turtle1/teleport_absolute", -1); 
-  teleport_client = n.serviceClient<turtlesim::TeleportAbsolute>("/turtle1/teleport_absolute");            
-   
+  teleport_client = n.serviceClient<turtlesim::TeleportAbsolute>("/turtle1/teleport_absolute");              
     
   // Lift the pen
   ros::service::waitForService("turtle1/set_pen", -1);
@@ -245,17 +462,7 @@ int main(int argc, char **argv) {
   ros::ServiceClient reset_client = n.serviceClient<tsim::traj_reset>("tsim/traj_reset");
   tsim::traj_reset srv;
   reset_client.call(srv);
-  //
-  /*
-  turtlesim::TeleportAbsolute tele_srv;
-  tele_srv.request.x = 5;
-  tele_srv.request.y = 5;
-  tele_srv.request.theta = 0.0;
- 
-  ROS_INFO("traj_reset service called");
-  bool run = teleport_client.call(tele_srv);
-  */
-  ros::spinOnce();
+
   // Put pen down
   makeSetPen(true, sp);
   setPen_client.call(sp);
@@ -274,20 +481,14 @@ int main(int argc, char **argv) {
   ros::Rate loop_rate(frequency);
  
   // Create our FSM to record state
-  FSM myFSM = FSM();
+  //FSM_Feedback myFSM = FSM_Feedback();
+  FSM_Feedforward myFSM = FSM_Feedforward( double(frequency) );
 
   turtlesim::Pose poseNow;
   int count = 0;
  	 
   while (ros::ok()) {
 	
-	  if (count == 0) {
-		ros::service::waitForService("tsim/traj_reset", -1);	
-		ros::ServiceClient reset_client = n.serviceClient<tsim::traj_reset>("tsim/traj_reset");
-	  	tsim::traj_reset srv;
-  		// reset_client.call(srv);
-	}	
-
     // Get the turtle's current position
     // This is done by our subscription - it fills global variable
     // Copy the pose to a new variable to avoid asynchronous errors

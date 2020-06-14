@@ -15,9 +15,6 @@ ros::ServiceClient reset_client;
  */
 bool traj_reset(tsim::traj_reset::Request &req, tsim::traj_reset::Response &res) {
 
-  // Turtle sim has a teleport service 
-  // turtleX/teleport_absolute
-  double trans_vel;
   double starting_x;
   double starting_y;
 
@@ -35,7 +32,7 @@ bool traj_reset(tsim::traj_reset::Request &req, tsim::traj_reset::Response &res)
   tele_srv.request.y = starting_y;
   tele_srv.request.theta = 0.0;
 
-  ROS_INFO("traj_reset111 service called");
+  // ROS_INFO("traj_reset111 service called");
   bool run = teleport_client.call(tele_srv);
   //ros::spinOnce();
   
@@ -59,11 +56,7 @@ int main(int argc, char **argv) {
 
   int count = 0;
   while (ros::ok()) {
-	if (count = 0) {
-		// Advertise the service
-		//ros::ServiceServer service = n.advertiseService("/tsim/traj_reset", traj_reset);
-		count++;
-	}
+	
 	ros::spinOnce();
 
 	loop_rate.sleep();
