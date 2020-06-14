@@ -4,11 +4,12 @@
 /// \brief Library for two-dimensional rigid body transformations.
 
 #include<iosfwd> // contains forward definitions for iostream objects
+#include <cmath>
 
-namespace rigid2d
-{
+namespace rigid2d {
+
     /// \brief PI.  Not in C++ standard until C++20.
-    constexpr double PI=3.14159265358979323846;
+    constexpr double PI = 3.14159265358979323846;
 
     /// \brief approximately compare two floating-point numbers using
     ///        an absolute comparison
@@ -18,9 +19,15 @@ namespace rigid2d
     /// \return true if abs(d1 - d2) < epsilon
     /// Note: the fabs function in <cmath> (c++ equivalent of math.h) will
     /// be useful here
-    constexpr bool almost_equal(double d1, double d2, double epsilon=1.0e-12)
-    {
+    constexpr bool almost_equal(double d1, double d2, double epsilon = 1.0e-12) {
+   		
+	if ( std::fabs(d1 - d2) < epsilon) {
+		return true;
+	}
+
+	return false;
     }
+    
 
     /// \brief convert degrees to radians
     /// \param deg - angle in degrees
@@ -28,15 +35,15 @@ namespace rigid2d
     /// NOTE: implement this in the header file
     /// constexpr means that the function can be computed at compile time
     /// if given a compile-time constant as input
-    constexpr double deg2rad(double deg)
-    {
+    constexpr double deg2rad(double deg) {
+	    return (deg / 360.0) * (2 * PI);
     }
 
     /// \brief convert radians to degrees
     /// \param rad - angle in radians
     /// \returns the angle in degrees
-    constexpr double rad2deg(double rad)
-    {
+    constexpr double rad2deg(double rad) {
+	return (rad / (2 * PI) ) * 360.0;
     }
 
     /// static_assertions test compile time assumptions.
@@ -54,8 +61,7 @@ namespace rigid2d
 
 
     /// \brief A 2-Dimensional Vector
-    struct Vector2D
-    {
+    struct Vector2D {
         double x = 0.0;
         double y = 0.0;
     };
@@ -73,68 +79,80 @@ namespace rigid2d
     /// Hint: The following may be useful:
     /// https://en.cppreference.com/w/cpp/io/basic_istream/peek
     /// https://en.cppreference.com/w/cpp/io/basic_istream/get
-    std::istream & operator>>(std::istream & is, Vector2D & v);
+    //  std::istream & operator>>(std::istream & is, Vector2D & v);
+    
 
     /// \brief a rigid body transformation in 2 dimensions
-    class Transform2D
-    {
+    class Transform2D {
     public:
         /// \brief Create an identity transformation
-        Transform2D();
+        Transform2D(double, double, double);
+	
 
         /// \brief create a transformation that is a pure translation
         /// \param trans - the vector by which to translate
-        explicit Transform2D(const Vector2D & trans);
+        //explicit Transform2D(const Vector2D & trans);
 
         /// \brief create a pure rotation
         /// \param radians - angle of the rotation, in radians
-        explicit Transform2D(double radians);
+        //explicit Transform2D(double radians);
 
         /// \brief Create a transformation with a translational and rotational
         /// component
         /// \param trans - the translation
         /// \param rot - the rotation, in radians
-        Transform2D(const Vector2D & trans, double radians);
+        //Transform2D(const Vector2D & trans, double radians);
 
         /// \brief apply a transformation to a Vector2D
         /// \param v - the vector to transform
         /// \return a vector in the new coordinate system
-        Vector2D operator()(Vector2D v) const;
+        //Vector2D operator()(Vector2D v) const;
 
         /// \brief invert the transformation
         /// \return the inverse transformation. 
-        Transform2D inv() const;
+        //Transform2D inv() const;
 
         /// \brief compose this transform with another and store the result 
         /// in this object
         /// \param rhs - the first transform to apply
         /// \returns a reference to the newly transformed operator
-        Transform2D & operator*=(const Transform2D & rhs);
+        //Transform2D & operator*=(const Transform2D & rhs);
 
         /// \brief \see operator<<(...) (declared outside this class)
         /// for a description
         friend std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
+    	
+	double getX(void);
+
+    private:
+	double x;
+	double y;
+	double theta;
+    
     };
 
+    // std::ostream & operator<<(std::ostream & os, Transform2D &t);	
 
     /// \brief should print a human readable version of the transform:
     /// An example output:
     /// dtheta (degrees): 90 dx: 3 dy: 5
     /// \param os - an output stream
     /// \param tf - the transform to print
-    std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
+    //std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
 
     /// \brief Read a transformation from stdin
     /// Should be able to read input either as output by operator<< or
     /// as 3 numbers (degrees, dx, dy) separated by spaces or newlines
-    std::istream & operator>>(std::istream & is, Transform2D & tf);
+    //std::istream & operator>>(std::istream & is, Transform2D & tf);
 
     /// \brief multiply two transforms together, returning their composition
     /// \param lhs - the left hand operand
     /// \param rhs - the right hand operand
     /// \return the composition of the two transforms
     /// HINT: This function can be implemented in terms of *=
-    Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
+    //Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
+
+    
 }
 
 #endif
