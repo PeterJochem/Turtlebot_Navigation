@@ -111,13 +111,13 @@ namespace rigid2d {
 
 			/// \brief invert the transformation
 			/// \return the inverse transformation. 
-			//Transform2D inv() const;
+			Transform2D inv() const;
 
 			/// \brief compose this transform with another and store the result 
 			/// in this object
 			/// \param rhs - the first transform to apply
 			/// \returns a reference to the newly transformed operator
-			//Transform2D & operator*=(const Transform2D & rhs);
+			Transform2D & operator*=(const Transform2D & rhs);
 
 			/// \brief \see operator<<(...) (declared outside this class)
 			/// for a description
@@ -156,7 +156,7 @@ namespace rigid2d {
 	/// \param rhs - the right hand operand
 	/// \return the composition of the two transforms
 	/// HINT: This function can be implemented in terms of *=
-	//Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
+	// Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
 
 
 }

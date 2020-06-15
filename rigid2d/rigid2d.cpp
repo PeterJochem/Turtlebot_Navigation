@@ -62,6 +62,37 @@ namespace rigid2d {
 	Eigen::Matrix<float, 3, 3> Transform2D::getTf(void) const {
                 return tf;
         }
+	
+	/* Describe this method 
+	 */	
+	Transform2D Transform2D::inv() const {
 
+		Transform2D newTransform = Transform2D(0.0, 0.0, 0.0);	
+				
+		newTransform.tf = this->tf.inverse();   
+
+		newTransform.x = newTransform.tf(0, 2);
+		newTransform.y = newTransform.tf(1, 2);
+		newTransform.theta = acos(newTransform.tf(0, 0));
+
+		return newTransform;
+	}
+
+
+	/* Describe this method
+	 */
+	Transform2D & Transform2D::operator*=(const Transform2D & rhs) {
+				
+		tf = tf * rhs.tf;
+
+		// Should I force certain columns to be 0? Numerical error?
+		x = tf(0, 2);
+		y = tf(1, 2);
+		
+		// Numerical error?
+		theta = acos(tf(0, 0)); 
+
+		return *this;
+	}
 
 }
