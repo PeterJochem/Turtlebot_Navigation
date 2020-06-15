@@ -5,17 +5,25 @@
 
 int main() {
 	
-	rigid2d::Vector2D myVector;
-	myVector.x = 400;
-	myVector.y = 2;
+	rigid2d::Vector2D myVector1;
+	myVector1.x = 100.0;
+	myVector1.y = 100.0;
 	
-	std::cout << myVector;
+	rigid2d::Vector2D myVector2;
+        myVector2.x = -400;
+        myVector2.y = -2;
 
-	rigid2d::Transform2D myTransform = rigid2d::Transform2D(400.0, 5.0, 90.0);	
+	// Test each of the three constructors
+	// rigid2d::Transform2D tf1 = rigid2d::Transform2D();	
+	// rigid2d::Transform2D tf2 = rigid2d::Transform2D(myVector2);
+	rigid2d::Transform2D tf3 = rigid2d::Transform2D(3.14);
+
 	
-	std::cout << myTransform;
+	std::cout << tf3(myVector1);
+	// std::cout << tf3.getTf() << std::endl; 
+	
 
-	std::cout << myTransform.getTf() << std::endl; 
+		
 
 	return 1;
 }

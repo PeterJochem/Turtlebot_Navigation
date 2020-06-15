@@ -17,29 +17,64 @@ namespace rigid2d {
 
 	}
 	*/
+	
+	 
+	/* Describe this method
+         */
+        void Transform2D::setMatrices(double x, double y, double theta) {
 
+                this->vector.x = x;
+                this->vector.y = y;
+                this->theta = theta;
 
-	/* This is the constructor for the Transform 2d
-	 */
-	Transform2D::Transform2D (double x, double y, double theta) {
-		this->x = x; 
-		this->y = y;
-		this->theta = theta; 		
+                // Create the transformation matrix
+                // Eigen uses column major order
+                this->tf(0, 0) = cos(theta);
+                this->tf(0, 1) = sin(theta);
+                this->tf(0, 2) = x;
+
+                this->tf(1, 0) = -1 * sin(theta);
+                this->tf(1, 1) = cos(theta);
+                this->tf(1, 2) = y;
+
+                this->tf(2, 0) = 0.0;
+                this->tf(2, 1) = 0.0;
+                this->tf(2, 2) = 1.0;
+        }
+
+	/* Create the identity transformation 
+	 */ 	
+	Transform2D::Transform2D (void) {
 		
-		// Create the transformation matrix
-		// Eigen uses column major order
-		this->tf(0, 0) = cos(theta);	
-		this->tf(0, 1) = sin(theta);
-		this->tf(0, 2) = x;
-		
-		this->tf(1, 0) = -1 * sin(theta);
-		this->tf(1, 1) = cos(theta);
-		this->tf(1, 2) = y;
-		
-		this->tf(2, 0) = 0.0;
-		this->tf(2, 1) = 0.0;
-		this->tf(2, 2) = 1.0;
+		this->setMatrices(0.0, 0.0, 0.0);
 	}
+
+	/* Create a transformation which has both a rotation and 
+	 * a translation
+	 * trans - the vector describing the translation
+	 * radians - the angle of rotation
+	 */ 
+	Transform2D::Transform2D(const Vector2D & trans, double radians) {
+
+		this->setMatrices(trans.x, trans.y, radians);		
+	}
+
+
+	/* Create a transformation that is just a transformation
+	 */
+	Transform2D::Transform2D(const Vector2D & trans) {
+		
+		this->setMatrices(trans.x, trans.y, 0.0);
+	}
+	
+	/* Create a Transform2D which is just a rotation
+	 * Radians - the angle of rotation about the z-axis
+	 */
+	Transform2D::Transform2D(double radians) {
+		
+		this->setMatrices(0.0, 0.0, radians);	
+	}
+
 
 	std::ostream & operator<<(std::ostream &os, const Transform2D &tf) {
                // return os << tf.getX() << std::endl;
@@ -48,11 +83,11 @@ namespace rigid2d {
 	}
 	
 	double Transform2D::getX(void) const {
-		return x;
+		return vector.x;
 	}
 
 	double Transform2D::getY(void) const {
-                return y;
+                return vector.y;
         }
 
 	double Transform2D::getTheta(void) const {
@@ -67,12 +102,12 @@ namespace rigid2d {
 	 */	
 	Transform2D Transform2D::inv() const {
 
-		Transform2D newTransform = Transform2D(0.0, 0.0, 0.0);	
+		Transform2D newTransform = Transform2D();	
 				
 		newTransform.tf = this->tf.inverse();   
 
-		newTransform.x = newTransform.tf(0, 2);
-		newTransform.y = newTransform.tf(1, 2);
+		newTransform.vector.x = newTransform.tf(0, 2);
+		newTransform.vector.y = newTransform.tf(1, 2);
 		newTransform.theta = acos(newTransform.tf(0, 0));
 
 		return newTransform;
@@ -86,13 +121,35 @@ namespace rigid2d {
 		tf = tf * rhs.tf;
 
 		// Should I force certain columns to be 0? Numerical error?
-		x = tf(0, 2);
-		y = tf(1, 2);
+		vector.x = tf(0, 2);
+		vector.y = tf(1, 2);
 		
 		// Numerical error?
 		theta = acos(tf(0, 0)); 
 
 		return *this;
 	}
+	
+	/* Apply the transformation to the vector v
+	 * Vector2D is the vector we are applying the transformation to 
+	 * Return the resulting Vector2D
+	 */
+	Vector2D Transform2D::operator()(Vector2D v) const {
+
+		Vector2D newVector;
+		
+		Eigen::Matrix<float, 3, 1> rhs;
+		rhs(0, 0) = v.x;   
+		rhs(1, 0) = v.y;
+		rhs(2, 0) = 1.0;
+
+		Eigen::Matrix<float, 3, 1> resultingMatrix = this->tf * rhs;  		
+		
+		newVector.x = resultingMatrix(0, 0);
+		newVector.y = resultingMatrix(1, 0);
+
+		return newVector;
+	}
+
 
 }

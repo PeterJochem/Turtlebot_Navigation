@@ -87,27 +87,26 @@ namespace rigid2d {
 	class Transform2D {
 		public:
 			/// \brief Create an identity transformation
-			Transform2D(double, double, double);
-
+			Transform2D(void);
 
 			/// \brief create a transformation that is a pure translation
 			/// \param trans - the vector by which to translate
-			//explicit Transform2D(const Vector2D & trans);
+			explicit Transform2D(const Vector2D & trans);
 
 			/// \brief create a pure rotation
 			/// \param radians - angle of the rotation, in radians
-			//explicit Transform2D(double radians);
+			explicit Transform2D(double radians);
 
 			/// \brief Create a transformation with a translational and rotational
 			/// component
 			/// \param trans - the translation
 			/// \param rot - the rotation, in radians
-			//Transform2D(const Vector2D & trans, double radians);
+			Transform2D(const Vector2D & trans, double radians);
 
 			/// \brief apply a transformation to a Vector2D
 			/// \param v - the vector to transform
 			/// \return a vector in the new coordinate system
-			//Vector2D operator()(Vector2D v) const;
+			Vector2D operator()(Vector2D v) const;
 
 			/// \brief invert the transformation
 			/// \return the inverse transformation. 
@@ -129,8 +128,8 @@ namespace rigid2d {
 			Eigen::Matrix<float, 3, 3> getTf(void) const;
 
 		private:
-			double x;
-			double y;
+			void setMatrices(double, double, double);
+			Vector2D vector;
 			double theta;
 
 			// Store the literal matrix too?
