@@ -152,4 +152,28 @@ namespace rigid2d {
 	}
 
 
+	/* Compose two transformations together and return the result
+	 * lhs - the left hand side transformation
+	 * rhs - the right hand side transformation
+	 * Returns the composition of the two transformations
+	 */ 
+	Transform2D operator*(Transform2D lhs, const Transform2D & rhs) {
+		
+		Eigen::Matrix<float, 3, 3> resultingMatrix = lhs.getTf() * rhs.getTf();    
+
+		double dx = resultingMatrix(0, 2);
+		double dy = resultingMatrix(1, 2);
+		
+		Vector2D vector;
+		vector.x = dx;
+		vector.y = dy;
+
+		double theta = acos(resultingMatrix(0, 0));
+		Transform2D result = Transform2D(vector, theta);  
+
+		return result;
+	}
+
+
+
 }

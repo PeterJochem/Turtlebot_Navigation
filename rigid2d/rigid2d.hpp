@@ -136,14 +136,15 @@ namespace rigid2d {
 			Eigen::Matrix<float, 3, 3> tf;
 	};
 
-	// std::ostream & operator<<(std::ostream & os, const Transform2D &t);	
+	
+	std::ostream & operator<<(std::ostream & os, const Transform2D &t);	
 
 	/// \brief should print a human readable version of the transform:
 	/// An example output:
 	/// dtheta (degrees): 90 dx: 3 dy: 5
 	/// \param os - an output stream
 	/// \param tf - the transform to print
-	//std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
+	std::ostream & operator<<(std::ostream & os, const Transform2D & tf);
 
 	/// \brief Read a transformation from stdin
 	/// Should be able to read input either as output by operator<< or
@@ -155,7 +156,7 @@ namespace rigid2d {
 	/// \param rhs - the right hand operand
 	/// \return the composition of the two transforms
 	/// HINT: This function can be implemented in terms of *=
-	// Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
+	Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
 
 
 }
