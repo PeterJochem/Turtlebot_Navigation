@@ -30,10 +30,10 @@ namespace rigid2d {
                 // Create the transformation matrix
                 // Eigen uses column major order
                 this->tf(0, 0) = cos(theta);
-                this->tf(0, 1) = sin(theta);
+                this->tf(0, 1) = -1 * sin(theta);
                 this->tf(0, 2) = x;
 
-                this->tf(1, 0) = -1 * sin(theta);
+                this->tf(1, 0) = sin(theta);
                 this->tf(1, 1) = cos(theta);
                 this->tf(1, 2) = y;
 
@@ -147,7 +147,7 @@ namespace rigid2d {
 		
 		newVector.x = resultingMatrix(0, 0);
 		newVector.y = resultingMatrix(1, 0);
-
+		
 		return newVector;
 	}
 
@@ -174,6 +174,27 @@ namespace rigid2d {
 		return result;
 	}
 
+		
+	std::istream & operator>>(std::istream & is, Transform2D & tf) {
+	
+		double x;
+		double y;
+		double angle;
+
+		std::cout << "Enter the angle (degrees) \n";
+		is >> angle;
+		angle = deg2rad( float(angle) );
+
+		std::cout << "Enter x \n";
+		is >> x;
+
+		std::cout << "Enter y \n";
+		is >> y;
+		
+		tf.setMatrices(x, y, angle);
+
+		return is;
+	}
 
 
 }

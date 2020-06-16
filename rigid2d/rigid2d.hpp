@@ -126,9 +126,9 @@ namespace rigid2d {
 			double getY(void) const;
 			double getTheta(void) const;
 			Eigen::Matrix<float, 3, 3> getTf(void) const;
+			void setMatrices(double, double, double);
 
 		private:
-			void setMatrices(double, double, double);
 			Vector2D vector;
 			double theta;
 
@@ -136,7 +136,22 @@ namespace rigid2d {
 			Eigen::Matrix<float, 3, 3> tf;
 	};
 
+	/*
+	class Twist2D {
+
+		
+		public:
+			Twist2D(double, double, double);
+
+
+		private:
+			double w;
+			double dx;
+			double dy;
+	}
+	*/
 	
+
 	std::ostream & operator<<(std::ostream & os, const Transform2D &t);	
 
 	/// \brief should print a human readable version of the transform:
@@ -149,7 +164,7 @@ namespace rigid2d {
 	/// \brief Read a transformation from stdin
 	/// Should be able to read input either as output by operator<< or
 	/// as 3 numbers (degrees, dx, dy) separated by spaces or newlines
-	//std::istream & operator>>(std::istream & is, Transform2D & tf);
+	std::istream & operator>>(std::istream & is, Transform2D & tf);
 
 	/// \brief multiply two transforms together, returning their composition
 	/// \param lhs - the left hand operand
