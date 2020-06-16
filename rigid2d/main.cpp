@@ -20,12 +20,25 @@ int main() {
 	// Test each of the three constructors
 	rigid2d::Transform2D tf3; // = rigid2d::Transform2D();	
 	
-	// rigid2d::Transform2D tf3 = rigid2d::Transform2D(myVector2);
+	rigid2d::Transform2D tf2 = rigid2d::Transform2D(myVector2);
 	// rigid2d::Transform2D tf3 = rigid2d::Transform2D(0);	
 	// std::cout << tf3(myVector1);
 	// std::cout << tf3.getTf() << std::endl; 
 				
-	std::cin >> tf3;		
+	//std::cin >> tf3;		
+	//std::cout << tf3;
+
+	//rigid2d::Twist2D myTwist = rigid2d::Twist2D(0.0, 1.0, 2.0);	
+	//std::cout << myTwist;
+
+	//rigid2d::Twist2D myTwist; // = rigid2d::Twist2D(0.0, 1.0, 2.0);   
+        //std::cin >> myTwist;	
+	
+	//std::cout << myTwist;
+	
+	// Convert the twist from tf3 to the new frame 
+	std::cout << tf3(myTwist, tf2);
+	
 
 
 

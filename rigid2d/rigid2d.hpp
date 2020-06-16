@@ -29,7 +29,6 @@ namespace rigid2d {
 		return false;
 	}
 
-
 	/// \brief convert degrees to radians
 	/// \param deg - angle in degrees
 	/// \returns radians
@@ -66,7 +65,7 @@ namespace rigid2d {
 		double x = 0.0;
 		double y = 0.0;
 	};
-
+	
 	/// \brief output a 2 dimensional vector as [xcomponent ycomponent]
 	/// os - stream to output to
 	/// v - the vector to print
@@ -81,6 +80,26 @@ namespace rigid2d {
 	/// https://en.cppreference.com/w/cpp/io/basic_istream/peek
 	/// https://en.cppreference.com/w/cpp/io/basic_istream/get
 	//  std::istream & operator>>(std::istream & is, Vector2D & v);
+
+
+	   class Twist2D {
+
+                public:
+                        Twist2D(double, double, double);
+
+                        Twist2D(void);
+
+                        friend std::ostream & operator<<(std::ostream & os, const Twist2D & tw);
+
+                        friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
+
+                        void setVars(double, double, double);
+
+                private:
+                        double w;
+                        double dx;
+                        double dy;
+        };
 
 
 	/// \brief a rigid body transformation in 2 dimensions
@@ -107,6 +126,13 @@ namespace rigid2d {
 			/// \param v - the vector to transform
 			/// \return a vector in the new coordinate system
 			Vector2D operator()(Vector2D v) const;
+			
+			 /// \brief Create adjoint of twist and pFrame
+                        /// \param twist - the twist defined in THIS frame
+			/// \param - pTF - the new frame  
+                        /// \return a Twist in the pFrame
+                        Twist2D operator()(Twist2D twist, Transform2D pTF);
+
 
 			/// \brief invert the transformation
 			/// \return the inverse transformation. 
@@ -136,23 +162,30 @@ namespace rigid2d {
 			Eigen::Matrix<float, 3, 3> tf;
 	};
 
-	/*
+	/*	
 	class Twist2D {
-
 		
 		public:
 			Twist2D(double, double, double);
+			
+			Twist2D(void);	
 
-
+			friend std::ostream & operator<<(std::ostream & os, const Twist2D & tw);
+			
+			friend std::istream & operator>>(std::istream & is, const Twist2D & tw);	
+	
+			void setVars(double, double, double);
+	
 		private:
 			double w;
 			double dx;
 			double dy;
-	}
-	*/
-	
+	};
+	*/	
 
-	std::ostream & operator<<(std::ostream & os, const Transform2D &t);	
+	std::ostream & operator<<(std::ostream & os, const Twist2D &tw);
+		
+	std::istream & operator>>(std::istream & is, Twist2D &tw);	
 
 	/// \brief should print a human readable version of the transform:
 	/// An example output:

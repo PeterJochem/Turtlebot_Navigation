@@ -75,13 +75,14 @@ namespace rigid2d {
 		this->setMatrices(0.0, 0.0, radians);	
 	}
 
-
+	/* Print a human readable description of the Transform2D
+	 */
 	std::ostream & operator<<(std::ostream &os, const Transform2D &tf) {
                // return os << tf.getX() << std::endl;
-               return os << "dtheta (degrees): " << tf.getTheta() << "    dx: " << tf.getX() 
+               return os << "dtheta (degrees): " << rad2deg(tf.getTheta()) << "    dx: " << tf.getX() 
 		       << "    dy: " << tf.getY() << std::endl;
 	}
-	
+		
 	double Transform2D::getX(void) const {
 		return vector.x;
 	}
@@ -174,7 +175,8 @@ namespace rigid2d {
 		return result;
 	}
 
-		
+	/* Reads in a Transform2D from the user
+	 */	
 	std::istream & operator>>(std::istream & is, Transform2D & tf) {
 	
 		double x;
@@ -195,6 +197,83 @@ namespace rigid2d {
 
 		return is;
 	}
+
+	/* Describe this method 
+	 */
+	Twist2D Transform2D::operator()(Twist2D twist, Transform2D pTF) {
+		
+		// Twist_newFrame = [Adjoint_T] * Twist_original_frame
+		// See page 85 of Modern Robotics
+			// [p] is the skew shymmetric matrix of the three vector
+			// see page 65 of Modern Robotics  
+
+		// Create the adjoint	
+		// Use the adjoint to map into the new coordinate frame
+			
+		//
+
+		// w first?
+		return rigid2d::Twist2D(1, 2, 3);
+	}
+
+
+	// End of Transform2D class 
+	
+	// Start of the Twist2D class 	
+	Twist2D::Twist2D(double w, double dx, double dy) {
+		this->w = w;
+		this->dx = dx;
+		this->dy = dy;
+	}
+
+	/* Create the (0.0, 0.0, 0.0) twist
+	 */
+	Twist2D::Twist2D(void) {
+                this->w = 0.0;
+                this->dx = 0.0;
+                this->dy = 0.0;
+        }
+	
+	void Twist2D::setVars(double w, double dx, double dy) {
+		
+		this->w = w;
+		this->dx = dx;
+		this->dy = dy;
+	}
+
+	/* Print a human readable description of the twist
+	 */	
+	std::ostream & operator<<(std::ostream & os, const Twist2D &tw) {
+	
+		std::cout << "Angular part: " << tw.w << "     dx: " << tw.dx << "    dy: " << tw.dy << std::endl;
+
+		return os;
+	}		
+
+	/* Read in a Twist2d from the user
+	 */
+	std::istream & operator>>(std::istream & is, Twist2D &tw) {
+	
+		double w;
+		double dx;
+		double dy;
+
+		std::cout << "Enter the angular part (rad/s) ";
+		is >> w;
+
+		std::cout << "Enter dx ";
+                is >> dx;
+
+		std::cout << "Enter dy ";
+                is >> dy;		
+		
+		tw.setVars(w, dx, dy);		
+
+		return is;
+	}
+
+
+
 
 
 }
