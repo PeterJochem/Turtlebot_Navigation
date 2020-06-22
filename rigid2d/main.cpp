@@ -10,17 +10,18 @@ int main() {
 
 	rigid2d::Vector2D myVector1;
 	myVector1.x = 1.0;
-	myVector1.y = 0.0;
-
+	myVector1.y = 2.0;
 
 	rigid2d::Vector2D myVector2;
         myVector2.x = -400.0;
         myVector2.y = -20.0;
 
 	// Test each of the three constructors
-	rigid2d::Transform2D tf3; // = rigid2d::Transform2D();	
+	//rigid2d::Transform2D tf3; // = rigid2d::Transform2D();	
 	
-	rigid2d::Transform2D tf2 = rigid2d::Transform2D(myVector2);
+	rigid2d::Transform2D tf2 = rigid2d::Transform2D(myVector1);
+	
+		
 	// rigid2d::Transform2D tf3 = rigid2d::Transform2D(0);	
 	// std::cout << tf3(myVector1);
 	// std::cout << tf3.getTf() << std::endl; 
@@ -28,18 +29,22 @@ int main() {
 	//std::cin >> tf3;		
 	//std::cout << tf3;
 
-	//rigid2d::Twist2D myTwist = rigid2d::Twist2D(0.0, 1.0, 2.0);	
-	//std::cout << myTwist;
+	// rigid2d::Twist2D myTwist = rigid2d::Twist2D(0.0, 1.4, 2.0);	
+	// std::cout << myTwist;
 
-	//rigid2d::Twist2D myTwist; // = rigid2d::Twist2D(0.0, 1.0, 2.0);   
+	rigid2d::Twist2D myTwist; // = rigid2d::Twist2D(0.0, 1.0, 2.0);   
         //std::cin >> myTwist;	
-	
 	//std::cout << myTwist;
 	
 	// Convert the twist from tf3 to the new frame 
-	std::cout << tf3(myTwist, tf2);
+	// std::cout << tf3(myTwist, tf2);
 	
+	// std::cout << tf2.adjoint() << std::endl;		
+	
+	// Test the skew-symmetric method
+	// std::cout << rigid2d::skew_sym(myVector1) << std::endl;   	
 
+	std::cout << tf2.adjoint() << std::endl;
 
 
 	return 1;

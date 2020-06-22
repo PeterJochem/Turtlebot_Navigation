@@ -65,7 +65,9 @@ namespace rigid2d {
 		double x = 0.0;
 		double y = 0.0;
 	};
-	
+
+	Eigen::Matrix<float, 3, 3> skew_sym(rigid2d::Vector2D);
+
 	/// \brief output a 2 dimensional vector as [xcomponent ycomponent]
 	/// os - stream to output to
 	/// v - the vector to print
@@ -94,6 +96,10 @@ namespace rigid2d {
                         friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
 
                         void setVars(double, double, double);
+			
+			double getDx() const;
+			double getDy() const;
+			double getW() const;
 
                 private:
                         double w;
@@ -127,11 +133,13 @@ namespace rigid2d {
 			/// \return a vector in the new coordinate system
 			Vector2D operator()(Vector2D v) const;
 			
-			 /// \brief Create adjoint of twist and pFrame
-                        /// \param twist - the twist defined in THIS frame
-			/// \param - pTF - the new frame  
-                        /// \return a Twist in the pFrame
-                        Twist2D operator()(Twist2D twist, Transform2D pTF);
+			 /// \brief Given that this Transform2d represents T_ab
+			 // this operator will convert the twist in frame b into the 
+			 // equivalent twist represented in the A frame  
+			 // This method uses the adjoint mapping to convert the twist 
+                        /// \param twist - the twist defined in the B frame
+                        /// \return the twist represented in the A frame 
+                        Twist2D operator()(Twist2D twist);
 
 
 			/// \brief invert the transformation
@@ -153,6 +161,11 @@ namespace rigid2d {
 			double getTheta(void) const;
 			Eigen::Matrix<float, 3, 3> getTf(void) const;
 			void setMatrices(double, double, double);
+		
+			/* Describe this method
+                         * Make private after testing
+                        */
+                        Eigen::Matrix<float, 6, 6> adjoint();
 
 		private:
 			Vector2D vector;
@@ -160,7 +173,22 @@ namespace rigid2d {
 
 			// Store the literal matrix too?
 			Eigen::Matrix<float, 3, 3> tf;
-	};
+
+			/* Describe this method
+			 * Make private after testing
+         		*/
+         		//Eigen::Matrix<float, 6, 6> adjoint();
+			
+			/* Describe this method
+			 */
+			// Eigen::Matrix<float, 3, 3> skew_sym(Vector2D v);
+			
+			/* Take the homogenous transoformation matrix and return
+			 * the 3x3 rotation matrix from it
+			 */	
+			Eigen::Matrix<float, 3, 3> extract_rotation();
+			
+		};
 
 	/*	
 	class Twist2D {
