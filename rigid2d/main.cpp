@@ -10,6 +10,10 @@
  */
 rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transform2D T_bc) {
 	
+	// Print the two frames to make sure we input them correctly
+	std::cout << T_ab << std::endl;
+	std::cout << T_bc << std::endl;
+
 	rigid2d::Transform2D T_ac = T_ab * T_bc;
 	std::cout << T_ac << std::endl;	
 
@@ -32,8 +36,6 @@ int main(int argc, char *argv[]) {
 	// The output files are at test/output/testN.txt	
 	// The input files are at test/input/testN.txt
 		
-	std::cout << atof( argv[1] ) << std::endl;
-	
 	char inputFileName[] = "test/inputs/testX.txt";
 	int testSet = atof( argv[1] );
 		
@@ -45,21 +47,30 @@ int main(int argc, char *argv[]) {
 	std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
     	std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
 	
-	double i = -1;
-	std::cin >> i;
-	std::cout << i << std::endl;
+	/*
+	double num1;
+	double num2;
+	double num3;
+	std::cin >> num1;
+	std::cin >> num2;
+	std::cin >> num3;			
+	std::cout << num1 << ", " << num2 << ", " << num3 << std::endl; 
+	*/
+	
 
+	
 	rigid2d::Transform2D T_ab;
-	std::cout << "Enter T_ab \n";	
+	//std::cout << "Enter T_ab \n";	
 	std::cin >> T_ab;	
 
 	rigid2d::Transform2D T_bc;
-        std::cout << "Enter T_bc \n";
+        //std::cout << "Enter T_bc \n";
         std::cin >> T_bc;
 	
-
 	testTransforms(T_ab, T_bc);
 			
+
+
 	/*
 	double x = -1.0;
 	double y = -1.0;
