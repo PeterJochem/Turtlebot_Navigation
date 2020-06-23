@@ -364,7 +364,7 @@ namespace rigid2d {
 	 */
 	Twist2D Transform2D::operator()(Twist2D twist_original) {
 			
-		// I defined the adjoint using the 3-d, genral purpose approach
+		// I defined the adjoint using the 3-d, general purpose approach
 		// I will need to convert the 6, 1 vector back to the 1,3 vector for
 		// the 2-d twists
 		Eigen::Matrix<float, 6, 1> full_twist = adjoint() * create_3D_Twist(twist_original); 
@@ -431,9 +431,36 @@ namespace rigid2d {
 
 		return is;
 	}
+	
+	/* Describe 
+	 * This is useful for testing to see if two transforms are equal
+	 */
+	bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
+		
+		using namespace rigid2d;
+
+		if (almost_equal(lhs.getX(), rhs.getX()) && (almost_equal(lhs.getY(), rhs.getY())) && almost_equal(lhs.getTheta(), rhs.getTheta())) {
+			return true;
+		}
+
+		return false;
+	}
+
+	 /* Describe 
+         * This is useful for testing to see if two transforms are equal
+         */
+        bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
+
+                using namespace rigid2d;
+
+                if (almost_equal(lhs.getX(), rhs.getX()) && (almost_equal(lhs.getY(), rhs.getY())) && almost_equal(lhs.getTheta(), rhs.getTheta())) {
+                        return false;
+                }
+
+                return true;
+        }
 
 
-
-
+		
 
 }

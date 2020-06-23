@@ -140,6 +140,11 @@ namespace rigid2d {
                         /// \param twist - the twist defined in the B frame
                         /// \return the twist represented in the A frame 
                         Twist2D operator()(Twist2D twist);
+			
+			/// \brief For testing 
+			// 
+			///bool operator==(const & lhs, const X& rhs);
+				
 
 
 			/// \brief invert the transformation
@@ -210,6 +215,15 @@ namespace rigid2d {
 			double dy;
 	};
 	*/	
+		
+	/// \brief For testing
+        //
+        bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs);
+
+	/// \brief For testing
+        //
+        bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs);
+
 
 	std::ostream & operator<<(std::ostream & os, const Twist2D &tw);
 		

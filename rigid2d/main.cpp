@@ -4,20 +4,89 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <assert.h>
 
 
-/* Given T_ab and T_bc, compute T_ac
+/* Given T_ab and T_bc, compute and output T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
  */
-rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transform2D T_bc) {
+rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transform2D T_bc, char outputFileName[] ) {
 	
-	// Print the two frames to make sure we input them correctly
-	std::cout << T_ab << std::endl;
-	std::cout << T_bc << std::endl;
-
+	// Compute the new Transforms
 	rigid2d::Transform2D T_ac = T_ab * T_bc;
-	std::cout << T_ac << std::endl;	
+	
+	rigid2d::Transform2D T_ba = T_ab.inv();
 
-	// Write T_ac to the output file
+	rigid2d::Transform2D T_cb = T_bc.inv();
+
+	rigid2d::Transform2D T_ca = T_ac.inv();
+		
+	
+	// Read in the transforms from the output file
+	rigid2d::Transform2D T_ab_correct;
+        rigid2d::Transform2D T_bc_correct;
+	rigid2d::Transform2D T_ac_correct;
+        rigid2d::Transform2D T_ba_correct;
+        rigid2d::Transform2D T_cb_correct;
+        rigid2d::Transform2D T_ca_correct;
+	
+	// Read in each transform from the test/outputs file 	
+	// Re-direct stdin to the input file
+        std::ifstream in(outputFileName);
+        std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+        std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
+
+	// Read in each transform - for now just read in T_ab and T_bc
+	// Read in this order: T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
+	std::cin >> T_ab_correct;
+	std::cin >> T_bc_correct;	
+				
+
+	// T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
+	if( T_ab != T_ab_correct ) {
+		std::cout << "Frame Conversion Error: The computed T_ab is incorrect" << std::endl;
+	
+		std::cout << "The computed T_ab is " << T_ab << std::endl;
+		std::cout << "The desired T_ab is " << T_ab_correct << std::endl;
+	}
+	/*
+	if ( T_ba != T_ba_correct ) {
+		std::cout << "Frame Conversion Error: The computed T_ba is incorrect" << std::endl;
+		
+		std::cout << "The computed T_ba is " << T_ba << std::endl;
+                std::cout << "The desired T_ba is " << T_ba_correct << std::endl;
+	}
+	
+	if ( T_bc != T_bc_correct ) {
+		std::cout << "Frame Conversion Error: The computed T_bc is incorrect" << std::endl;
+	
+		std::cout << "The computed T_bc is " << T_bc << std::endl;
+                std::cout << "The desired T_bc is " << T_bc_correct << std::endl;
+	}
+	if ( T_cb != T_cb_correct ) {
+		std::cout << "Frame Conversion Error: The computed T_cb is incorrect" << std::endl;
+	
+		std::cout << "The computed T_cb is " << T_cb << std::endl;
+                std::cout << "The desired T_cb is " << T_cb_correct << std::endl;
+	}
+	if ( T_ac != T_ac_correct ) {
+		std::cout << "Frame Conversion Error: The computed T_ac is incorrect" << std::endl;
+	
+		std::cout << "The computed T_ac is " << T_ac << std::endl;
+                std::cout << "The desired T_ac is " << T_ac_correct << std::endl;
+	}
+	if ( T_ca != T_ca_correct ) {
+                std::cout << "Frame Conversion Error: The computed T_ca is incorrect" << std::endl;
+        
+		std::cout << "The computed T_ca is " << T_ca << std::endl;
+                std::cout << "The desired T_ca is " << T_ca_correct << std::endl;
+	}
+	*/
+	
+
+
+
+	// std::cout << "reached" << std::endl;
+
 
 	return T_ac;
 }
@@ -40,24 +109,13 @@ int main(int argc, char *argv[]) {
 	int testSet = atof( argv[1] );
 		
 	inputFileName[16] = *argv[1];
-	std::cout << inputFileName << std::endl;  
+	//std::cout << inputFileName << std::endl;  
+	
 	
 	// Re-direct stdin to the input file
 	std::ifstream in(inputFileName);
 	std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
     	std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
-	
-	/*
-	double num1;
-	double num2;
-	double num3;
-	std::cin >> num1;
-	std::cin >> num2;
-	std::cin >> num3;			
-	std::cout << num1 << ", " << num2 << ", " << num3 << std::endl; 
-	*/
-	
-
 	
 	rigid2d::Transform2D T_ab;
 	//std::cout << "Enter T_ab \n";	
@@ -67,7 +125,15 @@ int main(int argc, char *argv[]) {
         //std::cout << "Enter T_bc \n";
         std::cin >> T_bc;
 	
-	testTransforms(T_ab, T_bc);
+	if (T_ab == T_bc) {
+        	std::cout << "Tran are equal " << std::endl;
+        }
+	else { 
+		std::cout << "Transforms are unequal " << std::endl;
+	}
+
+			
+	testTransforms(T_ab, T_bc, "test/outputs/test1.txt");
 			
 
 
