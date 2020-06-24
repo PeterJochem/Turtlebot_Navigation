@@ -126,6 +126,11 @@ namespace rigid2d {
 	double Transform2D::getTheta(void) const {
                 
 		// IS THIS RIGHT??
+		// FIX ME FIX ME FIX ME FIX ME FIX ME
+		// FIX ME FIX ME FIX ME
+		// FIX ME FIX ME FIX ME
+		// FIX ME FIX ME FIX ME
+		// RANGE OF ACOS is [0, pi]
 		return acos(cTheta);
 	}
 
