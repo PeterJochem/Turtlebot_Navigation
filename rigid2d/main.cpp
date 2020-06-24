@@ -19,7 +19,6 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 	rigid2d::Transform2D T_cb = T_bc.inv();
 
 	rigid2d::Transform2D T_ca = T_ac.inv();
-		
 	
 	// Read in the transforms from the output file
 	rigid2d::Transform2D T_ab_correct;
@@ -38,8 +37,13 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 	// Read in each transform - for now just read in T_ab and T_bc
 	// Read in this order: T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
 	std::cin >> T_ab_correct;
-	std::cin >> T_bc_correct;	
-				
+	std::cin >> T_ba_correct;	
+	std::cin >> T_bc_correct;			
+	std::cin >> T_cb_correct;	
+	std::cin >> T_ac_correct;
+	std::cin >> T_ca_correct;
+
+	T_ca = T_ac_correct.inv();
 
 	// T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
 	if( T_ab != T_ab_correct ) {
@@ -48,45 +52,41 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 		std::cout << "The computed T_ab is " << T_ab << std::endl;
 		std::cout << "The desired T_ab is " << T_ab_correct << std::endl;
 	}
-	/*
+	
 	if ( T_ba != T_ba_correct ) {
 		std::cout << "Frame Conversion Error: The computed T_ba is incorrect" << std::endl;
 		
 		std::cout << "The computed T_ba is " << T_ba << std::endl;
                 std::cout << "The desired T_ba is " << T_ba_correct << std::endl;
 	}
-	
 	if ( T_bc != T_bc_correct ) {
 		std::cout << "Frame Conversion Error: The computed T_bc is incorrect" << std::endl;
 	
 		std::cout << "The computed T_bc is " << T_bc << std::endl;
                 std::cout << "The desired T_bc is " << T_bc_correct << std::endl;
 	}
+	
 	if ( T_cb != T_cb_correct ) {
 		std::cout << "Frame Conversion Error: The computed T_cb is incorrect" << std::endl;
 	
 		std::cout << "The computed T_cb is " << T_cb << std::endl;
                 std::cout << "The desired T_cb is " << T_cb_correct << std::endl;
 	}
+	
 	if ( T_ac != T_ac_correct ) {
 		std::cout << "Frame Conversion Error: The computed T_ac is incorrect" << std::endl;
 	
 		std::cout << "The computed T_ac is " << T_ac << std::endl;
                 std::cout << "The desired T_ac is " << T_ac_correct << std::endl;
 	}
+	
 	if ( T_ca != T_ca_correct ) {
                 std::cout << "Frame Conversion Error: The computed T_ca is incorrect" << std::endl;
         
 		std::cout << "The computed T_ca is " << T_ca << std::endl;
                 std::cout << "The desired T_ca is " << T_ca_correct << std::endl;
 	}
-	*/
 	
-
-
-
-	// std::cout << "reached" << std::endl;
-
 
 	return T_ac;
 }
@@ -118,21 +118,13 @@ int main(int argc, char *argv[]) {
     	std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
 	
 	rigid2d::Transform2D T_ab;
-	//std::cout << "Enter T_ab \n";	
 	std::cin >> T_ab;	
 
 	rigid2d::Transform2D T_bc;
-        //std::cout << "Enter T_bc \n";
         std::cin >> T_bc;
 	
-	if (T_ab == T_bc) {
-        	std::cout << "Tran are equal " << std::endl;
-        }
-	else { 
-		std::cout << "Transforms are unequal " << std::endl;
-	}
+	// std::cout << T_ab << std::endl;	
 
-			
 	testTransforms(T_ab, T_bc, "test/outputs/test1.txt");
 			
 

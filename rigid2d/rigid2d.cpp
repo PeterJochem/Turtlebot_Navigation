@@ -119,11 +119,12 @@ namespace rigid2d {
 	Transform2D Transform2D::inv() const {
 
 		Transform2D newTransform = Transform2D();	
-				
-		newTransform.tf = this->tf.inverse();   
 
+		newTransform.tf = tf.inverse();   
+		
 		newTransform.vector.x = newTransform.tf(0, 2);
 		newTransform.vector.y = newTransform.tf(1, 2);
+
 		newTransform.theta = acos(newTransform.tf(0, 0));
 
 		return newTransform;
@@ -173,9 +174,15 @@ namespace rigid2d {
 	 * rhs - the right hand side transformation
 	 * Returns the composition of the two transformations
 	 */ 
-	Transform2D operator*(Transform2D lhs, const Transform2D & rhs) {
+	Transform2D operator*(const Transform2D &lhs, const Transform2D &rhs) {
 		
 		Eigen::Matrix<float, 3, 3> resultingMatrix = lhs.getTf() * rhs.getTf();    
+
+		/*
+		std::cout << "lhs is \n" << lhs.getTf() << std::endl << std::endl;
+		std::cout << "rhs is \n" << rhs.getTf() << std::endl << std::endl;
+		std::cout << "The result is " << std::endl << resultingMatrix << std::endl;
+		*/
 
 		double dx = resultingMatrix(0, 2);
 		double dy = resultingMatrix(1, 2);
@@ -439,7 +446,8 @@ namespace rigid2d {
 		
 		using namespace rigid2d;
 
-		if (almost_equal(lhs.getX(), rhs.getX()) && (almost_equal(lhs.getY(), rhs.getY())) && almost_equal(lhs.getTheta(), rhs.getTheta())) {
+		if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
+				almost_equal(lhs.getTheta(), rhs.getTheta(), 0.01)) {
 			return true;
 		}
 
@@ -453,7 +461,8 @@ namespace rigid2d {
 
                 using namespace rigid2d;
 
-                if (almost_equal(lhs.getX(), rhs.getX()) && (almost_equal(lhs.getY(), rhs.getY())) && almost_equal(lhs.getTheta(), rhs.getTheta())) {
+                if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
+				almost_equal(lhs.getTheta(), rhs.getTheta(), 0.01)) {
                         return false;
                 }
 

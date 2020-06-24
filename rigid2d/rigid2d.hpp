@@ -246,7 +246,7 @@ namespace rigid2d {
 	/// \param rhs - the right hand operand
 	/// \return the composition of the two transforms
 	/// HINT: This function can be implemented in terms of *=
-	Transform2D operator*(Transform2D lhs, const Transform2D & rhs);
+	Transform2D operator*(const Transform2D &lhs, const Transform2D &rhs);
 
 
 }
