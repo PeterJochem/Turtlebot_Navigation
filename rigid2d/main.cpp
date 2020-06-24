@@ -5,6 +5,27 @@
 #include <fstream>
 #include <string>
 #include <assert.h>
+#include <iostream>
+#include <jsoncpp/json/json.h>
+
+
+/* Describe this here
+ */
+rigid2d::Transform2D parseJSON(Json::Value frame) {
+	double x = std::stod( frame["x"].asString() );
+        double y = std::stod( frame["y"].asString() );
+        
+	// double theta = std::stod( frame["theta"].asString() );
+	
+	double cTheta = std::stod( frame["cTheta"].asString() );
+	double sTheta = std::stod( frame["sTheta"].asString() );
+
+	rigid2d::Vector2D vector;
+	vector.x = x;
+	vector.y = y;
+	
+	return rigid2d::Transform2D(vector, cTheta, sTheta );
+}
 
 
 /* Given T_ab and T_bc, compute and output T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
@@ -14,36 +35,37 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 	// Compute the new Transforms
 	rigid2d::Transform2D T_ac = T_ab * T_bc;
 	
+	//std::cout << T_ac << std::cout;
+		
+	rigid2d::Transform2D T_ca = T_ac.inv();	
+
 	rigid2d::Transform2D T_ba = T_ab.inv();
 
 	rigid2d::Transform2D T_cb = T_bc.inv();
-
-	rigid2d::Transform2D T_ca = T_ac.inv();
 	
+
+	std::cout << "T_ac is \n" << T_ac.getTf() << std::endl;
+	std::cout << "T_ca is \n" << T_ca.getTf() << std::endl;
+
+	//std::cout << "T_ac is \n" <<T_ac.getTf() << std::endl;
+	//std::cout << "T_ca is \n" <<T_ac.getTf().inverse() << std::endl;
+
+	//rigid2d::Transform2D T_ca = T_ac.inv();
+		
+	std::ifstream ifs("config.json");
+        Json::Reader reader;
+        Json::Value obj;
+        reader.parse(ifs, obj);
+
 	// Read in the transforms from the output file
-	rigid2d::Transform2D T_ab_correct;
-        rigid2d::Transform2D T_bc_correct;
-	rigid2d::Transform2D T_ac_correct;
-        rigid2d::Transform2D T_ba_correct;
-        rigid2d::Transform2D T_cb_correct;
-        rigid2d::Transform2D T_ca_correct;
+	rigid2d::Transform2D T_ab_correct = parseJSON( obj["T_ab"] );
+	rigid2d::Transform2D T_bc_correct = parseJSON( obj["T_bc"] );
+	rigid2d::Transform2D T_ac_correct = parseJSON( obj["T_ac"] );
+        rigid2d::Transform2D T_ba_correct = parseJSON( obj["T_ba"] );
+        rigid2d::Transform2D T_cb_correct = parseJSON( obj["T_cb"] );
+        rigid2d::Transform2D T_ca_correct = parseJSON( obj["T_ca"] );
 	
-	// Read in each transform from the test/outputs file 	
-	// Re-direct stdin to the input file
-        std::ifstream in(outputFileName);
-        std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
-        std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
-
-	// Read in each transform - for now just read in T_ab and T_bc
-	// Read in this order: T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
-	std::cin >> T_ab_correct;
-	std::cin >> T_ba_correct;	
-	std::cin >> T_bc_correct;			
-	std::cin >> T_cb_correct;	
-	std::cin >> T_ac_correct;
-	std::cin >> T_ca_correct;
-
-	T_ca = T_ac_correct.inv();
+	//T_ca = T_ac_correct.inv();
 
 	// T_ab, T_ba, T_bc, T_cb, T_ac, T_ca
 	if( T_ab != T_ab_correct ) {
@@ -71,6 +93,10 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 	
 		std::cout << "The computed T_cb is " << T_cb << std::endl;
                 std::cout << "The desired T_cb is " << T_cb_correct << std::endl;
+	
+			
+		std::cout << T_cb.getCTheta() << " " << T_cb.getSTheta() << std::endl;
+		std::cout << T_cb_correct.getCTheta() << " " << T_cb_correct.getSTheta() << std::endl;
 	}
 	
 	if ( T_ac != T_ac_correct ) {
@@ -99,6 +125,7 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
  */
 int main(int argc, char *argv[]) {
 	
+
 	// For testing, use this
 	double pi = 3.14159265358979;
 	

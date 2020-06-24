@@ -25,16 +25,41 @@ namespace rigid2d {
 
                 this->vector.x = x;
                 this->vector.y = y;
-                this->theta = theta;
+                this->cTheta = cos(theta);
+		this->sTheta = sin(theta);
 
                 // Create the transformation matrix
                 // Eigen uses column major order
-                this->tf(0, 0) = cos(theta);
-                this->tf(0, 1) = -1 * sin(theta);
+                this->tf(0, 0) = cTheta;
+                this->tf(0, 1) = -1 * sTheta;
                 this->tf(0, 2) = x;
 
-                this->tf(1, 0) = sin(theta);
-                this->tf(1, 1) = cos(theta);
+                this->tf(1, 0) = sTheta;
+                this->tf(1, 1) = cTheta;
+                this->tf(1, 2) = y;
+
+                this->tf(2, 0) = 0.0;
+                this->tf(2, 1) = 0.0;
+                this->tf(2, 2) = 1.0;
+        }
+
+	/* Describe this method
+         */
+        void Transform2D::setMatrices(double x, double y, double cTheta, double sTheta) {
+
+                this->vector.x = x;
+                this->vector.y = y;
+                this->cTheta = cTheta;
+                this->sTheta = sTheta;
+
+                // Create the transformation matrix
+                // Eigen uses column major order
+                this->tf(0, 0) = cTheta;
+                this->tf(0, 1) = -1 * sTheta;
+                this->tf(0, 2) = x;
+
+                this->tf(1, 0) = sTheta;
+                this->tf(1, 1) = cTheta;
                 this->tf(1, 2) = y;
 
                 this->tf(2, 0) = 0.0;
@@ -74,6 +99,13 @@ namespace rigid2d {
 		
 		this->setMatrices(0.0, 0.0, radians);	
 	}
+ 
+	/* Describe
+	 */
+	Transform2D::Transform2D(const Vector2D & trans, double cTheta, double sTheta) {
+		
+		this->setMatrices(trans.x, trans.y, cTheta, sTheta);	
+	}	
 
 	/* Print a human readable description of the Transform2D
 	 */
@@ -92,8 +124,20 @@ namespace rigid2d {
         }
 
 	double Transform2D::getTheta(void) const {
-                return theta;
+                
+		// IS THIS RIGHT??
+		return acos(cTheta);
 	}
+
+	double Transform2D::getCTheta(void) const {
+		return cTheta;
+	}
+
+	double Transform2D::getSTheta(void) const {
+                return sTheta;
+        }
+
+
 
 	// Get methods for Twist2D class 
 	double Twist2D::getDx(void) const {
@@ -122,14 +166,18 @@ namespace rigid2d {
 
 		newTransform.tf = tf.inverse();   
 		
+		//std::cout << std::endl << newTransform.tf << std::endl;
+
 		newTransform.vector.x = newTransform.tf(0, 2);
 		newTransform.vector.y = newTransform.tf(1, 2);
 
-		newTransform.theta = acos(newTransform.tf(0, 0));
+		// Theta should be in radians
+		// newTransform.theta = acos(newTransform.tf(0, 0));
+		newTransform.cTheta = newTransform.tf(0, 0);
+		newTransform.sTheta = newTransform.tf(1, 0);
 
 		return newTransform;
 	}
-
 
 	/* Describe this method
 	 */
@@ -142,7 +190,8 @@ namespace rigid2d {
 		vector.y = tf(1, 2);
 		
 		// Numerical error?
-		theta = acos(tf(0, 0)); 
+		cTheta = tf(0, 0); 
+		sTheta = tf(1, 0);
 
 		return *this;
 	}
@@ -191,8 +240,10 @@ namespace rigid2d {
 		vector.x = dx;
 		vector.y = dy;
 
-		double theta = acos(resultingMatrix(0, 0));
-		Transform2D result = Transform2D(vector, theta);  
+		double cTheta = resultingMatrix(0, 0);
+		double sTheta = resultingMatrix(1, 0);	
+		
+		Transform2D result = Transform2D(vector, cTheta, sTheta);  
 
 		return result;
 	}
@@ -447,7 +498,7 @@ namespace rigid2d {
 		using namespace rigid2d;
 
 		if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
-				almost_equal(lhs.getTheta(), rhs.getTheta(), 0.01)) {
+				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.01) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.01)) ) {
 			return true;
 		}
 
@@ -462,7 +513,7 @@ namespace rigid2d {
                 using namespace rigid2d;
 
                 if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
-				almost_equal(lhs.getTheta(), rhs.getTheta(), 0.01)) {
+				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.01) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.01))) {
                         return false;
                 }
 

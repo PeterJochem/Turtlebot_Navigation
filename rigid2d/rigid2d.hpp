@@ -127,6 +127,10 @@ namespace rigid2d {
 			/// \param trans - the translation
 			/// \param rot - the rotation, in radians
 			Transform2D(const Vector2D & trans, double radians);
+		
+			// Describe
+			Transform2D(const Vector2D & trans, double cTheta, double sTheta);
+
 
 			/// \brief apply a transformation to a Vector2D
 			/// \param v - the vector to transform
@@ -164,9 +168,13 @@ namespace rigid2d {
 			double getX(void) const;
 			double getY(void) const;
 			double getTheta(void) const;
+			double getCTheta(void) const;
+			double getSTheta(void) const;
+			
 			Eigen::Matrix<float, 3, 3> getTf(void) const;
 			void setMatrices(double, double, double);
-		
+			void setMatrices(double, double, double, double);
+
 			/* Describe this method
                          * Make private after testing
                         */
@@ -174,7 +182,8 @@ namespace rigid2d {
 
 		private:
 			Vector2D vector;
-			double theta;
+			double sTheta;
+			double cTheta;
 
 			// Store the literal matrix too?
 			Eigen::Matrix<float, 3, 3> tf;
