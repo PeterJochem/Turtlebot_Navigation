@@ -21,7 +21,9 @@ namespace rigid2d {
 	/// Note: the fabs function in <cmath> (c++ equivalent of math.h) will
 	/// be useful here
 	constexpr bool almost_equal(double d1, double d2, double epsilon = 1.0e-12) {
+		
 
+		// WHY does fabs give weird issues?????
 		if ( std::fabs(d1 - d2) < epsilon) {
 			return true;
 		}
@@ -167,9 +169,9 @@ namespace rigid2d {
 
 			double getX(void) const;
 			double getY(void) const;
-			double getTheta(void) const;
-			double getCTheta(void) const;
-			double getSTheta(void) const;
+			float getTheta(void) const;
+			float getCTheta(void) const;
+			float getSTheta(void) const;
 			
 			Eigen::Matrix<float, 3, 3> getTf(void) const;
 			void setMatrices(double, double, double);
@@ -182,8 +184,8 @@ namespace rigid2d {
 
 		private:
 			Vector2D vector;
-			double sTheta;
-			double cTheta;
+			float sTheta;
+			float cTheta;
 
 			// Store the literal matrix too?
 			Eigen::Matrix<float, 3, 3> tf;

@@ -92,6 +92,9 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
                 std::cout << "Frame Conversion Error: The computed T_ca is incorrect" << std::endl; 
 		std::cout << "The computed T_ca is " << T_ca << std::endl;
                 std::cout << "The desired T_ca is " << T_ca_correct << std::endl;
+		
+		std::cout << T_ca.getCTheta() << " " << T_ca.getSTheta() << std::endl;
+                std::cout << T_ca_correct.getCTheta() << " " << T_ca_correct.getSTheta() << std::endl;	
 	}
 
 	return T_ac;
@@ -99,25 +102,48 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 
 /* Describe 
  */
-void testUserInput(char inputFileName[], char outputFileName[] ) {
+bool testUserInput(char inputFileName[], char outputFileName[]) {
 	
 	// Re-direct stdin to the input file
         std::ifstream in(inputFileName);
-        std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
+        //std::streambuf *cinbuf = std::cin.rdbuf(); //save old buf
         std::cin.rdbuf(in.rdbuf()); //redirect std::cin to in.txt!
 
-		
 	// Read the input files 
         rigid2d::Transform2D T_ab;
         std::cin >> T_ab;
 
         rigid2d::Transform2D T_bc;
         std::cin >> T_bc;
-
-	// Add code to make sure these match
 		
+        // Read the json file of labels
+	//std::cout << inputFileName << std::endl;
+        std::ifstream ifs(outputFileName);
+        Json::Reader reader;
+        Json::Value obj;
+        reader.parse(ifs, obj);
 
+	
+	rigid2d::Transform2D T_ab_correct = parseJSON( obj["T_ab"] );
+        rigid2d::Transform2D T_bc_correct = parseJSON( obj["T_bc"] );
+	
+	// Make sure inputs and labels match	
+	using namespace rigid2d;
+	if ( ( almost_equal(T_ab_correct.getX(), T_ab.getX(), 0.01) && ( almost_equal(T_ab_correct.getCTheta(), T_ab.getCTheta(), 0.01) ) &&
+	    (almost_equal(T_ab_correct.getCTheta(), T_ab.getCTheta(), 0.01) ) && (almost_equal(T_ab_correct.getSTheta(), T_ab.getSTheta(), 0.01)) ) ) {
+		
+		std::cout << "Operator overload methods input/processed data incorrectly" << std::endl;
+		return false;
+	}
+	if ( ( almost_equal(T_bc_correct.getX(), T_bc.getX(), 0.01) && ( almost_equal(T_bc_correct.getCTheta(), T_bc.getCTheta(), 0.01) ) &&
+            (almost_equal(T_bc_correct.getCTheta(), T_bc.getCTheta(), 0.01) ) && (almost_equal(T_bc_correct.getSTheta(), T_bc.getSTheta(), 0.01)) ) ) { 
+	
+		std::cout << "Operator overload methods input/processed data incorrectly" << std::endl;
+		return false;
+	}
+	
 
+	return true;	
 }
 
 
@@ -126,9 +152,10 @@ void testUserInput(char inputFileName[], char outputFileName[] ) {
  */
 int main(int argc, char *argv[]) {
 	
-
-	// For testing, use this
-	double pi = 3.14159265358979;
+	if ( argc < 2) {
+		std::cout << "Incorrect testing set command line argument" << std::endl;
+                return -1;
+	}
 	
 	// The output files are at test/output/testN.txt	
 	// The input files are at test/input/testN.txt

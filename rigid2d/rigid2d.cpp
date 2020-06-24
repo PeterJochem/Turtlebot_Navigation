@@ -123,7 +123,7 @@ namespace rigid2d {
                 return vector.y;
         }
 
-	double Transform2D::getTheta(void) const {
+	float Transform2D::getTheta(void) const {
                 
 		// IS THIS RIGHT??
 		// FIX ME FIX ME FIX ME FIX ME FIX ME
@@ -134,11 +134,11 @@ namespace rigid2d {
 		return acos(cTheta);
 	}
 
-	double Transform2D::getCTheta(void) const {
+	float Transform2D::getCTheta(void) const {
 		return cTheta;
 	}
 
-	double Transform2D::getSTheta(void) const {
+	float Transform2D::getSTheta(void) const {
                 return sTheta;
         }
 
@@ -517,12 +517,19 @@ namespace rigid2d {
 
                 using namespace rigid2d;
 
-                if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
-				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.01) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.01))) {
-                        return false;
-                }
+                if (almost_equal(lhs.getX(), rhs.getX(), 0.1) && (almost_equal(lhs.getY(), rhs.getY(), 0.1)) && 
+				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.1) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.1))) {
+        
+			return false;
+		}
 
-                return true;
+			/*
+                        std::cout << std::endl << lhs.getX() << " " << rhs.getX() << std::endl << "   " << lhs.getY() << " " << rhs.getY() << std::endl;
+			std::cout << lhs.getCTheta() << " " << rhs.getCTheta() << std::endl;
+		        std::cout << "    " << lhs.getSTheta() << "   " << rhs.getSTheta() << std::endl; 
+			*/
+			
+			return true;
         }
 
 
