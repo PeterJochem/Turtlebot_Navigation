@@ -46,7 +46,7 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
         Json::Reader reader;
         Json::Value obj;
         reader.parse(ifs, obj);
-
+	
 	// Read in the transforms from the output file
 	rigid2d::Transform2D T_ab_correct = parseJSON( obj["T_ab"] );
 	rigid2d::Transform2D T_bc_correct = parseJSON( obj["T_bc"] );
@@ -54,7 +54,7 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
         rigid2d::Transform2D T_ba_correct = parseJSON( obj["T_ba"] );
         rigid2d::Transform2D T_cb_correct = parseJSON( obj["T_cb"] );
         rigid2d::Transform2D T_ca_correct = parseJSON( obj["T_ca"] );
-	
+
 	if( T_ab != T_ab_correct ) {
 		std::cout << "Frame Conversion Error: The computed T_ab is incorrect" << std::endl;
 		std::cout << "The computed T_ab is " << T_ab << std::endl;
@@ -148,7 +148,7 @@ bool testUserInput(char inputFileName[], char outputFileName[]) {
 
 
 /* The input will be a scalar indicating which testing files to use
- * So if argv[3] = N, then we will use the Nth set of testing files
+ * So if argv[1] = N, then we will use the Nth set of testing files
  */
 int main(int argc, char *argv[]) {
 	
