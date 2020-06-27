@@ -22,11 +22,12 @@ namespace rigid2d {
 	/// be useful here
 	constexpr bool almost_equal(double d1, double d2, double epsilon = 1.0e-12) {
 		
-
 		// WHY does fabs give weird issues?????
-		if ( std::fabs(d1 - d2) < epsilon) {
+		if ( std::fabs(d2 - d1) < epsilon) {
 			return true;
 		}
+
+		// cout << std::abs(d1 - d2) << std::endl;
 
 		return false;
 	}
@@ -68,7 +69,7 @@ namespace rigid2d {
 		double y = 0.0;
 	};
 
-	Eigen::Matrix<float, 3, 3> skew_sym(rigid2d::Vector2D);
+	Eigen::Matrix<double, 3, 3> skew_sym(rigid2d::Vector2D);
 
 	/// \brief output a 2 dimensional vector as [xcomponent ycomponent]
 	/// os - stream to output to
@@ -169,26 +170,29 @@ namespace rigid2d {
 
 			double getX(void) const;
 			double getY(void) const;
-			float getTheta(void) const;
-			float getCTheta(void) const;
-			float getSTheta(void) const;
+			double getTheta(void) const;
+			double getCTheta(void) const;
+			double getSTheta(void) const;
 			
-			Eigen::Matrix<float, 3, 3> getTf(void) const;
-			void setMatrices(double, double, double);
-			void setMatrices(double, double, double, double);
+			//Eigen::Matrix<double, 3, 3> getTf(void) const;
+			//void setMatrices(double, double, double);
+			//void setMatrices(double, double, double, double);
 
 			/* Describe this method
                          * Make private after testing
                         */
-                        Eigen::Matrix<float, 6, 6> adjoint();
+                        //Eigen::Matrix<double, 6, 6> adjoint();
+			Vector2D vector;
+                        double sTheta;
+                        double cTheta;
 
 		private:
-			Vector2D vector;
-			float sTheta;
-			float cTheta;
+			//Vector2D vector;
+			//double sTheta;
+			//double cTheta;
 
 			// Store the literal matrix too?
-			Eigen::Matrix<float, 3, 3> tf;
+			//Eigen::Matrix<double, 3, 3> tf;
 
 			/* Describe this method
 			 * Make private after testing
@@ -202,7 +206,8 @@ namespace rigid2d {
 			/* Take the homogenous transoformation matrix and return
 			 * the 3x3 rotation matrix from it
 			 */	
-			Eigen::Matrix<float, 3, 3> extract_rotation();
+			
+			// Eigen::Matrix<double, 3, 3> extract_rotation();
 			
 		};
 
@@ -229,11 +234,19 @@ namespace rigid2d {
 		
 	/// \brief For testing
         //
-        bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs);
+        bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
 
 	/// \brief For testing
         //
-        bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs);
+        bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
+
+	/// \brief for testing
+	bool operator==(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
+
+        /// \brief For testing
+        //
+        bool operator!=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
+
 
 
 	std::ostream & operator<<(std::ostream & os, const Twist2D &tw);

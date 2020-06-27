@@ -20,7 +20,7 @@ namespace rigid2d {
 	
 	 
 	/* Describe this method
-         */
+         *
         void Transform2D::setMatrices(double x, double y, double theta) {
 
                 this->vector.x = x;
@@ -41,10 +41,10 @@ namespace rigid2d {
                 this->tf(2, 0) = 0.0;
                 this->tf(2, 1) = 0.0;
                 this->tf(2, 2) = 1.0;
-        }
+        }*/
 
 	/* Describe this method
-         */
+         *
         void Transform2D::setMatrices(double x, double y, double cTheta, double sTheta) {
 
                 this->vector.x = x;
@@ -66,12 +66,16 @@ namespace rigid2d {
                 this->tf(2, 1) = 0.0;
                 this->tf(2, 2) = 1.0;
         }
+	*/
 
 	/* Create the identity transformation 
 	 */ 	
 	Transform2D::Transform2D (void) {
 		
-		this->setMatrices(0.0, 0.0, 0.0);
+		cTheta = cos(0.0);
+		sTheta = sin(0.0);
+		vector.x = 0.0;
+		vector.y = 0.0;
 	}
 
 	/* Create a transformation which has both a rotation and 
@@ -81,7 +85,10 @@ namespace rigid2d {
 	 */ 
 	Transform2D::Transform2D(const Vector2D & trans, double radians) {
 
-		this->setMatrices(trans.x, trans.y, radians);		
+		cTheta = cos(radians);
+                sTheta = sin(radians);
+                vector.x = trans.x;
+                vector.y = trans.y;		
 	}
 
 
@@ -89,7 +96,10 @@ namespace rigid2d {
 	 */
 	Transform2D::Transform2D(const Vector2D & trans) {
 		
-		this->setMatrices(trans.x, trans.y, 0.0);
+		cTheta = cos(0.0);
+                sTheta = sin(0.0);
+                vector.x = trans.x;
+                vector.y = trans.y;
 	}
 	
 	/* Create a Transform2D which is just a rotation
@@ -97,14 +107,20 @@ namespace rigid2d {
 	 */
 	Transform2D::Transform2D(double radians) {
 		
-		this->setMatrices(0.0, 0.0, radians);	
+		cTheta = cos(radians);
+                sTheta = sin(radians);
+                vector.x = 0.0;
+                vector.y = 0.0; 
 	}
  
 	/* Describe
 	 */
 	Transform2D::Transform2D(const Vector2D & trans, double cTheta, double sTheta) {
 		
-		this->setMatrices(trans.x, trans.y, cTheta, sTheta);	
+		this->cTheta = cTheta;
+                this->sTheta = sTheta;
+                this->vector.x = trans.x;
+                this->vector.y = trans.y; 	
 	}	
 
 	/* Print a human readable description of the Transform2D
@@ -123,7 +139,7 @@ namespace rigid2d {
                 return vector.y;
         }
 
-	float Transform2D::getTheta(void) const {
+	double Transform2D::getTheta(void) const {
                 
 		// IS THIS RIGHT??
 		// FIX ME FIX ME FIX ME FIX ME FIX ME
@@ -134,11 +150,11 @@ namespace rigid2d {
 		return acos(cTheta);
 	}
 
-	float Transform2D::getCTheta(void) const {
+	double Transform2D::getCTheta(void) const {
 		return cTheta;
 	}
 
-	float Transform2D::getSTheta(void) const {
+	double Transform2D::getSTheta(void) const {
                 return sTheta;
         }
 
@@ -157,46 +173,51 @@ namespace rigid2d {
                 return w;
         }
 	
-
-
-	Eigen::Matrix<float, 3, 3> Transform2D::getTf(void) const {
+	/*Eigen::Matrix<double, 3, 3> Transform2D::getTf(void) const {
                 return tf;
         }
+	*/
 	
-	/* Describe this method 
+	/* The returns the inverse of the given SE(2) matrix
+	 * Instead of constructing the entire matrix in Eigen and 
+	 * inverting, I opt to use the properties of SE(2) matrices.
+	 * This should help reduce the amount of numerical error  
 	 */	
 	Transform2D Transform2D::inv() const {
 
-		Transform2D newTransform = Transform2D();	
-
-		newTransform.tf = tf.inverse();   
+		double x_inv = (-1 * cTheta * vector.x) - (sTheta * vector.y);
+		double y_inv = (sTheta * vector.x) - (cTheta * vector.y);
 		
-		//std::cout << std::endl << newTransform.tf << std::endl;
-
-		newTransform.vector.x = newTransform.tf(0, 2);
-		newTransform.vector.y = newTransform.tf(1, 2);
+		rigid2d::Vector2D vector_inv;
+		vector_inv.x = x_inv;
+		vector_inv.y = y_inv;
 
 		// Theta should be in radians
-		// newTransform.theta = acos(newTransform.tf(0, 0));
-		newTransform.cTheta = newTransform.tf(0, 0);
-		newTransform.sTheta = newTransform.tf(1, 0);
+		double cTheta_inv = cTheta;
+		double sTheta_inv = -1 * sTheta;
 
-		return newTransform;
+		return Transform2D(vector_inv, cTheta_inv, sTheta_inv);
 	}
 
 	/* Describe this method
 	 */
 	Transform2D & Transform2D::operator*=(const Transform2D & rhs) {
-				
-		tf = tf * rhs.tf;
+			
+		// Compute the new, resulting values of applying the transformation	
+		double resultCTheta = (cTheta * rhs.cTheta) + (-1 * sTheta)*(rhs.sTheta);
 
-		// Should I force certain columns to be 0? Numerical error?
-		vector.x = tf(0, 2);
-		vector.y = tf(1, 2);
+                double resultSTheta = (sTheta * rhs.cTheta) + (cTheta * rhs.sTheta);
+
+                double dx = (cTheta * rhs.vector.x) + (-1 * sTheta * rhs.vector.y) + (vector.x);
+
+                double dy = (sTheta * rhs.vector.x) + (cTheta * rhs.vector.y) + (vector.y);
 		
-		// Numerical error?
-		cTheta = tf(0, 0); 
-		sTheta = tf(1, 0);
+			
+		// Update the fields of the this Transform2D
+		cTheta = resultCTheta;
+		sTheta = resultSTheta;
+		vector.x = dx;
+		vector.y = dy;	
 
 		return *this;
 	}
@@ -209,16 +230,10 @@ namespace rigid2d {
 
 		Vector2D newVector;
 		
-		Eigen::Matrix<float, 3, 1> rhs;
-		rhs(0, 0) = v.x;   
-		rhs(1, 0) = v.y;
-		rhs(2, 0) = 1.0;
-
-		Eigen::Matrix<float, 3, 1> resultingMatrix = this->tf * rhs;  		
+		newVector.x = (cTheta * v.x) + (-1 * sTheta * v.y) + vector.x; 
 		
-		newVector.x = resultingMatrix(0, 0);
-		newVector.y = resultingMatrix(1, 0);
-		
+		newVector.y = (sTheta * v.x) + (cTheta * v.y) + vector.y;
+		 
 		return newVector;
 	}
 
@@ -226,62 +241,56 @@ namespace rigid2d {
 	/* Compose two transformations together and return the result
 	 * lhs - the left hand side transformation
 	 * rhs - the right hand side transformation
+	 * Note: A 2D transformation matrix can be stored with only cTheta, sTheta,
+	 * x, and y. There's no need to multiply the entire matrix or store the
+	 * entire matrix
 	 * Returns the composition of the two transformations
 	 */ 
 	Transform2D operator*(const Transform2D &lhs, const Transform2D &rhs) {
 		
-		Eigen::Matrix<float, 3, 3> resultingMatrix = lhs.getTf() * rhs.getTf();    
-
-		/*
-		std::cout << "lhs is \n" << lhs.getTf() << std::endl << std::endl;
-		std::cout << "rhs is \n" << rhs.getTf() << std::endl << std::endl;
-		std::cout << "The result is " << std::endl << resultingMatrix << std::endl;
-		*/
-
-		double dx = resultingMatrix(0, 2);
-		double dy = resultingMatrix(1, 2);
+		double resultCTheta = (lhs.cTheta * rhs.cTheta) + (-1 * lhs.sTheta)*(rhs.sTheta); 
 		
-		Vector2D vector;
-		vector.x = dx;
-		vector.y = dy;
+		double resultSTheta = (lhs.sTheta * rhs.cTheta) + (lhs.cTheta * rhs.sTheta);
 
-		double cTheta = resultingMatrix(0, 0);
-		double sTheta = resultingMatrix(1, 0);	
+		double x_new = (lhs.cTheta * rhs.vector.x) + (-1 * lhs.sTheta * rhs.vector.y) + (lhs.vector.x); 
 		
-		Transform2D result = Transform2D(vector, cTheta, sTheta);  
+		double y_new = (lhs.sTheta * rhs.vector.x) + (lhs.cTheta * rhs.vector.y) + (lhs.vector.y);  
+		
+		Vector2D resultVector;
+		resultVector.x = x_new;
+		resultVector.y = y_new;
 
-		return result;
+		return Transform2D(resultVector, resultCTheta, resultSTheta); 
 	}
 
 	/* Reads in a Transform2D from the user
 	 */	
 	std::istream & operator>>(std::istream & is, Transform2D & tf) {
 	
-		double x;
-		double y;
 		double angle;
 
 		std::cout << "Enter the angle (degrees) \n";
 		is >> angle;
-		angle = deg2rad( float(angle) );
+		angle = deg2rad( double(angle) );
+		
+		tf.cTheta = cos(angle);
+		tf.sTheta = sin(angle);
 
 		std::cout << "Enter x \n";
-		is >> x;
+		is >> tf.vector.x;
 
 		std::cout << "Enter y \n";
-		is >> y;
-		
-		tf.setMatrices(x, y, angle);
-
+		is >> tf.vector.y;
+			
 		return is;
 	}
 	
 	/* Take the homogenous transformation matrix and return
         * the 3x3 rotation matrix from it
-        */     
-        Eigen::Matrix<float, 3, 3> Transform2D::extract_rotation() {
+        *     
+        Eigen::Matrix<double, 3, 3> Transform2D::extract_rotation() {
 		
-		Eigen::Matrix<float, 3, 3> R;
+		Eigen::Matrix<double, 3, 3> R;
 
 		R(0, 0) = tf(0, 0);
 		R(0, 1) = tf(0, 1);
@@ -297,14 +306,15 @@ namespace rigid2d {
 
 		return R;	
 	}
+	*/
 	
 	/* Take a 2x1 vector and return the 3x3 skew symmetric represntation
 	 * of the vector, assuming its 3rd row were 0.0 
 	 * Return a Eigen<float 3, 3> matrix which is the skew symmetric representation
-	 */
-	Eigen::Matrix<float, 3, 3> skew_sym(rigid2d::Vector2D vector) {
+	 *
+	Eigen::Matrix<double, 3, 3> skew_sym(rigid2d::Vector2D vector) {
 		
-		Eigen::Matrix<float, 3, 3> M;
+		Eigen::Matrix<double, 3, 3> M;
 		
 		M(0, 0) = 0.0; 
 		M(0, 1) = 0.0;
@@ -320,12 +330,13 @@ namespace rigid2d {
 
 		return M;
 	}	
+	*/
 
 	/* Take the two 3x3 matrices and construct the adjoint from them
-	 */ 
-	Eigen::Matrix<float, 6, 6> insertMatrices(Eigen::Matrix<float, 3, 3> R, Eigen::Matrix<float, 3, 3> lower_left_matrix) {
+	 *
+	Eigen::Matrix<double, 6, 6> insertMatrices(Eigen::Matrix<double, 3, 3> R, Eigen::Matrix<double, 3, 3> lower_left_matrix) {
 
-		Eigen::Matrix<float, 6, 6> M;
+		Eigen::Matrix<double, 6, 6> M;
 
 		// Insert R into the top left quadrant 
                 M(0, 0) = R(0, 0);
@@ -384,32 +395,33 @@ namespace rigid2d {
 
                 return M;
 	}
+	*/
 	
 	 /* Construct the adjoint of the given transformation matrix
-         */
-         Eigen::Matrix<float, 6, 6> Transform2D::adjoint() {
+         *
+         Eigen::Matrix<double, 6, 6> Transform2D::adjoint() {
 			
-		Eigen::Matrix<float, 6, 6> adj;  
+		Eigen::Matrix<double, 6, 6> adj;  
 		
-		Eigen::Matrix<float, 3, 3> R = extract_rotation();	
+		Eigen::Matrix<double, 3, 3> R = extract_rotation();	
 		
 		// [p]R
-		Eigen::Matrix<float, 3, 3> lower_left_matrix = skew_sym(vector) * R;
+		Eigen::Matrix<double, 3, 3> lower_left_matrix = skew_sym(vector) * R;
 		
 		// Construct the final 6x6 matrix
 		adj = insertMatrices(R, lower_left_matrix);
 			
 		return adj;
         }
-
+	*/
 
 	/* Take the 2D twist and represent it as the general 6x1 vector
 	 * Assuming we only rotate about the z-axis and can only translate
 	 * in the x-y plane
-	 */
-	Eigen::Matrix<float, 6, 1> create_3D_Twist(rigid2d::Twist2D original_twist) {
+	 *
+	Eigen::Matrix<double, 6, 1> create_3D_Twist(rigid2d::Twist2D original_twist) {
 
-		Eigen::Matrix<float, 6, 1> V;  
+		Eigen::Matrix<double, 6, 1> V;  
 		V(0, 0) = 0.0;
 		V(1, 0) = 0.0; 
 		V(2, 0) = original_twist.getW();
@@ -419,18 +431,19 @@ namespace rigid2d {
 		
 		return V;
 	}
+	*/
 
 	/* Describe this method 
 	 * See page 85 of Modern Robotics
          *               [p] is the skew shymmetric matrix of the three vector
          *               see page 65 of Modern Robotics
-	 */
+	 *
 	Twist2D Transform2D::operator()(Twist2D twist_original) {
 			
 		// I defined the adjoint using the 3-d, general purpose approach
 		// I will need to convert the 6, 1 vector back to the 1,3 vector for
 		// the 2-d twists
-		Eigen::Matrix<float, 6, 1> full_twist = adjoint() * create_3D_Twist(twist_original); 
+		Eigen::Matrix<double, 6, 1> full_twist = adjoint() * create_3D_Twist(twist_original); 
 			
 		double w = full_twist(2, 0);
 		double dx = full_twist(3, 0);
@@ -439,7 +452,7 @@ namespace rigid2d {
 		// w (angular component) goes first??
 		return rigid2d::Twist2D(w, dx, dy);
 	}
-	
+	*/
 
 	// End of Transform2D class 
 	
@@ -501,9 +514,15 @@ namespace rigid2d {
 	bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
 		
 		using namespace rigid2d;
-
-		if (almost_equal(lhs.getX(), rhs.getX(), 0.01) && (almost_equal(lhs.getY(), rhs.getY(), 0.01)) && 
-				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.01) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.01)) ) {
+	
+		// FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+		
+		double epsilon = 0.001;
+		if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && (almost_equal(lhs.vector.y, rhs.vector.y, epsilon)) && 
+				almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
 			return true;
 		}
 
@@ -517,20 +536,55 @@ namespace rigid2d {
 
                 using namespace rigid2d;
 
-                if (almost_equal(lhs.getX(), rhs.getX(), 0.1) && (almost_equal(lhs.getY(), rhs.getY(), 0.1)) && 
-				almost_equal(lhs.getCTheta(), rhs.getCTheta(), 0.1) && (almost_equal(lhs.getSTheta(), rhs.getSTheta(), 0.1))) {
+		// FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+		
+		double epsilon = 0.001;
+                if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && almost_equal(lhs.vector.y, rhs.vector.y, epsilon) && 
+				almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
         
 			return false;
 		}
 
-			/*
-                        std::cout << std::endl << lhs.getX() << " " << rhs.getX() << std::endl << "   " << lhs.getY() << " " << rhs.getY() << std::endl;
-			std::cout << lhs.getCTheta() << " " << rhs.getCTheta() << std::endl;
-		        std::cout << "    " << lhs.getSTheta() << "   " << rhs.getSTheta() << std::endl; 
-			*/
-			
 			return true;
         }
+	
+	/* Describe
+	 */
+        bool operator==(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+
+		// FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+                // // FIX ME - let it be off by a percentage of the total size
+
+		double epsilon = 0.001;
+		if ( (almost_equal(lhs.x, rhs.x, epsilon) ) && (almost_equal(lhs.y, rhs.y, epsilon) ) ) {
+			return true;
+		}	
+		
+		return false;
+	}
+
+        /* Describe
+        */
+        bool operator!=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+
+		// FIX ME - let it be off by a percentage of the total size
+		// // FIX ME - let it be off by a percentage of the total size
+		// // FIX ME - let it be off by a percentage of the total size
+		// // FIX ME - let it be off by a percentage of the total size
+		
+		double epsilon = 0.01;
+		if ( (almost_equal(lhs.x, rhs.x, epsilon)) && (almost_equal(lhs.y, rhs.y, epsilon) ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
 
 
 		

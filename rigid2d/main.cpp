@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <iostream>
 #include <jsoncpp/json/json.h>
-
+#include <cmath>
 
 /* Describe this here
  */
@@ -25,6 +25,53 @@ rigid2d::Transform2D parseJSON(Json::Value frame) {
 	vector.y = y;
 	
 	return rigid2d::Transform2D(vector, cTheta, sTheta);
+}
+
+/* I used Eigen to generate some of the test cases. I also am not
+ * sure I had more than 4/5 decimal places in the manual calculations. 
+ * So, I have some numerical error for the test cases. I use this
+ * method to check if two Transforms2D are equal 
+ */
+bool isEqualForTesting(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
+
+	  using namespace rigid2d;
+	  double epsilon = 0.1;
+          if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && almost_equal(lhs.vector.y, rhs.vector.y, epsilon) &&
+                almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
+
+         	return true;
+          }
+
+          return false;
+}
+
+/* Describe 
+ */ 
+bool isEqualForTesting(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+		
+	 using namespace rigid2d;
+	 double epsilon = 0.1;
+                if ( (almost_equal(lhs.x, rhs.x, epsilon) ) && (almost_equal(lhs.y, rhs.y, epsilon) ) ) {
+                        return true;
+                }
+
+                return false;
+}
+
+
+
+/* Describe 
+ */
+rigid2d::Vector2D jsonToVector(Json::Value vector) {
+	
+	double x = std::stod( vector["x"].asString() );
+        double y = std::stod( vector["y"].asString() );
+		
+	rigid2d::Vector2D v;
+	v.x = x;
+	v.y = y;
+
+	return v;
 }
 
 
@@ -55,24 +102,26 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
         rigid2d::Transform2D T_cb_correct = parseJSON( obj["T_cb"] );
         rigid2d::Transform2D T_ca_correct = parseJSON( obj["T_ca"] );
 
-	if( T_ab != T_ab_correct ) {
+	std::cout.precision(17);
+
+	if( !isEqualForTesting( T_ab, T_ab_correct) ) {
 		std::cout << "Frame Conversion Error: The computed T_ab is incorrect" << std::endl;
 		std::cout << "The computed T_ab is " << T_ab << std::endl;
 		std::cout << "The desired T_ab is " << T_ab_correct << std::endl;
 	}
 	
-	if ( T_ba != T_ba_correct ) {
+	if ( !isEqualForTesting(T_ba, T_ba_correct) ) {
 		std::cout << "Frame Conversion Error: The computed T_ba is incorrect" << std::endl;
 		std::cout << "The computed T_ba is " << T_ba << std::endl;
                 std::cout << "The desired T_ba is " << T_ba_correct << std::endl;
 	}
-	if ( T_bc != T_bc_correct ) {
+	if ( !isEqualForTesting(T_bc, T_bc_correct) ) {
 		std::cout << "Frame Conversion Error: The computed T_bc is incorrect" << std::endl;
 		std::cout << "The computed T_bc is " << T_bc << std::endl;
                 std::cout << "The desired T_bc is " << T_bc_correct << std::endl;
 	}
 	
-	if ( T_cb != T_cb_correct ) {
+	if ( !isEqualForTesting( T_cb, T_cb_correct) ) {
 		std::cout << "Frame Conversion Error: The computed T_cb is incorrect" << std::endl;
 		std::cout << "The computed T_cb is " << T_cb << std::endl;
                 std::cout << "The desired T_cb is " << T_cb_correct << std::endl;
@@ -82,19 +131,25 @@ rigid2d::Transform2D testTransforms(rigid2d::Transform2D T_ab, rigid2d::Transfor
 		*/	
 	}
 	
-	if ( T_ac != T_ac_correct ) {
+	if ( !isEqualForTesting( T_ac, T_ac_correct) ) {
 		std::cout << "Frame Conversion Error: The computed T_ac is incorrect" << std::endl;	
 		std::cout << "The computed T_ac is " << T_ac << std::endl;
                 std::cout << "The desired T_ac is " << T_ac_correct << std::endl;
 	}
 	
-	if ( T_ca != T_ca_correct ) {
+	if ( !isEqualForTesting( T_ca, T_ca_correct) ) {
                 std::cout << "Frame Conversion Error: The computed T_ca is incorrect" << std::endl; 
 		std::cout << "The computed T_ca is " << T_ca << std::endl;
                 std::cout << "The desired T_ca is " << T_ca_correct << std::endl;
 		
-		std::cout << T_ca.getCTheta() << " " << T_ca.getSTheta() << std::endl;
-                std::cout << T_ca_correct.getCTheta() << " " << T_ca_correct.getSTheta() << std::endl;	
+		//std::cout << T_ca.getCTheta() << " " << T_ca.getSTheta() << std::endl;
+                //std::cout << T_ca_correct.getCTheta() << " " << T_ca_correct.getSTheta() << std::endl;	
+	
+		std::cout << std::endl;
+		std::cout << "computed x is " << T_ca.vector.x << "\n" << "correct x is " << T_ca_correct.vector.x << " \n" << std::endl;
+			
+
+		std::cout << "std::fabs of the x values is " << std::fabs(T_ca.vector.x - T_ca_correct.vector.x ) << std::endl;
 	}
 
 	return T_ac;
@@ -144,6 +199,70 @@ bool testUserInput(char inputFileName[], char outputFileName[]) {
 	
 
 	return true;	
+}
+
+/* Describe 
+ */
+bool convertVectors(char inputFileName[], char outputFileName[]) {
+	
+	using namespace rigid2d;
+	// Read the json file of labels
+        std::ifstream ifs(outputFileName);
+        Json::Reader reader;
+        Json::Value obj;
+        reader.parse(ifs, obj);
+
+        // Read in the transforms from the output file
+        Transform2D T_ab = parseJSON( obj["T_ab"] );
+        Transform2D T_bc = parseJSON( obj["T_bc"] );
+
+	// Read in the correct vectors from the JSON files
+	Vector2D V_a_correct = jsonToVector( obj["V_a"] );  
+	Vector2D V_b_correct = jsonToVector( obj["V_b"] );
+	Vector2D V_c_correct = jsonToVector( obj["V_c"] );
+
+
+
+	// Read the json file of inputs
+        std::ifstream ifs2(inputFileName);
+        reader.parse(ifs2, obj);
+
+	Vector2D V_a;
+	char frame = obj["vector"]["frame"].asString()[0];
+        V_a.x = std::stod( obj["vector"]["x"].asString() );
+	V_a.y = std::stod( obj["vector"]["y"].asString() );
+
+	// Convert the vector using the 2D homogenous transformation
+	// to frame A, B, C
+	// Assuming V1 is 
+	Vector2D V_b = (T_ab.inv())(V_a);      
+	
+	Vector2D V_c = ((T_ab * T_bc).inv())(V_a);
+
+	// Check that the new vector in A, B, C
+	// match the computed vectors
+	bool isCorrect = true;	
+	if ( !isEqualForTesting( V_a_correct, V_a) ) { 
+		std::cout << "Incorrect frame transformation: vector in A frame is incorrect" << std::endl;
+		isCorrect = false;
+	
+		std::cout << "The computed V_a is " << V_a << " and the real V_a is " << V_a_correct << std::endl;
+	}
+	if ( !isEqualForTesting(V_b_correct, V_b) ) {
+		std::cout << "Incorrect frame transformation: vector in B frame is incorrect" << std::endl;
+		isCorrect = false;
+
+		std::cout << "The computed V_b is " << V_b << " and the real V_b is " << V_b_correct << std::endl;
+	}
+	if ( !isEqualForTesting(V_c_correct, V_c) ) {
+		std::cout << "Incorrect frame transformation: vector in C frame is incorrect" << std::endl;	
+		isCorrect = false;
+
+		std::cout << "The computed V_c is " << V_c << " and the real V_c is " << V_c_correct << std::endl;
+	}
+
+
+	return isCorrect;
 }
 
 
@@ -203,34 +322,38 @@ int main(int argc, char *argv[]) {
 	
 	// Run tests on the inputted data
 	testTransforms(T_ab, T_bc, outputFileName);		
+		
+	if (testSet > 4) {
+		double x = -1.0;
+		double y = -1.0;
 	
+		char frame = 'A';
+		
+		convertVectors(inputFileName, outputFileName);
+								
+		/*
+		std::cout << "Enter a vector v \n";	
 
-	/*
-	double x = -1.0;
-	double y = -1.0;
+		std::cout << "Enter {A, B, C} indicating the frame in which the vector is defined \n";
+		std::cin >> frame;
+
+		std::cout << "Enter a vector's x component \n";
+		std::cin >> x;
 	
-	char frame = 'A';
+		std::cout << "Enter a vector's y component \n";
+		std::cin >> y;
 
-	std::cout << "Enter a vector v \n";	
+		rigid2d::Vector2D V1;
+		V1.x = x;
+		V1.y = y;	
 	
-	std::cout << "Enter {A, B, C} indicating the frame in which the vector is defined \n";
-	std::cin >> frame;
+		std::cout << "The vector is ";
+		std::cout << "(" << V1.x << ", " << V1.y << ") and is defined in the " << frame << " frame \n";
 
-	std::cout << "Enter a vector's x component \n";
-	std::cin >> x;
-	
-	std::cout << "Enter a vector's y component \n";
-	std::cin >> y;
+		// Output the 	
+		*/	 
+	}
 
-	rigid2d::Vector2D V1;
-	V1.x = x;
-	V1.y = y;	
-	
-	std::cout << "The vector is ";
-	std::cout << "(" << V1.x << ", " << V1.y << ") and is defined in the " << frame << " frame \n";
-
-	// Output the 	
-	*/ 
 
 	return 1;
 }
