@@ -58,6 +58,19 @@ bool isEqualForTesting(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rh
                 return false;
 }
 
+/* Describe 
+ */
+bool isEqualForTesting(rigid2d::Twist2D twist_c_correct, rigid2d::Twist2D twist_c) {
+
+	using namespace rigid2d;
+         double epsilon = 0.1;
+                if ( (almost_equal(twist_c_correct.w, twist_c.w, epsilon) ) && (almost_equal(twist_c_correct.dx, twist_c.dx, epsilon) )
+		  && (twist_c_correct.dy, twist_c.dy, epsilon) ) {
+                        return true;
+                }
+
+                return false;
+}
 
 
 /* Describe 
@@ -72,6 +85,17 @@ rigid2d::Vector2D jsonToVector(Json::Value vector) {
 	v.y = y;
 
 	return v;
+}
+
+/* Describe this method 
+ */
+rigid2d::Twist2D jsonToTwist(Json::Value twist) {
+
+	double w = std::stod( twist["w"].asString() );
+	double dx = std::stod( twist["dx"].asString() );
+	double dy = std::stod( twist["dy"].asString() );
+		
+	return rigid2d::Twist2D(w, dx, dy);
 }
 
 
@@ -266,6 +290,64 @@ bool convertVectors(char inputFileName[], char outputFileName[]) {
 }
 
 
+/* Describe this method
+ */
+bool convertTwists(char inputFileName[], char outputFileName[]) {
+
+	using namespace rigid2d;
+        // Read the json file of labels
+        std::ifstream ifs(inputFileName);
+        Json::Reader reader;
+        Json::Value obj;
+        reader.parse(ifs, obj);
+
+	// Read in the twists from the input file 
+	Twist2D twist_c = jsonToTwist(obj["twist_c"]);
+
+	// Read in the json file of labels
+        // Read in the correct, label twist from the output file
+        std::ifstream ifs2(outputFileName);
+	reader.parse(ifs2, obj);
+	
+	Transform2D T_ab = parseJSON( obj["T_ab"] );
+        Transform2D T_bc = parseJSON( obj["T_bc"] );
+
+	Twist2D twist_a_correct = jsonToTwist(obj["twist_a"]);
+	Twist2D twist_b_correct = jsonToTwist(obj["twist_b"]);
+	Twist2D twist_c_correct = jsonToTwist(obj["twist_c"]);
+	
+	// Use the adjoint to convert the twists from one frame to another
+	Twist2D twist_b = T_bc(twist_c);
+
+	Twist2D twist_a = (T_ab * T_bc)(twist_c);
+	
+	//Twist2D twist_a = (T_ab)(twist_b);
+
+	bool isCorrect = true;
+	if ( !isEqualForTesting(twist_c_correct, twist_c) ) {
+                std::cout << "\nIncorrect twist transformation: twist in the C frame is incorrect" << std::endl;
+                std::cout << "The computed twist_c is " << twist_c << " and the real twist_c is " << twist_c_correct << std::endl;
+        	isCorrect = false;
+	}
+	if ( !isEqualForTesting(twist_b_correct, twist_b) ) { 
+		std::cout << "\nIncorrect twist transformation: twist in the B frame is incorrect" << std::endl;
+                std::cout << "The computed twist_b is " << twist_c << " and the real twist_b is " << twist_c_correct << std::endl;
+                isCorrect = false;
+	}	
+	if ( !isEqualForTesting(twist_a_correct, twist_a) ) {
+                std::cout << "\nIncorrect twist transformation: twist in the A frame is incorrect" << std::endl;
+                std::cout << "The computed twist_a is " << twist_a << " and the real twist_a is " << twist_a_correct << std::endl;
+                isCorrect = false;
+        }
+
+	// std::cout << twist_a_correct << std::endl << twist_a << std::endl;
+
+	return isCorrect;
+}
+
+
+
+
 /* The input will be a scalar indicating which testing files to use
  * So if argv[1] = N, then we will use the Nth set of testing files
  */
@@ -323,6 +405,13 @@ int main(int argc, char *argv[]) {
 	// Run tests on the inputted data
 	testTransforms(T_ab, T_bc, outputFileName);		
 		
+	
+	if (testSet == 1) {
+	
+		convertTwists(inputFileName, outputFileName);
+	}
+	
+
 	if (testSet > 4) {
 		double x = -1.0;
 		double y = -1.0;
@@ -330,7 +419,10 @@ int main(int argc, char *argv[]) {
 		char frame = 'A';
 		
 		convertVectors(inputFileName, outputFileName);
-								
+
+		//convertTwists(inputFileName, outputFileName);
+
+
 		/*
 		std::cout << "Enter a vector v \n";	
 

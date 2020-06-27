@@ -287,22 +287,23 @@ namespace rigid2d {
 	
 	/* Describe this method 
 	 * See page 85 of Modern Robotics
-         *               [p] is the skew shymmetric matrix of the three vector
+         *               [p] is the skew symmetric matrix of the three vector
          *               see page 65 of Modern Robotics
 	 * I opted for doing the math symbolically and programming it in rather
 	 * than creating the matrices in Eigen and multiplying. This is lighter weight
-	 * and should be faster in the long run
+	 * and should be faster in the long run. Since we only rotate about the z axis,
+	 * the expression for the adjoint is pretty simple, in comparison to the general
+	 * purpose case
 	 */
 	Twist2D Transform2D::operator()(Twist2D twist_original) {
 			
-		double C = vector.y;
-		double F = -1 * vector.x;
-
 		double w_new = twist_original.w;			
 		
-		double dx = (C * twist_original.w) + (cTheta * twist_original.dx) - (sTheta * twist_original.dy);
+		double dx = (vector.y * twist_original.w) + (cTheta * twist_original.dx) - (sTheta * twist_original.dy);
 		
-		double dy = (F * twist_original.w) + (sTheta * twist_original.dx) + (cTheta * twist_original.dy);
+		double dy = ((-1 * vector.x) * twist_original.w) + (sTheta * twist_original.dx) + (cTheta * twist_original.dy);
+
+		return Twist2D(w_new, dx, dy);	
 	}
 	
 
