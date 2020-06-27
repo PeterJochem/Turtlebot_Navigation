@@ -103,12 +103,19 @@ namespace rigid2d {
 			double getDx() const;
 			double getDy() const;
 			double getW() const;
+			
+			 double w;
+                        double dx;
+                        double dy;
 
                 private:
+			/*
                         double w;
                         double dx;
                         double dy;
-        };
+        		*/
+					
+	};
 
 
 	/// \brief a rigid body transformation in 2 dimensions
