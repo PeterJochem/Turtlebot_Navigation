@@ -217,6 +217,19 @@ namespace rigid2d {
 	/// HINT: This function can be implemented in terms of *=
 	Transform2D operator*(const Transform2D &lhs, const Transform2D &rhs);
 
+	/// \brief Tests equality of two Twist2D's. I set threshold for
+        //  each field to be within about 0.001 of othe frames value
+        //  \return true/false depending on if lhs is equal to rhs
+        //
+        bool operator==(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs);
+
+        /// \brief For testing
+        //
+        bool operator!=(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs);
+
+
+
+
 
 }
 

@@ -344,7 +344,8 @@ namespace rigid2d {
 		using namespace rigid2d;
 	
 		// FIX ME ? - let it be off by a percentage of the total size	
-		double epsilon = 0.001;
+		// Note the large epsilon!
+		double epsilon = 0.1;
 		if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && (almost_equal(lhs.vector.y, rhs.vector.y, epsilon)) && 
 				almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
 			return true;
@@ -404,4 +405,41 @@ namespace rigid2d {
 
 		return true;
 	}
+
+	 /* Does comparsion of two Twist2Ds
+         * This is useful for testing to see if two twists are equal.
+         * lhs - the left hand side Twist2D
+         * rhs - the right hand side Twist2D
+         */
+        bool operator==(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs) {
+
+                // FIX ME - let it be off by a percentage of the total size
+                double epsilon = 0.1;
+                if ( (almost_equal(lhs.dx, rhs.dx, epsilon) ) && (almost_equal(lhs.dy, rhs.dy, epsilon) )
+		 	&& (almost_equal(lhs.w, rhs.w, epsilon) ) ) {
+                        return true;
+                }
+
+                return false;
+        }
+
+        /* Does inequality check of two Twist2Ds
+         * This is useful for testing to see if two twists are equal.
+         * lhs - the left hand side Twist2D
+         * rhs - the right hand side Twist2D
+         */
+        bool operator!=(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs) {
+
+                // FIX ME - let it be off by a percentage of the total size
+                double epsilon = 0.1;
+                if ( (almost_equal(lhs.dx, rhs.dx, epsilon)) && (almost_equal(lhs.dy, rhs.dy, epsilon) ) 
+				&& (almost_equal(lhs.w, rhs.w, epsilon) ) ) {
+                        return false;
+                }
+
+                return true;
+        }
+
+
+
 }
