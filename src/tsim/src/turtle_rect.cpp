@@ -11,6 +11,8 @@
 #include <sstream>
 #include <stdlib.h>
 
+// #include "rigid2d/rigid2d.hpp"
+
 ros::ServiceClient teleport_client;
 ros::ServiceClient setPen_client;
 ros::ServiceClient reset_client;
