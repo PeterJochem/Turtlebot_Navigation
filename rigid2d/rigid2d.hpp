@@ -21,13 +21,11 @@ namespace rigid2d {
 	/// Note: the fabs function in <cmath> (c++ equivalent of math.h) will
 	/// be useful here
 	constexpr bool almost_equal(double d1, double d2, double epsilon = 1.0e-12) {
-		
+
 		// WHY does fabs give weird issues?????
 		if ( std::fabs(d2 - d1) < epsilon) {
 			return true;
 		}
-
-		// cout << std::abs(d1 - d2) << std::endl;
 
 		return false;
 	}
@@ -69,52 +67,40 @@ namespace rigid2d {
 		double y = 0.0;
 	};
 
-	Eigen::Matrix<double, 3, 3> skew_sym(rigid2d::Vector2D);
-
 	/// \brief output a 2 dimensional vector as [xcomponent ycomponent]
 	/// os - stream to output to
 	/// v - the vector to print
 	std::ostream & operator<<(std::ostream & os, const Vector2D & v);
 
-	/// \brief input a 2 dimensional vector
-	///   You should be able to read vectors entered as two numbers
-	///   separated by a newline or a space, or entered as [xcomponent ycomponent]
-	/// is - stream from which to read
-	/// v [out] - output vector
-	/// Hint: The following may be useful:
-	/// https://en.cppreference.com/w/cpp/io/basic_istream/peek
-	/// https://en.cppreference.com/w/cpp/io/basic_istream/get
-	//  std::istream & operator>>(std::istream & is, Vector2D & v);
 
+	class Twist2D {
 
-	   class Twist2D {
+		public:
+			Twist2D(double, double, double);
 
-                public:
-                        Twist2D(double, double, double);
+			Twist2D(void);
 
-                        Twist2D(void);
+			friend std::ostream & operator<<(std::ostream & os, const Twist2D & tw);
 
-                        friend std::ostream & operator<<(std::ostream & os, const Twist2D & tw);
+			friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
 
-                        friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
+			void setVars(double, double, double);
 
-                        void setVars(double, double, double);
-			
 			double getDx() const;
 			double getDy() const;
 			double getW() const;
-			
-			 double w;
-                        double dx;
-                        double dy;
 
-                private:
+			double w;
+			double dx;
+			double dy;
+
+		private:
 			/*
-                        double w;
-                        double dx;
-                        double dy;
-        		*/
-					
+			   double w;
+			   double dx;
+			   double dy;
+			   */
+
 	};
 
 
@@ -137,8 +123,8 @@ namespace rigid2d {
 			/// \param trans - the translation
 			/// \param rot - the rotation, in radians
 			Transform2D(const Vector2D & trans, double radians);
-		
-			// Describe
+
+			// \brief
 			Transform2D(const Vector2D & trans, double cTheta, double sTheta);
 
 
@@ -146,19 +132,14 @@ namespace rigid2d {
 			/// \param v - the vector to transform
 			/// \return a vector in the new coordinate system
 			Vector2D operator()(Vector2D v) const;
-			
-			 /// \brief Given that this Transform2d represents T_ab
-			 // this operator will convert the twist in frame b into the 
-			 // equivalent twist represented in the A frame  
-			 // This method uses the adjoint mapping to convert the twist 
-                        /// \param twist - the twist defined in the B frame
-                        /// \return the twist represented in the A frame 
-                        Twist2D operator()(Twist2D twist);
-			
-			/// \brief For testing 
-			// 
-			///bool operator==(const & lhs, const X& rhs);
-				
+
+			/// \brief Given that this Transform2d represents T_ab
+			// this operator will convert the twist in frame b into the 
+			// equivalent twist represented in the A frame  
+			// This method uses the adjoint mapping to convert the twist 
+			/// \param twist - the twist defined in the B frame
+			/// \return the twist represented in the A frame 
+			Twist2D operator()(Twist2D twist);
 
 
 			/// \brief invert the transformation
@@ -180,84 +161,37 @@ namespace rigid2d {
 			double getTheta(void) const;
 			double getCTheta(void) const;
 			double getSTheta(void) const;
-			
-			//Eigen::Matrix<double, 3, 3> getTf(void) const;
-			//void setMatrices(double, double, double);
-			//void setMatrices(double, double, double, double);
 
-			/* Describe this method
-                         * Make private after testing
-                        */
-                        //Eigen::Matrix<double, 6, 6> adjoint();
 			Vector2D vector;
-                        double sTheta;
-                        double cTheta;
+			double sTheta;
+			double cTheta;
 
 		private:
 			//Vector2D vector;
 			//double sTheta;
 			//double cTheta;
-
-			// Store the literal matrix too?
-			//Eigen::Matrix<double, 3, 3> tf;
-
-			/* Describe this method
-			 * Make private after testing
-         		*/
-         		//Eigen::Matrix<float, 6, 6> adjoint();
-			
-			/* Describe this method
-			 */
-			// Eigen::Matrix<float, 3, 3> skew_sym(Vector2D v);
-			
-			/* Take the homogenous transoformation matrix and return
-			 * the 3x3 rotation matrix from it
-			 */	
-			
-			// Eigen::Matrix<double, 3, 3> extract_rotation();
-			
-		};
-
-	/*	
-	class Twist2D {
-		
-		public:
-			Twist2D(double, double, double);
-			
-			Twist2D(void);	
-
-			friend std::ostream & operator<<(std::ostream & os, const Twist2D & tw);
-			
-			friend std::istream & operator>>(std::istream & is, const Twist2D & tw);	
-	
-			void setVars(double, double, double);
-	
-		private:
-			double w;
-			double dx;
-			double dy;
 	};
-	*/	
-		
-	/// \brief For testing
-        //
-        bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
+
+
+	/// \brief Tests equality of two Transform2D's. I set threshold for
+	//  each field to be within about 0.001 of othe frames value
+	//  \return true/false depending on if lhs is equal to rhs
+	//
+	bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
 
 	/// \brief For testing
-        //
-        bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
+	//
+	bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D &rhs);
 
 	/// \brief for testing
 	bool operator==(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
 
-        /// \brief For testing
-        //
-        bool operator!=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
-
-
+	/// \brief For testing
+	//
+	bool operator!=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
 
 	std::ostream & operator<<(std::ostream & os, const Twist2D &tw);
-		
+
 	std::istream & operator>>(std::istream & is, Twist2D &tw);	
 
 	/// \brief should print a human readable version of the transform:

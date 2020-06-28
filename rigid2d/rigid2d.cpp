@@ -6,69 +6,15 @@
 
 namespace rigid2d {
 	
-	/* Describe this method 
+	/* Print a vector2D in a human readable format
+	 * os - the output stream
+	 * v - the vector  
 	 */
 	std::ostream & operator<<(std::ostream & os, const Vector2D & v) {
 		return os << "[" << v.x << ", " << v.y <<  "]" << std::endl;  
 	}
 
-	/* Describe this method	
-	std::istream & operator>>(std::istream & is, Vector2D & v) {
-
-	}
-	*/
-	
-	 
-	/* Describe this method
-         *
-        void Transform2D::setMatrices(double x, double y, double theta) {
-
-                this->vector.x = x;
-                this->vector.y = y;
-                this->cTheta = cos(theta);
-		this->sTheta = sin(theta);
-
-                // Create the transformation matrix
-                // Eigen uses column major order
-                this->tf(0, 0) = cTheta;
-                this->tf(0, 1) = -1 * sTheta;
-                this->tf(0, 2) = x;
-
-                this->tf(1, 0) = sTheta;
-                this->tf(1, 1) = cTheta;
-                this->tf(1, 2) = y;
-
-                this->tf(2, 0) = 0.0;
-                this->tf(2, 1) = 0.0;
-                this->tf(2, 2) = 1.0;
-        }*/
-
-	/* Describe this method
-         *
-        void Transform2D::setMatrices(double x, double y, double cTheta, double sTheta) {
-
-                this->vector.x = x;
-                this->vector.y = y;
-                this->cTheta = cTheta;
-                this->sTheta = sTheta;
-
-                // Create the transformation matrix
-                // Eigen uses column major order
-                this->tf(0, 0) = cTheta;
-                this->tf(0, 1) = -1 * sTheta;
-                this->tf(0, 2) = x;
-
-                this->tf(1, 0) = sTheta;
-                this->tf(1, 1) = cTheta;
-                this->tf(1, 2) = y;
-
-                this->tf(2, 0) = 0.0;
-                this->tf(2, 1) = 0.0;
-                this->tf(2, 2) = 1.0;
-        }
-	*/
-
-	/* Create the identity transformation 
+	/* Constructor that creates the identity transformation 
 	 */ 	
 	Transform2D::Transform2D (void) {
 		
@@ -92,17 +38,21 @@ namespace rigid2d {
 	}
 
 
-	/* Create a transformation that is just a transformation
+	/* Create a transformation that is only a 
+	 * transformation without any rotation
+	 * p - the vector describing the frame's 
+	 * displacement
 	 */
-	Transform2D::Transform2D(const Vector2D & trans) {
+	Transform2D::Transform2D(const Vector2D &p) {
 		
 		cTheta = cos(0.0);
                 sTheta = sin(0.0);
-                vector.x = trans.x;
-                vector.y = trans.y;
+                vector.x = p.x;
+                vector.y = p.y;
 	}
 	
-	/* Create a Transform2D which is just a rotation
+	/* Constructor for Transform2D which creates a transform
+	 * which is just a rotation
 	 * Radians - the angle of rotation about the z-axis
 	 */
 	Transform2D::Transform2D(double radians) {
@@ -113,24 +63,29 @@ namespace rigid2d {
                 vector.y = 0.0; 
 	}
  
-	/* Describe
+	/* Constructor (one of a few) for the Transform2D class
+	 * p - the vector describing the frames translation
+	 * cTheta - the cos of the Transform2D's angle about z axis
+	 * sTheta - the sin of the Transform2D's angle about the z axis
 	 */
-	Transform2D::Transform2D(const Vector2D & trans, double cTheta, double sTheta) {
+	Transform2D::Transform2D(const Vector2D & p, double cTheta, double sTheta) {
 		
 		this->cTheta = cTheta;
                 this->sTheta = sTheta;
-                this->vector.x = trans.x;
-                this->vector.y = trans.y; 	
+                this->vector.x = p.x;
+                this->vector.y = p.y; 	
 	}	
 
 	/* Print a human readable description of the Transform2D
+	 * os - the output stream
+	 * tf - the Transform2D we are describing 
 	 */
 	std::ostream & operator<<(std::ostream &os, const Transform2D &tf) {
-               // return os << tf.getX() << std::endl;
-               return os << "dtheta (degrees): " << rad2deg(tf.getTheta()) << "    dx: " << tf.getX() 
+               return os << "\ndtheta (degrees): " << rad2deg(tf.getTheta()) << "    dx: " << tf.getX() 
 		       << "    dy: " << tf.getY() << std::endl;
 	}
-		
+	
+	// Get methods for Transform2D class	
 	double Transform2D::getX(void) const {
 		return vector.x;
 	}
@@ -172,16 +127,26 @@ namespace rigid2d {
 	double Twist2D::getW(void) const {
                 return w;
         }
+
+	/* Normalizes a given Vector 2D and returns
+	 * the normalized vector2D
+	 */
+	Vector2D normalize(Vector2D orig_vector) {
 	
-	/*Eigen::Matrix<double, 3, 3> Transform2D::getTf(void) const {
-                return tf;
-        }
-	*/
+		double magnitude = sqrt(pow(orig_vector.x, 2) + pow(orig_vector.y, 2));
 	
-	/* The returns the inverse of the given SE(2) matrix
+		Vector2D new_vector;
+		new_vector.x = (orig_vector.x)/magnitude;
+		new_vector.y = (orig_vector.y)/magnitude;
+
+		return new_vector;
+	}
+
+	/* Comptes and returns the inverse of the given SE(2) matrix
 	 * Instead of constructing the entire matrix in Eigen and 
 	 * inverting, I opt to use the properties of SE(2) matrices.
-	 * This should help reduce the amount of numerical error  
+	 * This should help reduce the amount of numerical error 
+	 * See Modern Robotics chapter 3 for properties of SE(2) matrices 
 	 */	
 	Transform2D Transform2D::inv() const {
 
@@ -199,7 +164,9 @@ namespace rigid2d {
 		return Transform2D(vector_inv, cTheta_inv, sTheta_inv);
 	}
 
-	/* Describe this method
+	/* Updates current Transform2D by multiplying it by another Transform2D
+	 * rhs - the Transform2D we are composing the current Transform2D with
+	 * Return the updated Transform2D 
 	 */
 	Transform2D & Transform2D::operator*=(const Transform2D & rhs) {
 			
@@ -223,7 +190,7 @@ namespace rigid2d {
 	}
 	
 	/* Apply the transformation to the vector v
-	 * Vector2D is the vector we are applying the transformation to 
+	 * Vector2D - the vector we are applying the transformation to 
 	 * Return the resulting Vector2D
 	 */
 	Vector2D Transform2D::operator()(Vector2D v) const {
@@ -264,6 +231,8 @@ namespace rigid2d {
 	}
 
 	/* Reads in a Transform2D from the user
+	 * is - the input stream
+	 * tf - the Transform2D object we are updating/setting fields of
 	 */	
 	std::istream & operator>>(std::istream & is, Transform2D & tf) {
 	
@@ -285,15 +254,13 @@ namespace rigid2d {
 		return is;
 	}
 	
-	/* Describe this method 
-	 * See page 85 of Modern Robotics
-         *               [p] is the skew symmetric matrix of the three vector
-         *               see page 65 of Modern Robotics
-	 * I opted for doing the math symbolically and programming it in rather
-	 * than creating the matrices in Eigen and multiplying. This is lighter weight
-	 * and should be faster in the long run. Since we only rotate about the z axis,
-	 * the expression for the adjoint is pretty simple, in comparison to the general
-	 * purpose case
+	/* Uses adjoint to map a twist from one frame to another
+	 * See page 85 of Modern Robotics for more details. Since
+	 * this is planar motion, the adjoint simplifies down to a pretty nice 
+	 * little set of expressions. Initially, I constructed the whole 6x6 matrix
+	 * but decided this was likely a better implementation
+	 * twist_original - the input twist we are doing a change of frame on
+	 * Return the twist in the new frame
 	 */
 	Twist2D Transform2D::operator()(Twist2D twist_original) {
 			
@@ -308,8 +275,10 @@ namespace rigid2d {
 	
 
 	// End of Transform2D class 
-	
-	// Start of the Twist2D class 	
+	// Start of Twist2D class
+
+	/* Constructor for Twist2D
+	 */ 	
 	Twist2D::Twist2D(double w, double dx, double dy) {
 		this->w = w;
 		this->dx = dx;
@@ -317,6 +286,7 @@ namespace rigid2d {
 	}
 
 	/* Create the (0.0, 0.0, 0.0) twist
+	 * One of a few diffrent constructors
 	 */
 	Twist2D::Twist2D(void) {
                 this->w = 0.0;
@@ -324,55 +294,53 @@ namespace rigid2d {
                 this->dy = 0.0;
         }
 	
+	/* Set/update a twist's fields 
+	 */
 	void Twist2D::setVars(double w, double dx, double dy) {
-		
 		this->w = w;
 		this->dx = dx;
 		this->dy = dy;
 	}
 
 	/* Print a human readable description of the twist
+	 * os - the output stream
+	 * tw - the twist we are describing
 	 */	
 	std::ostream & operator<<(std::ostream & os, const Twist2D &tw) {
 	
-		std::cout << "Angular part: " << tw.w << "     dx: " << tw.dx << "    dy: " << tw.dy << std::endl;
+		std::cout << "\nAngular part: " << tw.w << "     dx: " << tw.dx << "    dy: " << tw.dy << std::endl;
 		return os;
 	}		
 
 	/* Read in a Twist2d from the user
+	 * is - the input stream
+	 * tw - the twist object we are inputing
+	 * Returns the input stream
 	 */
 	std::istream & operator>>(std::istream & is, Twist2D &tw) {
 	
-		double w;
-		double dx;
-		double dy;
-
 		std::cout << "Enter the angular part (rad/s) ";
-		is >> w;
+		is >> tw.w;
 
 		std::cout << "Enter dx ";
-                is >> dx;
+                is >> tw.dx;
 
 		std::cout << "Enter dy ";
-                is >> dy;		
-		
-		tw.setVars(w, dx, dy);		
+                is >> tw.dy;		
 
 		return is;
 	}
 	
-	/* Describe 
-	 * This is useful for testing to see if two transforms are equal
+	/* Does comparsion of two Transform2Ds
+	 * This is useful for testing to see if two transforms are equal.
+	 * lhs - the left hand side Transform2D
+	 * rhs - the right hand side Transform2D
 	 */
 	bool operator==(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
 		
 		using namespace rigid2d;
 	
-		// FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-		
+		// FIX ME ? - let it be off by a percentage of the total size	
 		double epsilon = 0.001;
 		if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && (almost_equal(lhs.vector.y, rhs.vector.y, epsilon)) && 
 				almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
@@ -382,18 +350,16 @@ namespace rigid2d {
 		return false;
 	}
 
-	 /* Describe 
+	 /* Does inequality check of two Transform2Ds
          * This is useful for testing to see if two transforms are equal
+	 * lhs - the left hand side Transform2D
+         * rhs - the right hand side Transform2D
          */
         bool operator!=(const rigid2d::Transform2D &lhs, const rigid2d::Transform2D& rhs) {
 
                 using namespace rigid2d;
 
 		// FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-		
 		double epsilon = 0.001;
                 if (almost_equal(lhs.vector.x, rhs.vector.x, epsilon) && almost_equal(lhs.vector.y, rhs.vector.y, epsilon) && 
 				almost_equal(lhs.cTheta, rhs.cTheta, epsilon) && (almost_equal(lhs.sTheta, rhs.sTheta, epsilon)) ) {
@@ -404,15 +370,14 @@ namespace rigid2d {
 			return true;
         }
 	
-	/* Describe
-	 */
+	 /* Does comparsion of two Vector2Ds
+         * This is useful for testing to see if two vectors are equal.
+         * lhs - the left hand side Vector2D
+         * rhs - the right hand side Vector2D
+         */
         bool operator==(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
 
 		// FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-                // // FIX ME - let it be off by a percentage of the total size
-
 		double epsilon = 0.001;
 		if ( (almost_equal(lhs.x, rhs.x, epsilon) ) && (almost_equal(lhs.y, rhs.y, epsilon) ) ) {
 			return true;
@@ -421,15 +386,14 @@ namespace rigid2d {
 		return false;
 	}
 
-        /* Describe
-        */
+        /* Does inequality check of two Vector2Ds
+         * This is useful for testing to see if two vectors are equal.
+         * lhs - the left hand side Vector2D
+         * rhs - the right hand side Vector2D
+         */
         bool operator!=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
 
 		// FIX ME - let it be off by a percentage of the total size
-		// // FIX ME - let it be off by a percentage of the total size
-		// // FIX ME - let it be off by a percentage of the total size
-		// // FIX ME - let it be off by a percentage of the total size
-		
 		double epsilon = 0.01;
 		if ( (almost_equal(lhs.x, rhs.x, epsilon)) && (almost_equal(lhs.y, rhs.y, epsilon) ) ) {
 			return false;
@@ -437,9 +401,4 @@ namespace rigid2d {
 
 		return true;
 	}
-
-
-
-		
-
 }
