@@ -161,7 +161,6 @@ find_package(jsoncpp REQUIRED)
 include_directories(${jsoncpp_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_node jsoncpp)
 
-
 #############
 ## Install ##
 #############
@@ -205,9 +204,10 @@ target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_node jsoncpp)
 #############
 
 ## Add gtest based cpp test target and link libraries
-#if(CATKIN_ENABLE_TESTING)
-#	catkin_add_gtest(${PROJECT_NAME}_${PROJECT_NAME}_testing test/test_${PROJECT_NAME}.cpp)
-#endif()
+if(CATKIN_ENABLE_TESTING)
+	catkin_add_gtest(${PROJECT_NAME}_${PROJECT_NAME}_testing test/test_${PROJECT_NAME}.cpp)
+	target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_testing ${PROJECT_NAME} gtest_main)
+endif()
 
 #if(TARGET ${PROJECT_NAME}_${PROJECT_NAME}_testing)
 #  target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_testing ${PROJECT_NAME} gtest_main)

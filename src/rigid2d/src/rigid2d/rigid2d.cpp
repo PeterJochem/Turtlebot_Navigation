@@ -2,6 +2,7 @@
  */
 #include "rigid2d/rigid2d.hpp"
 #include <iostream>
+#include <math.h>
 //#include <Eigen/Dense>
 
 namespace rigid2d {
@@ -93,16 +94,18 @@ namespace rigid2d {
 	double Transform2D::getY(void) const {
                 return vector.y;
         }
-
+	
+	/* Uses the stored cos(theta) and sin(theta) fields
+	 * to recover theta. Returns theta in radians
+	 */
 	double Transform2D::getTheta(void) const {
                 
-		// IS THIS RIGHT??
-		// FIX ME FIX ME FIX ME FIX ME FIX ME
-		// FIX ME FIX ME FIX ME
-		// FIX ME FIX ME FIX ME
-		// FIX ME FIX ME FIX ME
-		// RANGE OF ACOS is [0, pi]
-		return acos(cTheta);
+		// Returns the principal value of the arc tangent of y/x, expressed in radians.
+		// To compute the value, the function takes into account the sign of both 
+		// arguments in order to determine the quadrant.
+		// Note - the call is  double atan2(double y, double x);
+		// Principal arc tangent of y/x, in the interval [-pi,+pi] radians
+		return std::atan2(sTheta, cTheta);	
 	}
 
 	double Transform2D::getCTheta(void) const {

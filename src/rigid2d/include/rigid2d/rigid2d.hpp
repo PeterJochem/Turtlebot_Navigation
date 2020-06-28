@@ -127,6 +127,10 @@ namespace rigid2d {
 			// \brief
 			Transform2D(const Vector2D & trans, double cTheta, double sTheta);
 
+			// brief returns x, y, theta values from the transform
+			//
+			//displacement();
+
 
 			/// \brief apply a transformation to a Vector2D
 			/// \param v - the vector to transform
