@@ -5,6 +5,7 @@
 
 #include<iosfwd> // contains forward definitions for iostream objects
 #include <cmath>
+#include <geometry_msgs/Pose.h>
 //#include <Eigen/Dense>
 
 namespace rigid2d {
@@ -66,6 +67,10 @@ namespace rigid2d {
 		double x = 0.0;
 		double y = 0.0;
 	};
+		
+	/* Describe
+	 */
+	Vector2D normalize(Vector2D orig_vector);
 
 	/// \brief output a 2 dimensional vector as [xcomponent ycomponent]
 	/// os - stream to output to
@@ -127,9 +132,8 @@ namespace rigid2d {
 			// \brief
 			Transform2D(const Vector2D & trans, double cTheta, double sTheta);
 
-			// brief returns x, y, theta values from the transform
-			//
-			//displacement();
+			// \brief returns x, y, theta values from the transform
+			geometry_msgs::Pose displacement();
 
 
 			/// \brief apply a transformation to a Vector2D

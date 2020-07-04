@@ -3,7 +3,7 @@
 #include "rigid2d/rigid2d.hpp"
 #include <iostream>
 #include <math.h>
-//#include <Eigen/Dense>
+#include <geometry_msgs/Pose.h>
 
 namespace rigid2d {
 	

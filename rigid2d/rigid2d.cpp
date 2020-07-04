@@ -2,7 +2,8 @@
  */
 #include "rigid2d.hpp"
 #include <iostream>
-#include <Eigen/Dense>
+#include <geometry_msgs/PoseStamped.h>
+
 
 namespace rigid2d {
 	
