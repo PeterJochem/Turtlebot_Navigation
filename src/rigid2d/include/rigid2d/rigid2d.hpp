@@ -77,6 +77,8 @@ namespace rigid2d {
 	/// v - the vector to print
 	std::ostream & operator<<(std::ostream & os, const Vector2D & v);
 
+	// Forward declare the class
+	class Transform2D;
 
 	class Twist2D {
 
@@ -90,6 +92,10 @@ namespace rigid2d {
 			friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
 
 			void setVars(double, double, double);
+			
+			/* Describe
+			 */
+			rigid2d::Transform2D integrateTwist();
 
 			double getDx() const;
 			double getDy() const;
@@ -134,8 +140,7 @@ namespace rigid2d {
 
 			// \brief returns x, y, theta values from the transform
 			geometry_msgs::Pose displacement();
-
-
+			
 			/// \brief apply a transformation to a Vector2D
 			/// \param v - the vector to transform
 			/// \return a vector in the new coordinate system
@@ -230,9 +235,6 @@ namespace rigid2d {
         /// \brief For testing
         //
         bool operator!=(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs);
-
-
-
 
 
 }

@@ -51,7 +51,7 @@ namespace rigid2d {
                 vector.x = p.x;
                 vector.y = p.y;
 	}
-	
+
 	/* Constructor for Transform2D which creates a transform
 	 * which is just a rotation
 	 * Radians - the angle of rotation about the z-axis
@@ -76,6 +76,21 @@ namespace rigid2d {
                 this->vector.x = p.x;
                 this->vector.y = p.y; 	
 	}	
+
+	/* Return the x, y, theta of the Transform as 
+	 * a Pose
+	 *
+	geometry_msgs::Pose displacement() { 
+		
+		// Pose uses quaternions	
+		geometry_msgs::Pose currentPose; 
+		currentPose.x = 
+		currentPose.y = 
+		currentPose.z = 0.0;
+		currentPose.x
+	}
+	*/
+
 
 	/* Print a human readable description of the Transform2D
 	 * os - the output stream
@@ -130,6 +145,71 @@ namespace rigid2d {
 	double Twist2D::getW(void) const {
                 return w;
         }
+
+	/* Integrate a constant twist for unit time
+	 * Return the Transform2D of the new frame position
+	 * and orientation
+	 * This returns the new frame relative to the old/prior one
+	 * So, if I am T_sb and I apply the given twist for 1s then
+	 * I end up at T_bc. So, if I wanted T_sc, then I would need 
+	 * to multiply T_sb * T_sc 
+	 * Important - this function assumes unit time!
+	 */
+	rigid2d::Transform2D Twist2D::integrateTwist() {
+		using namespace rigid2d;
+		
+		// FIX ME - need to normalize w
+		// FIX ME - need to normalize w	
+
+		// Avoid modyfing the original twist? 
+
+		Vector2D p;
+		double cTheta;
+		double sTheta;
+
+		// Should I have a higher threshold??
+		// if ( w < 0.01) {
+		if ( !almost_equal(w, 0.0) ) {
+			
+			// Normalize (w, dx, dy) so that the angular component is 1 
+			double theta = std::abs(w);
+			double w_norm = w / std::abs(w);
+
+			// magnitude should be positive!!
+			double dx_norm = dx / std::abs(w); 
+			double dy_norm = dy / std::abs(w);
+
+
+			// Solve for cTheta and sTheta	
+			cTheta = 1 + ( (1 - cos(theta) ) * (-1) * (w_norm * w_norm) );
+			sTheta = sin(theta) * w_norm; 
+
+			// Solve for the displacement
+			double A = ( theta + ( (theta - sin(theta) ) * (-1) * (w_norm * w_norm) ) );
+			double B = ( (1 - cos(theta) ) * (-1) * (w_norm) ); 
+	
+			p.x = (A * dx_norm) + (B * dy_norm);    		
+			
+			p.y = (-B * dx_norm) + (A * dy_norm); 	
+		}
+		else { 
+			
+			// Normalize (w, dx, dy) so that the v component is 1
+			double w_norm = 0.0;
+			double magnitude = sqrt( (dx * dx) + (dy * dy) );
+                        double dx_norm = dx / magnitude;
+                        double dy_norm = dy / magnitude;
+
+			cTheta = 1.0; // cos(w_norm);
+			sTheta = 0.0; // sin(w_norm);
+			
+			p.x = dx;  
+			p.y = dy;
+		}
+		
+		
+		return Transform2D(p, cTheta, sTheta);
+	}
 
 	/* Normalizes a given Vector 2D and returns
 	 * the normalized vector2D
