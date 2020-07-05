@@ -7,6 +7,14 @@
 //#include <Eigen/Dense>
 
 
+/// \brief Desribes desired wheel velocities 
+// in radians/s
+struct WheelVelocities {                
+	double left = 0.0;
+        double right = 0.0;
+};
+
+
 class DiffDrive {
 public:
     /// \brief the default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius
