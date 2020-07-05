@@ -30,6 +30,23 @@ namespace rigid2d {
 
 		return false;
 	}
+	
+
+	/// \brief
+	// Maps angle into [-pi, pi] 
+	// \param rad is the original angle in radians
+	constexpr double normalize_angle(double rad) {
+		
+		double p  = std::floor( (rad + PI) / (2.0 * PI) );
+      		rad = (rad + PI) - p * 2.0 * PI;
+
+      		if (rad < 0) {
+        		rad = rad + 2.0 * PI;
+      		}		
+	
+      		return rad - PI;
+	}
+
 
 	/// \brief convert degrees to radians
 	/// \param deg - angle in degrees
