@@ -95,7 +95,7 @@ namespace rigid2d {
 			
 			/* Describe
 			 */
-			rigid2d::Transform2D integrateTwist();
+			// rigid2d::Transform2D integrateTwist();
 
 			double getDx() const;
 			double getDy() const;
@@ -128,6 +128,11 @@ namespace rigid2d {
 			/// \brief create a pure rotation
 			/// \param radians - angle of the rotation, in radians
 			explicit Transform2D(double radians);
+			
+			/// \brief
+			// 
+			Transform2D integrateTwist(Twist2D);
+		
 
 			/// \brief Create a transformation with a translational and rotational
 			/// component
@@ -235,6 +240,50 @@ namespace rigid2d {
         /// \brief For testing
         //
         bool operator!=(const rigid2d::Twist2D &lhs, const rigid2d::Twist2D &rhs);
+
+
+	// Vector2D Methods
+	
+	/// \brief 
+        //
+        Vector2D operator+(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
+		
+	/// \brief
+	//
+	Vector2D operator+=(rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
+
+
+	/// \brief
+	//
+	Vector2D operator-(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);
+	
+	/// \brief
+	//
+	Vector2D operator-=(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);	
+	
+	/// \brief
+	//
+	Vector2D operator*(const rigid2d::Vector2D &lhs, const double &rhs);
+
+	/// \brief
+	//
+	Vector2D operator*(const double &rhs, const rigid2d::Vector2D &lhs);	
+	
+	/// \brief
+        //
+        Vector2D operator*=(rigid2d::Vector2D &lhs, const double &rhs);
+
+	/// \brief
+        //
+        double length(const rigid2d::Vector2D &vector);
+
+	/// \brief
+	//
+	double angle(const rigid2d::Vector2D &vector);
+
+	/// \brief
+	//
+	double distance(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);	
 
 
 }

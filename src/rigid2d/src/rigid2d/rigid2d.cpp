@@ -146,71 +146,6 @@ namespace rigid2d {
                 return w;
         }
 
-	/* Integrate a constant twist for unit time
-	 * Return the Transform2D of the new frame position
-	 * and orientation
-	 * This returns the new frame relative to the old/prior one
-	 * So, if I am T_sb and I apply the given twist for 1s then
-	 * I end up at T_bc. So, if I wanted T_sc, then I would need 
-	 * to multiply T_sb * T_sc 
-	 * Important - this function assumes unit time!
-	 */
-	rigid2d::Transform2D Twist2D::integrateTwist() {
-		using namespace rigid2d;
-		
-		// FIX ME - need to normalize w
-		// FIX ME - need to normalize w	
-
-		// Avoid modyfing the original twist? 
-
-		Vector2D p;
-		double cTheta;
-		double sTheta;
-
-		// Should I have a higher threshold??
-		// if ( w < 0.01) {
-		if ( !almost_equal(w, 0.0) ) {
-			
-			// Normalize (w, dx, dy) so that the angular component is 1 
-			double theta = std::abs(w);
-			double w_norm = w / std::abs(w);
-
-			// magnitude should be positive!!
-			double dx_norm = dx / std::abs(w); 
-			double dy_norm = dy / std::abs(w);
-
-
-			// Solve for cTheta and sTheta	
-			cTheta = 1 + ( (1 - cos(theta) ) * (-1) * (w_norm * w_norm) );
-			sTheta = sin(theta) * w_norm; 
-
-			// Solve for the displacement
-			double A = ( theta + ( (theta - sin(theta) ) * (-1) * (w_norm * w_norm) ) );
-			double B = ( (1 - cos(theta) ) * (-1) * (w_norm) ); 
-	
-			p.x = (A * dx_norm) + (B * dy_norm);    		
-			
-			p.y = (-B * dx_norm) + (A * dy_norm); 	
-		}
-		else { 
-			
-			// Normalize (w, dx, dy) so that the v component is 1
-			double w_norm = 0.0;
-			double magnitude = sqrt( (dx * dx) + (dy * dy) );
-                        double dx_norm = dx / magnitude;
-                        double dy_norm = dy / magnitude;
-
-			cTheta = 1.0; // cos(w_norm);
-			sTheta = 0.0; // sin(w_norm);
-			
-			p.x = dx;  
-			p.y = dy;
-		}
-		
-		
-		return Transform2D(p, cTheta, sTheta);
-	}
-
 	/* Normalizes a given Vector 2D and returns
 	 * the normalized vector2D
 	 */
@@ -312,6 +247,65 @@ namespace rigid2d {
 
 		return Transform2D(resultVector, resultCTheta, resultSTheta); 
 	}
+
+	 /* Integrate a constant twist for unit time
+         * Return the Transform2D of the new frame position
+         * and orientation
+         * This returns the new frame relative to the old/prior one
+         * So, if I am T_sb and I apply the given twist for 1s then
+         * I end up at T_bc. So, if I wanted T_sc, then I would need
+         * to multiply T_sb * T_sc
+         * Important - this function assumes unit time!
+         */
+	// rigid2d::Transform2D Twist2D::integrateTwist() {
+        rigid2d::Transform2D Transform2D::integrateTwist(Twist2D t) {
+                using namespace rigid2d;
+                // Avoid modyfing the original twist? 
+		
+                Vector2D p;
+                double cTheta;
+                double sTheta;
+                
+		// Should I have a higher threshold??
+                // if ( w < 0.01) {
+                if ( !almost_equal(t.w, 0.0) ) {
+                        // Normalize (w, dx, dy) so that the angular component is 1 
+                        double theta = std::abs(t.w);
+                        double w_norm = t.w / std::abs(t.w);
+                        
+			// magnitude should be positive!!
+                        double dx_norm = t.dx / std::abs(t.w);
+                        double dy_norm = t.dy / std::abs(t.w);
+                        
+			// Solve for cTheta and sTheta  
+                        cTheta = 1 + ( (1 - cos(theta) ) * (-1) * (w_norm * w_norm) );
+                        sTheta = sin(theta) * w_norm;
+                        
+			// Solve for the displacement
+                        double A = ( theta + ( (theta - sin(theta) ) * (-1) * (w_norm * w_norm) ) );
+                        double B = ( (1 - cos(theta) ) * (-1) * (w_norm) );
+                        
+			p.x = (A * dx_norm) + (B * dy_norm);
+                        p.y = (-B * dx_norm) + (A * dy_norm);
+                }
+                else {
+                        // Normalize (w, dx, dy) so that the v component is 1
+                        double w_norm = 0.0;
+                        double magnitude = sqrt( (t.dx * t.dx) + (t.dy * t.dy) );
+                        
+			double dx_norm = t.dx / magnitude;
+                        double dy_norm = t.dy / magnitude;
+                        
+			cTheta = 1.0; // cos(w_norm);
+                        sTheta = 0.0; // sin(w_norm);   
+                        
+			p.x = t.dx;
+                        p.y = t.dy;
+                }
+
+                return (*this * Transform2D(p, cTheta, sTheta) );
+        }
+
 
 	/* Reads in a Transform2D from the user
 	 * is - the input stream
@@ -519,6 +513,106 @@ namespace rigid2d {
 
                 return true;
         }
+
+	/* Perform vector addition and return
+	 */
+	Vector2D operator+(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+		
+		Vector2D result;
+		result.x = lhs.x + rhs.x;
+		result.y = lhs.y + rhs.y;
+
+		return result;
+	}
+
+	/* Perform vector addition and return
+         */
+        Vector2D operator+=(rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+
+                lhs.x = lhs.x + rhs.x;
+                lhs.y = lhs.y + rhs.y;
+
+		// return?
+                return lhs;
+        }
+
+	/* Perform vector subtraction and return
+         */
+        Vector2D operator-(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+
+                Vector2D result;
+                result.x = lhs.x - rhs.x;
+                result.y = lhs.y - rhs.y;
+
+                return result;
+        }
+
+	/* Perform vector subtraction and return
+         */
+        Vector2D operator-=(rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) {
+
+                lhs.x = lhs.x - rhs.x;
+                lhs.y = lhs.y - rhs.y;
+
+                return lhs;
+        }
+	
+	/* Perform scalar multiplication of a vector and return the result
+	 */
+	Vector2D operator*(const rigid2d::Vector2D &lhs, const double &rhs) { 
+		
+		Vector2D result;
+		result.x =  lhs.x * rhs;
+		result.y = lhs.y * rhs;
+
+		return result;
+	}
+
+	/* Perform scalar multiplication of a vector and return the result
+         */
+        Vector2D operator*(const double &rhs, const rigid2d::Vector2D &lhs) {
+
+                Vector2D result;
+                result.x =  lhs.x * rhs;
+                result.y = lhs.y * rhs;
+
+                return result;
+        }
+	
+	/* Perform scalar multiplication of a vector and return the result
+         */
+        Vector2D operator*=(rigid2d::Vector2D &lhs, const double &rhs) {
+
+                lhs.x = lhs.x * rhs;
+                lhs.y = lhs.y * rhs;
+
+                return lhs;
+        }
+
+	/* Compute and return the length of a vector
+	 */
+	double length(const rigid2d::Vector2D &vector) { 
+
+		return sqrt( (vector.x * vector.x) + (vector.y * vector.y) ); 
+	}
+
+	/* Compute and return the angle of a vector
+         */
+        double angle(const rigid2d::Vector2D &vector) { 
+                
+		// atan2 takes into account the sign of both 
+		// arguments in order to determine the quadrant.	
+                return std::atan2(vector.y, vector.x);
+        }
+
+	/* Compute and return the distance between two vectors
+	 */
+	double distance(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs) { 
+		
+		return sqrt( std::pow(lhs.x - rhs.x, 2) + std::pow(lhs.y - rhs.y, 2) );	
+	}
+	
+
 
 
 
