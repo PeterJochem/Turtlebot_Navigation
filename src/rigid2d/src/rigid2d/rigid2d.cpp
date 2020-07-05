@@ -611,8 +611,6 @@ namespace rigid2d {
 		
 		return sqrt( std::pow(lhs.x - rhs.x, 2) + std::pow(lhs.y - rhs.y, 2) );	
 	}
-	
-	
 
 
 
