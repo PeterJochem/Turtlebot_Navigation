@@ -150,7 +150,6 @@ namespace rigid2d {
 			// 
 			Transform2D integrateTwist(Twist2D);
 		
-
 			/// \brief Create a transformation with a translational and rotational
 			/// component
 			/// \param trans - the translation

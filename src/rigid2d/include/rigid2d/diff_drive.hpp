@@ -45,7 +45,7 @@ namespace rigid2d {
 			/// \param vel - the velocities of the wheels, assumed to be held constant
 			///  for one time unit
 			/// \returns twist in the original body frame of the
-			//wheelsToTwist(WheelVelocities vel);
+			Twist2D wheelsToTwist(WheelVelocities vel);
 
 			/// \brief Update the robot's odometry based on the current encoder readings
 			/// \param left - the left encoder angle (in radians)
