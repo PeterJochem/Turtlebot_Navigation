@@ -19,7 +19,10 @@ namespace rigid2d {
 		// Wheel base is the distance between the center of the wheels
 		this->wheel_base = 0.5;
                 this->wheel_radius = 0.1;
-        }
+        
+		this->encoder_left = 0.0;
+		this->encoder_right = 0.0;
+	}
 	
 	/* Describe 
 	 * FIX ME - add defaults for the wheel base and wheel radius
@@ -59,8 +62,10 @@ namespace rigid2d {
 		
 		double dx = wheel_radius * (0.5 * vel.right + 0.5 * vel.left); 
 		double dy = 0.0;
-			
-		Twist2D Twist_left_wheel_frame = Twist2D(w, dx, dy);
+		
+		return Twist2D(w, dx, dy);		
+		/*	
+		//Twist2D Twist_left_wheel_frame = Twist2D(w, dx, dy);
 	
 		// Put in the param server/ make constant in class?
 		Vector2D v;
@@ -68,14 +73,67 @@ namespace rigid2d {
 		v.y = wheel_base / 2;
 		Transform2D T_body_left_wheel = Transform2D(v);
 		
-		//return Twist_left_wheel_frame;
-		return T_body_left_wheel(Twist_left_wheel_frame); 
-	}
-		
+		// std::cout << Twist_left_wheel_frame << std::endl;
 			
-		
-		
+		return Twist_left_wheel_frame;	
+		//return T_body_left_wheel(Twist_left_wheel_frame); 
+		*/
 
+	}
+	
+	/* Update the robot's odometry given new encoder angles
+	 * left - the left encoder angle (in radians)
+    	 * right - the right encoder angle (in radians)
+	 */	
+	void DiffDrive::updateOdometry(double left, double right) { 
+		
+		WheelVelocities vel;
+                vel.left = left - encoder_left;
+                vel.right = right - encoder_right;
+			
+		// Update the robot's encoder fields
+		encoder_left = left;
+		encoder_right = right;
+		
+		// Compute the twist of the robot's BODY frame
+		Twist2D Vb = wheelsToTwist(vel);
+		//std::cout << "The body velocity is " << Vb << std::endl;	
+
+		//std::cout << "current pose before " << current_pose << std::endl;
+		current_pose = current_pose.integrateTwist(Vb);
+		//std::cout << "current pose after " << current_pose << std::endl;	
+	}
+			
+	/* Given a twist, update current_pose and the encoder angles
+	 * of the robot assuming the twist was followed for 1 unit 
+	 * of time
+	 * Twist2D tw is the twist the robot follows for unit time
+	 */
+	void DiffDrive::feedforward(Twist2D tw) { 
+		
+		WheelVelocities vel = twistToWheels(tw);
+
+		// Update encoder angles
+		encoder_left += vel.left;
+                encoder_right += vel.right;
+
+		// Update current_pose		
+		current_pose = current_pose.integrateTwist(tw); 	 
+	}
+	
+	/* Return the robot's current pose as a geometry_msgs
+	 * Pose2D  
+	 */	
+	geometry_msgs::Pose2D DiffDrive::pose() {
+
+		geometry_msgs::Pose2D pose;
+		pose.x = current_pose.getX();
+		pose.y = current_pose.getY();	
+		pose.theta = normalize_angle( current_pose.getTheta() );
+
+		return pose;
+	}	
+	
 
 
 

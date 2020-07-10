@@ -4,6 +4,7 @@
 #include<iosfwd> // contains forward definitions for iostream objects
 #include <cmath>
 #include "rigid2d/rigid2d.hpp"
+#include <geometry_msgs/Pose2D.h>
 
 /// \brief Desribes desired wheel velocities 
 // in radians/s
@@ -19,7 +20,6 @@ namespace rigid2d {
 	};
 
 	
-
 	class DiffDrive {
 		public:
 			/// \brief the default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius
@@ -29,7 +29,7 @@ namespace rigid2d {
 			///
 			/// \param pose - the current position of the robot
 			/// \param wheel_base - the distance between the wheel centers
-			/// \param wheel_radius - the raidus of the wheels
+			/// \param wheel_radius - the radius of the wheels
 			DiffDrive(Transform2D, double, double);
 							
 
@@ -39,26 +39,25 @@ namespace rigid2d {
 			/// \returns - the wheel velocities to use
 			/// \throws std::exception
 			WheelVelocities twistToWheels(Twist2D);
-			
-		
+				
 			/// \brief determine the body twist of the robot from its wheel velocities
 			/// \param vel - the velocities of the wheels, assumed to be held constant
 			///  for one time unit
 			/// \returns twist in the original body frame of the
 			Twist2D wheelsToTwist(WheelVelocities vel);
-
+				
 			/// \brief Update the robot's odometry based on the current encoder readings
 			/// \param left - the left encoder angle (in radians)
 			/// \param right - the right encoder angle (in radians)
-			//void updateOdometry
+			void updateOdometry(double, double);
 
 			/// \brief update the odometry of the diff drive robot, assuming that
 			/// it follows the given body twist for one time  unit
 			/// \param cmd - the twist command to send to the robot
-			//void feedforward(
+			void feedforward(Twist2D);
 
 			/// \brief get the current pose of the robot
-			//Twist2D pose()
+			geometry_msgs::Pose2D pose();
 
 			/// \brief get the wheel speeds, based on the last encoder update
 			/// \returns the velocity of the wheels, which is equivalent to
@@ -73,6 +72,9 @@ namespace rigid2d {
 
 			double wheel_base;
 			double wheel_radius;
+
+			double encoder_left;
+	                double encoder_right;
 	};
 
 }

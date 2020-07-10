@@ -340,12 +340,12 @@ namespace rigid2d {
 	 * Return the twist in the new frame
 	 */
 	Twist2D Transform2D::operator()(Twist2D twist_original) {
-			
+	
 		double w_new = twist_original.w;			
 		
 		double dx = (vector.y * twist_original.w) + (cTheta * twist_original.dx) - (sTheta * twist_original.dy);
-		
-		double dy = ((-1 * vector.x) * twist_original.w) + (sTheta * twist_original.dx) + (cTheta * twist_original.dy);
+
+		double dy = ((-1 * vector.x) * twist_original.w) + (sTheta * twist_original.dx) + (cTheta * twist_original.dy);	
 
 		return Twist2D(w_new, dx, dy);	
 	}
