@@ -56,29 +56,14 @@ namespace rigid2d {
 	 * Returns Twist2D in the body frame 
 	 */
 	Twist2D DiffDrive::wheelsToTwist(WheelVelocities vel) {
-		
-		double A = 1.0 / (wheel_base);	
+					
+		double A = 1.0 / wheel_base;	
 		double w = wheel_radius * (-A * vel.left + A * vel.right);	
 		
 		double dx = wheel_radius * (0.5 * vel.right + 0.5 * vel.left); 
 		double dy = 0.0;
 		
 		return Twist2D(w, dx, dy);		
-		/*	
-		//Twist2D Twist_left_wheel_frame = Twist2D(w, dx, dy);
-	
-		// Put in the param server/ make constant in class?
-		Vector2D v;
-		v.x = 0.0;
-		v.y = wheel_base / 2;
-		Transform2D T_body_left_wheel = Transform2D(v);
-		
-		// std::cout << Twist_left_wheel_frame << std::endl;
-			
-		return Twist_left_wheel_frame;	
-		//return T_body_left_wheel(Twist_left_wheel_frame); 
-		*/
-
 	}
 	
 	/* Update the robot's odometry given new encoder angles
@@ -97,11 +82,7 @@ namespace rigid2d {
 		
 		// Compute the twist of the robot's BODY frame
 		Twist2D Vb = wheelsToTwist(vel);
-		//std::cout << "The body velocity is " << Vb << std::endl;	
-
-		//std::cout << "current pose before " << current_pose << std::endl;
 		current_pose = current_pose.integrateTwist(Vb);
-		//std::cout << "current pose after " << current_pose << std::endl;	
 	}
 			
 	/* Given a twist, update current_pose and the encoder angles
