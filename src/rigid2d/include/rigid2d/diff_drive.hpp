@@ -9,7 +9,6 @@
 /// \brief Desribes desired wheel velocities 
 // in radians/s
 
-
 namespace rigid2d {
 
 	/// \brief Desribes desired wheel velocities 
@@ -49,7 +48,7 @@ namespace rigid2d {
 			/// \brief Update the robot's odometry based on the current encoder readings
 			/// \param left - the left encoder angle (in radians)
 			/// \param right - the right encoder angle (in radians)
-			void updateOdometry(double, double);
+			WheelVelocities updateOdometry(double, double);
 
 			/// \brief update the odometry of the diff drive robot, assuming that
 			/// it follows the given body twist for one time  unit

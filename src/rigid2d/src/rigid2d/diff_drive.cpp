@@ -70,7 +70,7 @@ namespace rigid2d {
 	 * left - the left encoder angle (in radians)
     	 * right - the right encoder angle (in radians)
 	 */	
-	void DiffDrive::updateOdometry(double left, double right) { 
+	WheelVelocities DiffDrive::updateOdometry(double left, double right) { 
 		
 		WheelVelocities vel;
                 vel.left = left - encoder_left;
@@ -83,6 +83,8 @@ namespace rigid2d {
 		// Compute the twist of the robot's BODY frame
 		Twist2D Vb = wheelsToTwist(vel);
 		current_pose = current_pose.integrateTwist(Vb);
+	
+		return {encoder_left, encoder_right};
 	}
 			
 	/* Given a twist, update current_pose and the encoder angles
