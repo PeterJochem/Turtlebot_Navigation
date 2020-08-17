@@ -146,6 +146,17 @@ namespace rigid2d {
                 return w;
         }
 
+	Twist2D Twist2D::scaleTwist(double dt) {
+		
+		// Multiply each velocity by (dt/1) because this 
+		// is a percentage of the total 1 s twist
+		double newDx = dx * dt; 
+		double newDy = dy * dt;
+		double newDw = w * dt;
+				
+		return Twist2D(newDw, newDx, newDy);
+	}
+
 	/* Normalizes a given Vector 2D and returns
 	 * the normalized vector2D
 	 */
@@ -611,7 +622,20 @@ namespace rigid2d {
 		
 		return sqrt( std::pow(lhs.x - rhs.x, 2) + std::pow(lhs.y - rhs.y, 2) );	
 	}
+	
+	/* Convert the geometry_msgs::Twist object to a 
+	 * rigid2d::Twist2D object
+	 */
+	Twist2D convert3DTo2D(geometry_msgs::Twist twist) {
+		
+		double dx = twist.linear.x; 
+		double dy = twist.linear.y;
+		double dw = twist.angular.z;
+		
+		// Twist2D::Twist2D(double w, double dx, double dy)		
+		return Twist2D(dw, dx, dy);
+	}
 
-
+	
 
 }

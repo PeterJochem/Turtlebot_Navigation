@@ -32,6 +32,9 @@ namespace rigid2d {
 		this->current_pose = pose;
 		this->wheel_base = wheel_base;
 		this->wheel_radius = wheel_radius;
+		
+		this->encoder_left = 0.0;
+		this->encoder_right = 0.0;
 	}
 
 	/* Map a desired twist in the body frame to the
@@ -116,8 +119,13 @@ namespace rigid2d {
 
 		return pose;
 	}	
-	
-
+		
+	/* Get method for the encoder values
+	 */
+	std::tuple<double, double> DiffDrive::getEncoders(void) {
+		
+		return {encoder_left, encoder_right};
+	}
 
 
 }

@@ -6,7 +6,7 @@
 #include<iosfwd> // contains forward definitions for iostream objects
 #include <cmath>
 #include <geometry_msgs/Pose.h>
-//#include <Eigen/Dense>
+#include <geometry_msgs/Twist.h>
 
 namespace rigid2d {
 
@@ -109,7 +109,9 @@ namespace rigid2d {
 			friend std::istream & operator>>(std::istream & is, const Twist2D & tw);
 
 			void setVars(double, double, double);
-			
+				
+			Twist2D scaleTwist(double);
+
 			/* Describe
 			 */
 			// rigid2d::Transform2D integrateTwist();
@@ -121,7 +123,7 @@ namespace rigid2d {
 			double w;
 			double dx;
 			double dy;
-
+			
 		private:
 			/*
 			   double w;
@@ -300,8 +302,11 @@ namespace rigid2d {
 	/// \brief
 	//
 	double distance(const rigid2d::Vector2D &lhs, const rigid2d::Vector2D &rhs);	
-
-
+	
+	/// \brief
+	//
+	Twist2D convert3DTo2D(geometry_msgs::Twist twist);
+	
 }
 
 #endif

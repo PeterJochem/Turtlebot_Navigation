@@ -30,8 +30,10 @@ namespace rigid2d {
 			/// \param wheel_base - the distance between the wheel centers
 			/// \param wheel_radius - the radius of the wheels
 			DiffDrive(Transform2D, double, double);
-							
-
+			
+			/// \brief return the robot's encoder values
+			std::tuple<double, double> getEncoders(void);			
+			
 			/// \brief determine the wheel velocities required to make the robot
 			///        move with the desired linear and angular velocities
 			/// \param twist - the desired twist in the body frame of the robot
