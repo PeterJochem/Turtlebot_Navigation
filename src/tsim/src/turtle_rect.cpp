@@ -429,14 +429,23 @@ void logParams(void) {
         double starting_y;
 	
 	ros::NodeHandle n;
-        ROS_INFO("/height is %d", n.getParam("/height", height) );
-        
-	ROS_INFO("/width is %d", n.getParam("/width", width) ); 
-	ROS_INFO("/rot_vel is %d", n.getParam("/rot_vel", rot_vel) );
-        ROS_INFO("/trans_vel is %d", n.getParam("/trans_vel", trans_vel) );
-	ROS_INFO("/x is %d", n.getParam("/x", starting_x) );
-        ROS_INFO("/y is %d", n.getParam("/y", starting_y) );
+	n.getParam("/height", height);
+	ROS_INFO("/height is %f", height);
 	
+	n.getParam("/width", width);
+	ROS_INFO("/width is %f", width); 
+	
+	n.getParam("/rot_vel", rot_vel);
+	ROS_INFO("/rot_vel is %f", rot_vel);
+        
+	n.getParam("/trans_vel", trans_vel);
+	ROS_INFO("/trans_vel is %f", trans_vel);
+	
+	n.getParam("/x", starting_x);
+	ROS_INFO("/x is %f", starting_x);
+        
+	n.getParam("/y", starting_y);
+	ROS_INFO("/y is %f", starting_y);	
 }
 
 /* Add description
@@ -470,7 +479,7 @@ int main(int argc, char **argv) {
   setPen_client.call(sp);
   
   // How big to make this queue 
-  ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
+  ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
   
   // Publishes the error between actual pose and the desired pose
   ros::Publisher error_pose_pub = n.advertise<tsim::PoseError>("turtle1/pose_error", 1000);
@@ -478,7 +487,8 @@ int main(int argc, char **argv) {
   // Subscribe to the turtle's pose
   ros::Subscriber sub = n.subscribe("/turtle1/pose", 1, poseCallback);
 
-  int frequency = 1000;
+  int frequency;
+  n.getParam("/frequency", frequency);
   // This specifies the rate at which we loop - this means loop at 1000 Hz
   ros::Rate loop_rate(frequency);
  

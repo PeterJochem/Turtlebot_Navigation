@@ -8,8 +8,6 @@
 ros::ServiceClient teleport_client;
 ros::ServiceClient reset_client;
 
-
-
 /* Implements service which teleports the turtle to the lower left corner
  * of its rectangle
  */

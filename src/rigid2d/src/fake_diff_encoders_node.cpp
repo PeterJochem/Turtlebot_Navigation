@@ -53,15 +53,12 @@ int main(int argc, char** argv) {
 		
 	robot = rigid2d::DiffDrive(rigid2d::Transform2D(), wheel_base, wheel_radius);
 
-
 	// Subscribe to geometry_msgs/Twist messages on cmd_vel
 	// Queue size????? FIX ME!!!!!
 	ros::Subscriber sub = n.subscribe("cmd_vel", 1, callback);	
 	
-	while (ros::ok()) {
-		
-		if (dataPresent) {
-			
+	while (ros::ok()) {		
+		if (dataPresent) {	
 			sensor_msgs::JointState current_joint_state;
 
 	        	current_joint_state.header.stamp = ros::Time::now();
@@ -81,15 +78,11 @@ int main(int argc, char** argv) {
         		current_joint_state.position.push_back(encoder_right);               
 
 	        	// Leave blank? velocity array, effort array
-        		//joint_state_pub.publish(current_joint_state);
+        		joint_state_pub.publish(current_joint_state);
 			
 			dataPresent = false;
 		}
-
 	}
-
-
-
 
 	ros::spin();
 	return 0;
