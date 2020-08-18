@@ -34,8 +34,8 @@ class FSM_Feedforward {
 /* This is the constructor for the FSM
 */
 FSM_Feedforward::FSM_Feedforward (double frequency) {
+	
 	translate = false;	
-
 	timeQuantas = 0;
 	this->frequency = frequency;
 }
@@ -134,20 +134,17 @@ void poseCallback(const turtlesim::Pose::ConstPtr& pose) {
 */
 void logParams(void) {
 
-	double height;
-	double width;
+	double pentagon_radius;
 	double rot_vel;
 	double trans_vel;
 	double starting_x;
 	double starting_y;
 
 	ros::NodeHandle n;
-	n.getParam("/height", height);
-	ROS_INFO("/height is %f", height);
-
-	n.getParam("/width", width);
-	ROS_INFO("/width is %f", width); 
-
+	
+	n.getParam("/pentagon_radius", pentagon_radius);
+        ROS_INFO("/pentagon_radius is %f", pentagon_radius);
+	
 	n.getParam("/rot_vel", rot_vel);
 	ROS_INFO("/rot_vel is %f", rot_vel);
 
