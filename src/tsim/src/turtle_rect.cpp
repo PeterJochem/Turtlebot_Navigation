@@ -241,7 +241,7 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
         nextTwist.angular.z = 0.0;
 
 
-	if ( (right == true) and (turn_90 ==  false) ) {
+	if ( (right == true) and (turn_90 == false) ) {
 		
 		// Distance = Rate * time
 		double schedLinear = width / trans_vel; 
@@ -381,16 +381,8 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
                 }
         }
 
-
-
-
-
-
-
 	return nextTwist;
 }
-
-
 
 
 /* Describe this method 
@@ -413,7 +405,6 @@ void makeSetPen(bool on, turtlesim::SetPen& sp) {
 void poseCallback(const turtlesim::Pose::ConstPtr& pose) {
   	
 	currentPose = *pose;
-
 	return;
 }
 

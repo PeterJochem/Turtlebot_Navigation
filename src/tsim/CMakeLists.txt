@@ -195,7 +195,9 @@ include_directories(
 # )
 
 add_executable(turtle_rect src/turtle_rect.cpp)
+add_executable(turtle_way src/turtle_way.cpp)
 target_link_libraries(turtle_rect ${catkin_LIBRARIES})
+target_link_libraries(turtle_way ${catkin_LIBRARIES})
 # add_dependencies(turtle_rect beginner_tutorials_generate_messages_cpp)
 
 add_executable(serviceNode src/serviceNode.cpp)
