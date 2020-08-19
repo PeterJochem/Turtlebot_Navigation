@@ -17,11 +17,7 @@
 //#include "rigid2d/diff_drive.hpp"
 
 
-ros::NodeHandle n;
-ros::Publisher joint_state_pub = n.advertise<sensor_msgs::JointState>("/joint_states", 1000);
 rigid2d::Twist2D desired_twist;
-
-rigid2d::DiffDrive robot;
 std::string left_wheel_joint, right_wheel_joint;
 double wheel_base, wheel_radius, frequency;
 bool dataPresent = false;
@@ -43,6 +39,11 @@ int main(int argc, char** argv) {
 	// Init ROS Node
         ros::init(argc, argv, "fake_diff_encoders_node");		
 	
+	ros::NodeHandle n;
+	ros::Publisher joint_state_pub = n.advertise<sensor_msgs::JointState>("/joint_states", 1000);
+	
+	rigid2d::DiffDrive robot;
+
 	// Read left_wheel_joint and right_wheel_joint
 	// Check that they are on the server?
         n.getParam("/wheel_base", wheel_base);
@@ -55,7 +56,7 @@ int main(int argc, char** argv) {
 
 	// Subscribe to geometry_msgs/Twist messages on cmd_vel
 	// Queue size????? FIX ME!!!!!
-	ros::Subscriber sub = n.subscribe("cmd_vel", 1, callback);	
+	ros::Subscriber sub = n.subscribe("/turtle1/cmd_vel", 1, callback);	
 	
 	while (ros::ok()) {		
 		if (dataPresent) {	

@@ -153,7 +153,7 @@ add_executable(${PROJECT_NAME}_fake_diff_encoders_node src/fake_diff_encoders_no
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 set_target_properties(${PROJECT_NAME}_${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME ${PROJECT_NAME}_node PREFIX "")
 set_target_properties(${PROJECT_NAME}_odometer_node PROPERTIES OUTPUT_NAME odometer_node PREFIX "")
-set_target_properties(${PROJECT_NAME}_fake_diff_encoders_node PROPERTIES OUTPUT_NAME odometer_node PREFIX "")
+set_target_properties(${PROJECT_NAME}_fake_diff_encoders_node PROPERTIES OUTPUT_NAME fake_diff_encoders_node PREFIX "")
 
 
 ## Add cmake target dependencies of the executable

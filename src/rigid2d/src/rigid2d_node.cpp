@@ -368,7 +368,7 @@ bool convertTwists(char inputFileName[], char outputFileName[]) {
  */
 int main(int argc, char *argv[]) {
 	
-	if ( argc < 2) {
+	if (argc < 2) {
 		std::cout << "Incorrect testing set command line argument" << std::endl;
                 return -1;
 	}

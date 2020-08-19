@@ -5,18 +5,16 @@
 #include "geometry_msgs/Twist.h"
 #include <turtlesim/TeleportAbsolute.h>
 #include <turtlesim/SetPen.h>
-// #include <my_custom_msg_package/MyCustomMsg.h>
 #include <tsim/PoseError.h>
 #include <tsim/traj_reset.h>
 #include <sstream>
 #include <stdlib.h>
-// #include "rigid2d/rigid2d.hpp"
+//#include "rigid2d/rigid2d.hpp"
 
 ros::ServiceClient teleport_client;
 ros::ServiceClient setPen_client;
 ros::ServiceClient reset_client;
 turtlesim::Pose currentPose;
-
 
 /* Describe this class
 */
@@ -25,19 +23,78 @@ class FSM_Feedforward {
 	bool translate;
 	int timeQuantas;
 	double frequency;	
+	double starting_x;
+	double starting_y;
+	double pentagon_length;
+	double rot_vel;
+	double trans_vel;
 
 	public:
 		FSM_Feedforward(double);
+		void computeAndLogWayPoints();
+		std::tuple<double, double, double, double> nextWaypoint();
 		geometry_msgs::Twist checkUpdate(turtlesim::Pose);
+		std::vector<double> waypoints;
+		int currentWaypoint;
 };
 
 /* This is the constructor for the FSM
 */
-FSM_Feedforward::FSM_Feedforward (double frequency) {
+FSM_Feedforward::FSM_Feedforward(double frequency) {
 	
 	translate = false;	
 	timeQuantas = 0;
 	this->frequency = frequency;
+	computeAndLogWayPoints();
+	currentWaypoint = 1;
+}
+
+/* Describe
+ */
+std::tuple<double, double, double, double> FSM_Feedforward::nextWaypoint() {
+	
+	double nextX = waypoints.at(currentWaypoint * 2);
+	double nextY = waypoints.at(currentWaypoint * 2 + 1);
+	double priorX, priorY;
+	
+	int maxIndex = waypoints.size() - 1;
+	if (currentWaypoint == 0) {
+                priorX = waypoints.at(maxIndex - 1);
+                priorY = waypoints.at(maxIndex);
+        }
+        else {
+                priorX = waypoints.at((currentWaypoint - 1) * 2);
+                priorY = waypoints.at((currentWaypoint - 1) * 2 + 1);
+        }
+
+	return {nextX, nextY, priorX, priorY};
+}
+
+/* Compute the 5 vertices of a pentagon with the given
+ * length between vertices. Write the list of points 
+ * to the parameter server
+ */
+void FSM_Feedforward::computeAndLogWayPoints() { 
+	
+	ros::NodeHandle n;
+	double angle = (2 * 3.14 / 5.0);
+
+        n.getParam("/pentagon_length", pentagon_length);
+	n.getParam("/x", starting_x);
+	n.getParam("/y", starting_y);
+	n.getParam("/rot_vel", rot_vel);
+        n.getParam("/trans_vel", trans_vel);
+
+	for (int i = 0; i < 5; i++) {
+		double nextX, nextY;
+		nextX = starting_x + (pentagon_length * sin(angle * i));
+		nextY = starting_y + (pentagon_length * cos(angle * i));  
+		
+		waypoints.push_back(nextX);
+		waypoints.push_back(nextY);
+	}
+	
+	n.setParam("/waypoints", waypoints);
 }
 
 /* Describe this method here
@@ -50,20 +107,13 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
 
 	// Read the parameters from the server  
 	std::string s;
+	
+	if (waypoints.size() == 0) {
+		std::cout << "No waypoints on the server" << std::endl;
+		// Throw error?
+	}
 
-	double height;
-	double width;
-	double rot_vel;
-	double trans_vel;
-	double starting_x;
-	double starting_y;
-
-	n.getParam("/height", height);
-	n.getParam("/width", width);
-	n.getParam("/rot_vel", rot_vel);
-	n.getParam("/trans_vel", trans_vel);
-	n.getParam("/x", starting_x);
-	n.getParam("/y", starting_y);
+	auto [nextX, nextY, priorX, priorY] = nextWaypoint();
 
 	geometry_msgs::Twist nextTwist;
 	nextTwist.linear.x = 0.0;
@@ -74,14 +124,18 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
 	nextTwist.angular.y = 0.0;
 	nextTwist.angular.z = 0.0;
 
-	if (translate == true) {
+	if (translate) {
 
 		// Distance = Rate * time
-		double schedLinear = width / trans_vel; 
+		//double schedLinear = pentagon_length / trans_vel; 
+		double schedLinear = sqrt((pow((nextX - priorX), 2) + pow((nextY - priorY), 2))) / trans_vel;
 
 		if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
 			translate = false;
 			timeQuantas = 0;
+			currentWaypoint++;
+			currentWaypoint = currentWaypoint % 5; 
+			//std::cout << "currentWaypoint = " << currentWaypoint << std::endl;
 		}
 		else {
 			timeQuantas++;
@@ -134,7 +188,7 @@ void poseCallback(const turtlesim::Pose::ConstPtr& pose) {
 */
 void logParams(void) {
 
-	double pentagon_radius;
+	double pentagon_length;
 	double rot_vel;
 	double trans_vel;
 	double starting_x;
@@ -142,8 +196,8 @@ void logParams(void) {
 
 	ros::NodeHandle n;
 	
-	n.getParam("/pentagon_radius", pentagon_radius);
-        ROS_INFO("/pentagon_radius is %f", pentagon_radius);
+	n.getParam("/pentagon_length", pentagon_length);
+        ROS_INFO("/pentagon_length is %f", pentagon_length);
 	
 	n.getParam("/rot_vel", rot_vel);
 	ROS_INFO("/rot_vel is %f", rot_vel);
@@ -227,7 +281,6 @@ int main(int argc, char **argv) {
 
 		// Publish the current error 
 		error_pose_pub.publish(current_error);
-
 
 		// Issue a new twist 
 		cmd_vel_pub.publish(currentTwist);
