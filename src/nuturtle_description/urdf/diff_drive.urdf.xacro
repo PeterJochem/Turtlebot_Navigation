@@ -79,12 +79,15 @@
 	</visual>
 </link>
 
+
+<!-- The joints -->
 <!-- Link body to base frame -->
   <joint name="world_base" type="fixed">
 	  <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
 	  <parent link="world"/>
 	  <child link="base_link"/>
   </joint>
+
 
   <!-- Link body to base frame -->
   <joint name="base_caster" type="fixed">

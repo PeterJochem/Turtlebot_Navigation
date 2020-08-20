@@ -53,6 +53,8 @@ int main(int argc, char** argv) {
 	n.getParam("/frequency", frequency);				
 		
 	robot = rigid2d::DiffDrive(rigid2d::Transform2D(), wheel_base, wheel_radius);
+	
+	ros::Rate r(frequency);
 
 	// Subscribe to geometry_msgs/Twist messages on cmd_vel
 	// Queue size????? FIX ME!!!!!
@@ -83,6 +85,8 @@ int main(int argc, char** argv) {
 			
 			dataPresent = false;
 		}
+		ros::spinOnce();
+      		r.sleep();	
 	}
 
 	ros::spin();

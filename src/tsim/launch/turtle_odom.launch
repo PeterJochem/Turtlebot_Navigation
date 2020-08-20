@@ -2,10 +2,16 @@
 	
 	<include file = "$(find tsim)/launch/turtle_pent.launch"/>
 	
-	<!-- node type="rviz" name="rviz" pkg="rviz" args="-d $(find tsim)/config/rviz.rviz" / -->
-	<node type="rviz" name="rviz" pkg="rviz" args="-d $(find tsim)/config/rviz.rviz" />	
+	<!-- Load the description of the robot into the server -->
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>
 	
-	<node type="odometer_node" name="odometer_node" pkg="rigid2d" />
+	<include file = "$(find me495_urdf)/launch/see_robot.launch"/>
+	
+	
+	<!-- launch file above has rviz -->
+	<!-- node type="rviz" name="rviz" pkg="rviz" args="-d $(find tsim)/config/rviz.rviz" / -->
+	
+	<node type="odometer_node" name="odometer_node" pkg="rigid2d" output="screen" />
 	
 	<node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" />	
 

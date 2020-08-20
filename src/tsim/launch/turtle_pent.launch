@@ -1,7 +1,7 @@
 <launch>
     
     <arg name="plot_gui" default="true"/>
-
+    
     <!-- Create ROS server params for the robot's geometry -->
     <arg name="file_name" default="$(find tsim)/config/params_waypoints.yaml"/>
     <rosparam command="load" file="$(arg file_name)"/>
