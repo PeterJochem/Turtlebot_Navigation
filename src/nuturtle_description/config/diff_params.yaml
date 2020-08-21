@@ -5,8 +5,8 @@ wheel_radius: 0.2      # The radius of the wheels
 wheel_base: 1.0        # The distance between the centers wheels 
 chassis_length: 1.0    # The length of the main chassis link
 chassis_thickness: 0.01 # The thickness of the plate that forms the chassis
-odom_frame_id: "base_link"
-base_frame_id: "odom"
+odom_frame_id: "odom"
+base_frame_id: "base_link"
 left_wheel_joint: "left_axle"
 right_wheel_joint: "right_axle"
 

@@ -93,8 +93,8 @@ class odometer {
 			// Publish the transform
 			geometry_msgs::TransformStamped T;
 			T.header.stamp = ros::Time::now();
+			
 			T.header.frame_id = odom_frame_id;
-
 			T.child_frame_id = base_frame_id;
 
 			T.transform.translation.x = pose.x;
