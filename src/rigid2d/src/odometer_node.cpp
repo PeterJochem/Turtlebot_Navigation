@@ -37,6 +37,8 @@ class odometer {
 
 		// Use to simulate robot internally
 		rigid2d::DiffDrive robot;
+	
+		ros::Timer timer;
 
 		/* Describe
 		 * Check for no match case?
@@ -64,13 +66,13 @@ class odometer {
 
 		/* Describe 
 		*/
-		void publishMarker(double x, double y) {
+		void publishMarker(const ros::TimerEvent&) {
 
 			// Set our initial shape type to be a cube
 			uint32_t shape = visualization_msgs::Marker::CUBE;
 			visualization_msgs::Marker marker;
 			// Set the frame ID and timestamp.  See the TF tutorials for information on these.
-			marker.header.frame_id = odom_frame_id;
+			marker.header.frame_id = base_frame_id;
 			marker.header.stamp = ros::Time::now();
 
 			// Set the namespace and id for this marker.  This serves to create a unique ID
@@ -85,8 +87,8 @@ class odometer {
 			marker.action = visualization_msgs::Marker::ADD;
 
 			// Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
-			marker.pose.position.x = x;
-			marker.pose.position.y = y;
+			marker.pose.position.x = 0.0;
+			marker.pose.position.y = 0.0;
 			marker.pose.position.z = 0;
 			marker.pose.orientation.x = 0.0;
 			marker.pose.orientation.y = 0.0;
@@ -104,7 +106,7 @@ class odometer {
 			marker.color.b = 1.0f;
 			marker.color.a = 0.5;
 
-			marker.lifetime = ros::Duration(5.0);
+			marker.lifetime = ros::Duration();
 	
 			marker_pub.publish(marker);
 		}
@@ -137,7 +139,7 @@ class odometer {
 			odom.pose.pose.orientation = q_msg;
 
 			// Publish pose.x and pose.y as a marker
-			publishMarker(pose.x, pose.y);
+			//publishMarker(pose.x, pose.y);
 
 			odom.child_frame_id = base_frame_id;
 			odom.twist.twist.linear.x = twist.dx;
@@ -197,6 +199,8 @@ odometer::odometer() {
 
 	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);
+
+	timer = n.createTimer(ros::Duration(3.0), &odometer::publishMarker, this);
 }
 
 int main(int argc, char** argv) {
