@@ -1,12 +1,18 @@
 # This file describes the robot's physical dimensions
-#
+# All measurements are in meters
 wheel_width: 0.001     # The width of the wheels
 wheel_radius: 0.2      # The radius of the wheels
 wheel_base: 1.0        # The distance between the centers wheels 
 chassis_length: 1.0    # The length of the main chassis link
 chassis_thickness: 0.01 # The thickness of the plate that forms the chassis
+trans_vel_limit: 0.22 # the maximum translational velocity of the robot, in m/s 
+rotational_vel_limit: 2.84 # maximum rotational velocity of the robot, in rad/s 
+motor_limit: 6.35492 # the maximum rotational velocity of the motor, in rad/s
+encoder_ticks_per_revolution: 4096
+motor_power: 256 # -256, ..., 255 - controls to motor?
+motor_torque: 1.5 # Max motor torque in Nm 
 odom_frame_id: "odom"
 base_frame_id: "base_link"
-left_wheel_joint: "left_axle"
-right_wheel_joint: "right_axle"
+left_wheel_joint: "left_wheel_axle" # Was left_wheel
+right_wheel_joint: "right_wheel_axle"
 

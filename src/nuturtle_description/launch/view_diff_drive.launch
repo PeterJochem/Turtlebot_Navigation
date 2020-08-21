@@ -1,30 +1,34 @@
-
 <!-- This launch file lets the user visualize the robot and its geometry -->
-
 <launch>
 
 <!-- read value of arg -->
 <!-- Launch the joint_state_publisher gui to publish joint angles -->
-<arg name="use_jsp_gui" default="true"/>
+<arg name="use_jsp_gui" default="false"/>
+<arg name="use_jsp" default="true"/>
 
 <!-- Create ROS server params for the robot's geometry -->
 <arg name="file_name" default="$(find nuturtle_description)/config/diff_params.yaml"/>   
     <rosparam command="load" file="$(arg file_name)"/>
 
 <!-- load the xacro into the parameter server -->
-<param name="robot_description"
-command="$(find xacro)/xacro $(find me495_urdf)/urdf/slidebot.urdf.xacro" />
+<!-- param name="robot_description" command="$(find xacro)/xacro $(find me495_urdf)/urdf/slidebot.urdf.xacro" / -->
+<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_description)/urdf/diff_drive.urdf.xacro"/>
+
+
 
 <!-- The robot_state_publisher reads the urdf from /robot_description parameter
 and listens to joint information on the /joint_states topic -->
-<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
-
-
-<!-- The joint state publisher will be launched with a gui, read the urdf from /robot_description
-and publish the joint values on /joint_states -->
-<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
-	<param name="use_gui" value="$(arg use_jsp_gui)" />
+<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
+	  <!-- param name="rate" value="50" / -->
 </node>
+
+<group if="$(arg use_jsp)">
+<!-- The joint state publisher will be launched with a gui, read the urdf from /robot_description and publish the joint values on /joint_states -->
+<node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+	<param name="use_gui" value="$(arg use_jsp_gui)" /> 
+</node>
+</group>
+
 
 <!-- rviz will enable us to see the robot -->
 <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" />

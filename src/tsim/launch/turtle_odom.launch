@@ -5,7 +5,9 @@
 	<!-- Load the description of the robot into the server -->
 	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>
 	
-	<include file = "$(find me495_urdf)/launch/see_robot.launch"/>
+	<include file = "$(find nuturtle_description)/launch/view_diff_drive.launch">
+		 <arg name="use_jsp" value="false"/>
+	</include>
 	
 	
 	<!-- launch file above has rviz -->

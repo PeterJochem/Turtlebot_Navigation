@@ -11,22 +11,7 @@
 <xacro:property name="wheel_base" value="${props['wheel_base']}" />
 <xacro:property name="chassis_length" value="${props['chassis_length']}" />
 <xacro:property name="chassis_thickness" value="${props['chassis_thickness']}" />
-
 <xacro:property name="caster_radius" value="${(wheel_radius - (chassis_thickness/2.0)) / 2}" />
-
-
-<!-- slidebot is a robot that has 1 linear and 1 rotational degree of freedom -->
-<!-- The base from which the body slides -->
-<link name="world" >
-	<visual>
-		<geometry>
-			<sphere radius="0.01" />
-		</geometry>
-		<material name="green_mat">
-			<color rgba="0 1 0 1" />
-		</material>
-	</visual>
-</link>
 
 
 <!-- the movable body -->
@@ -79,16 +64,6 @@
 	</visual>
 </link>
 
-
-<!-- The joints -->
-<!-- Link body to base frame -->
-  <joint name="world_base" type="fixed">
-	  <origin xyz="0 0 ${wheel_radius}" rpy="0 0 0" />
-	  <parent link="world"/>
-	  <child link="base_link"/>
-  </joint>
-
-
   <!-- Link body to base frame -->
   <joint name="base_caster" type="fixed">
 	  <origin xyz="${ (-1 * wheel_radius + chassis_length) - (caster_radius)  } 0 ${(-1 * wheel_radius) + (wheel_radius - chassis_thickness/2.0) / 2.0}" rpy="0 0 0" />
@@ -97,7 +72,7 @@
   </joint>
 
 
-  <joint name="left_wheel_axle" type="revolute">
+  <joint name="left_wheel_axle" type="continuous">
 	  <origin xyz="0.0 ${wheel_base/2} 0.0" rpy="0 0 0" />
 	  <axis xyz = "0 1 0" />
 	  <parent link="base_link" />
@@ -106,7 +81,7 @@
 
   </joint>
 
-  <joint name="right_wheel_axle" type="revolute">
+  <joint name="right_wheel_axle" type="continuous">
 	  <origin xyz="0.0 ${-1 * wheel_base/2} 0.0" rpy="0 0 0" />
 	  <axis xyz = "0 1 0" />
 	  <parent link="base_link" />

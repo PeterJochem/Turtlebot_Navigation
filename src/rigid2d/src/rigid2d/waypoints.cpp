@@ -76,8 +76,6 @@ namespace rigid2d {
 			// FIX ME - max angular velocity?
                         return Twist2D(angleError, 0.0, 0.0);
 		}		
-
-
 	}	
 
 }

@@ -84,6 +84,7 @@ void publishMarker(double x, double y, ros::Publisher marker_pub, int index) {
 	visualization_msgs::Marker marker;
 	// Set the frame ID and timestamp.  See the TF tutorials for information on these.
 	marker.header.frame_id = "/world";
+	//marker.header.frame_id = "/base_link";
 	marker.header.stamp = ros::Time::now();
 
 	// Set the namespace and id for this marker.  This serves to create a unique ID
@@ -300,7 +301,7 @@ int main(int argc, char **argv) {
 	// Publishes the error between actual pose and the desired pose
 	ros::Publisher error_pose_pub = n.advertise<tsim::PoseError>("turtle1/pose_error", 1000);
 	
-	 ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
 	// Subscribe to the turtle's pose
 	ros::Subscriber sub = n.subscribe("/turtle1/pose", 1, poseCallback);

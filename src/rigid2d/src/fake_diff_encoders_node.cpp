@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
         ros::init(argc, argv, "fake_diff_encoders_node");		
 	
 	ros::NodeHandle n;
-	ros::Publisher joint_state_pub = n.advertise<sensor_msgs::JointState>("/joint_states", 1000);
+	ros::Publisher joint_state_pub = n.advertise<sensor_msgs::JointState>("joint_states", 1);
 	
 	rigid2d::DiffDrive robot;
 
