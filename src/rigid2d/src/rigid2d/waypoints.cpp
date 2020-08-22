@@ -8,6 +8,20 @@
 #include <geometry_msgs/Pose.h>
 
 namespace rigid2d {
+	
+	/* Default constructor
+	 * If there are waypoints, just have the robot stay at (0, 0)
+	 * so add the point (0, 0) to the list of waypoints
+	 */ 
+	WayPoints::WayPoints() {
+                this->points = std::vector<Vector2D>();
+		Vector2D v;
+		v.x = 0.0;
+		v.y = 0.0;
+                this->points.push_back(v);
+		this->index = 0;
+        }
+
 
 	/* Constructor
 	 */

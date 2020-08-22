@@ -114,9 +114,6 @@ class odometer {
 
 		void callback(sensor_msgs::JointState current_joint_state) {
 			
-			//	
-			//tf2_ros::TransformBroadcaster odom_broadcaster;
-
 			// Find the joint state position for the left wheel and right wheel
 			auto [left_wheel_rads, right_wheel_rads] = getWheelPositions(current_joint_state); 
 
@@ -137,9 +134,6 @@ class odometer {
 			odom.pose.pose.position.y = pose.y;
 			odom.pose.pose.position.z = 0.0;
 			odom.pose.pose.orientation = q_msg;
-
-			// Publish pose.x and pose.y as a marker
-			//publishMarker(pose.x, pose.y);
 
 			odom.child_frame_id = base_frame_id;
 			odom.twist.twist.linear.x = twist.dx;
@@ -164,7 +158,6 @@ class odometer {
 			T.transform.rotation.z = q.z();
 			T.transform.rotation.w = q.w();
 
-			// TESTING
 			odom_broadcaster.sendTransform(T);	
 		}
 };
@@ -200,7 +193,7 @@ odometer::odometer() {
 	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);
 
-	timer = n.createTimer(ros::Duration(3.0), &odometer::publishMarker, this);
+	//timer = n.createTimer(ros::Duration(3.0), &odometer::publishMarker, this);
 }
 
 int main(int argc, char** argv) {

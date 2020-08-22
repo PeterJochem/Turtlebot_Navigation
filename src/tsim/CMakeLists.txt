@@ -110,6 +110,16 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
+find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  message_generation
+  std_srvs
+  turtlesim
+  rigid2d
+  roscpp
+  std_msgs
+)
+
 ###########
 ## Build ##
 ###########
@@ -198,7 +208,19 @@ add_executable(turtle_rect src/turtle_rect.cpp)
 add_executable(turtle_way src/turtle_way.cpp)
 target_link_libraries(turtle_rect ${catkin_LIBRARIES})
 target_link_libraries(turtle_way ${catkin_LIBRARIES})
+
+set_target_properties(turtle_rect PROPERTIES OUTPUT_NAME turtle_rect PREFIX "")
+set_target_properties(turtle_way PROPERTIES OUTPUT_NAME turtle_way PREFIX "")
+
+
 # add_dependencies(turtle_rect beginner_tutorials_generate_messages_cpp)
+add_dependencies(turtle_rect ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(turtle_way ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+## Specify libraries to link a library or executable target against
+target_link_libraries(turtle_rect ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(turtle_way ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
+
 
 add_executable(serviceNode src/serviceNode.cpp)
 target_link_libraries(serviceNode ${catkin_LIBRARIES})

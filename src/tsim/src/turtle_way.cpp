@@ -10,6 +10,7 @@
 #include <sstream>
 #include <stdlib.h>
 #include <visualization_msgs/Marker.h>
+#include "rigid2d/waypoints.hpp"
 //#include "rigid2d/rigid2d.hpp"
 
 ros::ServiceClient teleport_client;
@@ -32,14 +33,21 @@ class FSM_Feedforward {
 
 	public:
 	FSM_Feedforward(double);
-	void computeAndLogWayPoints();
+	void createPentagonWayPoints();
 	std::tuple<double, double, double, double> nextWaypoint();
 	geometry_msgs::Twist checkUpdate(turtlesim::Pose);
 	std::vector<double> waypoints;
 	int currentWaypoint;
-	ros::Publisher marker_pub;	
 	ros::NodeHandle n;
-	//void publishMarker(double, double, int);
+	
+	int markerCount;
+      	ros::Publisher marker_pub;
+	void publishMarker();	
+	std::string base_frame_id;
+
+	// Use the waypoints.hpp file
+	//  WayPoints(std::vector<Vector2D> points)
+	rigid2d::WayPoints current_waypoints;		
 };
 
 /* This is the constructor for the FSM
@@ -49,9 +57,13 @@ FSM_Feedforward::FSM_Feedforward(double frequency) {
 	translate = false;	
 	timeQuantas = 0;
 	this->frequency = frequency;
-	computeAndLogWayPoints();
+	createPentagonWayPoints();
 	currentWaypoint = 1;
-	//marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
+	
+	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1000);
+	
+	n.getParam("/base_frame_id", base_frame_id);
+	markerCount = 0;
 }
 
 /* Describe
@@ -75,23 +87,20 @@ std::tuple<double, double, double, double> FSM_Feedforward::nextWaypoint() {
 	return {nextX, nextY, priorX, priorY};
 }
 
-/* Describe 
-*/
-void publishMarker(double x, double y, ros::Publisher marker_pub, int index) {
+void FSM_Feedforward::publishMarker() {
 
+	// Set our initial shape type to be a cube
 	uint32_t shape = visualization_msgs::Marker::CUBE;
-
 	visualization_msgs::Marker marker;
 	// Set the frame ID and timestamp.  See the TF tutorials for information on these.
-	marker.header.frame_id = "/world";
-	//marker.header.frame_id = "/base_link";
+	marker.header.frame_id = base_frame_id;
 	marker.header.stamp = ros::Time::now();
 
 	// Set the namespace and id for this marker.  This serves to create a unique ID
 	// Any marker sent with the same namespace and id will overwrite the old one
 	marker.ns = "basic_shapes";
-	marker.id = index;
-
+	marker.id = markerCount;
+	markerCount++;
 	// Set the marker type.  Initially this is CUBE, and cycles between that and SPHERE, ARROW, and CYLINDER
 	marker.type = shape;
 
@@ -99,8 +108,8 @@ void publishMarker(double x, double y, ros::Publisher marker_pub, int index) {
 	marker.action = visualization_msgs::Marker::ADD;
 
 	// Set the pose of the marker.  This is a full 6DOF pose relative to the frame/time specified in the header
-	marker.pose.position.x = x;
-	marker.pose.position.y = y;
+	marker.pose.position.x = 0.0;
+	marker.pose.position.y = 0.0;
 	marker.pose.position.z = 0;
 	marker.pose.orientation.x = 0.0;
 	marker.pose.orientation.y = 0.0;
@@ -108,30 +117,28 @@ void publishMarker(double x, double y, ros::Publisher marker_pub, int index) {
 	marker.pose.orientation.w = 1.0;
 
 	// Set the scale of the marker -- 1x1x1 here means 1m on a side
-	marker.scale.x = 1.0;
-	marker.scale.y = 1.0;
-	marker.scale.z = 1.0;
+	marker.scale.x = 0.05;
+	marker.scale.y = 0.05;
+	marker.scale.z = 0.05;
 
 	// Set the color -- be sure to set alpha to something non-zero!
 	marker.color.r = 0.0f;
-	marker.color.g = 1.0f;
-	marker.color.b = 0.0f;
-	marker.color.a = 1.0;
+	marker.color.g = 0.0f;
+	marker.color.b = 1.0f;
+	marker.color.a = 0.5;
 
 	marker.lifetime = ros::Duration();
-	//while (marker_pub.getNumSubscribers() < 1) {
-	//	ROS_WARN_ONCE("Please create a subscriber to the marker");
-	//	sleep(1);
-	//}
 
 	marker_pub.publish(marker);
 }
+
+
 
 /* Compute the 5 vertices of a pentagon with the given
  * length between vertices. Write the list of points 
  * to the parameter server
  */
-void FSM_Feedforward::computeAndLogWayPoints() { 
+void FSM_Feedforward::createPentagonWayPoints() { 
 
 	double angle = (2 * 3.14 / 5.0);
 	double nextX, nextY;
@@ -187,6 +194,7 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate(turtlesim::Pose currentPose) {
 		if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
 			translate = false;
 			timeQuantas = 0;
+			publishMarker();
 			currentWaypoint++;
 			currentWaypoint = currentWaypoint % 5; 
 		}
@@ -276,7 +284,7 @@ int main(int argc, char **argv) {
 	logParams();
 
 	ros::service::waitForService("turtle1/teleport_absolute", -1); 
-	teleport_client = n.serviceClient<turtlesim::TeleportAbsolute>("/turtle1/teleport_absolute");              
+	teleport_client = n.serviceClient<turtlesim::TeleportAbsolute>("/turtle1/teleport_absolute");              	
 
 	// Lift the pen
 	ros::service::waitForService("turtle1/set_pen", -1);
@@ -300,12 +308,12 @@ int main(int argc, char **argv) {
 
 	// Publishes the error between actual pose and the desired pose
 	ros::Publisher error_pose_pub = n.advertise<tsim::PoseError>("turtle1/pose_error", 1000);
-	
+
 	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 
 	// Subscribe to the turtle's pose
 	ros::Subscriber sub = n.subscribe("/turtle1/pose", 1, poseCallback);
-		
+
 	int frequency;
 	n.getParam("/frequency", frequency);
 	// This specifies the rate at which we loop - this means loop at 1000 Hz
@@ -325,8 +333,6 @@ int main(int argc, char **argv) {
 		// Copy the pose to a new variable to avoid asynchronous errors
 		poseNow = currentPose;
 
-		//publishMarker(currentPose.x, currentPose.y, marker_pub, count);
-		
 		geometry_msgs::Twist currentTwist = myFSM.checkUpdate(poseNow); 
 
 		// Compute the error between actual position and position it would 

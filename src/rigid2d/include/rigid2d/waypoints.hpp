@@ -11,6 +11,8 @@ namespace rigid2d {
 	class WayPoints {
 		public:
 			/// \brief the default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius
+			WayPoints(void);
+
 			WayPoints(std::vector<Vector2D>);
 
 			Twist2D nextWayPoint(Transform2D);
