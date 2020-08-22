@@ -1,4 +1,27 @@
-# Hello! 
-This is a navigation stack built with ROS for a differential drive robot. I am still working on it at the moment! Professor Matt Elwin at Northwestern put together a [course](https://nu-msr.github.io/navigation_site/) for building such a software stack. He sketched out what each step should look like and suggested ways of testing. He did not provide any code but did provide a few suggested method signatures. 
+# Navigation Stack 
+This is a navigation stack implemented in ROS for a differential drive robot. I am using the Turtlebot3 robot. I am still working on it at the moment! Professor Matt Elwin at Northwestern put together a [course](https://nu-msr.github.io/navigation_site/) for building such a software stack. He sketched out what each step should look like and suggested ways of testing. He did not provide any code but did provide a few suggested method signatures. I could not have done it without his guidance, so thanks Matt! 
+
 Below is an image from RVIZ of the diff drive robot navigating to 5 waypoints. In this case, the waypoints form a pentagon
 !["Diff Drive Robot Navigating to Waypoints"](images/pentagonNavigation2.png)
+
+# Rigid2D Library
+I wrote a C++ library for representing 2D rigid body transformations. It uses the screw theory as presented in Modern Robotics applied to 2D frames.
+Describe more of the functions etc   
+
+
+# Testing
+I used the gtest framework for testing my Rigid2D library. This was extremly helpful for debugging and I will definitely use gtest again! 
+Describe gtest and the unit tests and where they are etc
+
+# Hardware
+I am using the Turtlebot3 Burger. I am almost ready to run the software on the real robot. I am looking forward to it!
+
+## TSim Package
+Describe
+
+## rigid2d Package
+Describe it
+
+## nuturtle_description Package
+Describe it  
+
