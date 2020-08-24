@@ -5,7 +5,7 @@ Below is an image from RVIZ of the diff drive robot navigating to 5 waypoints. I
 !["Diff Drive Robot Navigating to Waypoints"](images/tbot_pentagon.gif)
 
 # Rigid2D Library
-I wrote a C++ library for representing 2D rigid body transformations. It uses the screw theory as presented in Modern Robotics applied to 2D frames.
+I wrote a C++ library for representing 2D rigid body transformations. It uses the screw theory as presented in [Modern Robotics](http://hades.mech.northwestern.edu/images/7/7f/MR.pdf) applied to 2D frames.
 Describe more of the functions etc   
 
 
