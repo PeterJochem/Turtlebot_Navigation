@@ -126,6 +126,15 @@ namespace rigid2d {
 		
 		return {encoder_left, encoder_right};
 	}
+	
+	void DiffDrive::setPose(double x, double y, double theta) {
+		
+		//Transform2D(const Vector2D & trans, double radians);
+		Vector2D p;
+		p.x = x;
+		p.y = y;
+		current_pose = Transform2D(p, theta);		
+	}
 
-
+	
 }

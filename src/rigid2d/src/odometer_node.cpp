@@ -14,7 +14,7 @@
 #include <geometry_msgs/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <visualization_msgs/Marker.h>
-//#include "rigid2d/diff_drive.hpp"
+#include "rigid2d/setPose.h"
 
 namespace rigid2d {
 }
@@ -37,9 +37,9 @@ class odometer {
 
 		// Use to simulate robot internally
 		rigid2d::DiffDrive robot;
-	
 		ros::Timer timer;
-
+		ros::ServiceServer set_pose;		
+		bool set_pose_srv(rigid2d::setPose::Request &req, rigid2d::setPose::Response &res);
 		/* Describe
 		 * Check for no match case?
 		 */
@@ -106,11 +106,9 @@ class odometer {
 			marker.color.b = 1.0f;
 			marker.color.a = 0.5;
 
-			marker.lifetime = ros::Duration();
-	
+			marker.lifetime = ros::Duration();	
 			marker_pub.publish(marker);
 		}
-
 
 		void callback(sensor_msgs::JointState current_joint_state) {
 			
@@ -162,12 +160,11 @@ class odometer {
 		}
 };
 
+
 // Default constructor
 odometer::odometer() {
 
 	odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1);
-	//tf2_ros::TransformBroadcaster odom_broadcaster;	
-
 	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 	markerCount = 0;
 
@@ -192,16 +189,28 @@ odometer::odometer() {
 
 	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);
-
+	
+	set_pose = n.advertiseService("set_pose", &odometer::set_pose_srv, this); 	
+	
 	//timer = n.createTimer(ros::Duration(3.0), &odometer::publishMarker, this);
+}
+
+/* Describe 
+ */
+bool odometer::set_pose_srv(rigid2d::setPose::Request &req, rigid2d::setPose::Response &res) {
+	
+	robot.setPose(req.x, req.y, req.theta);
+	return true;
 }
 
 int main(int argc, char** argv) {
 
 	// Init ROS Node
 	ros::init(argc, argv, "odometer_node");
-
-	odometer myOdom = odometer();
-
+		
+	ros::NodeHandle n;
+	
+	odometer myOdom = odometer();	
+	
 	ros::spin();
 }

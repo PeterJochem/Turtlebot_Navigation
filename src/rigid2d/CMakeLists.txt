@@ -14,6 +14,7 @@ find_package(catkin REQUIRED COMPONENTS
   message_generation
   nav_msgs
   roscpp
+  std_srvs
   rostest
   sensor_msgs
   std_msgs
@@ -59,10 +60,10 @@ find_package(catkin REQUIRED COMPONENTS
 #)
 
 # Generate services in the 'srv' folder
-#add_service_files(
-#  FILES
-#  SetPose.srv
-#)
+add_service_files(
+   FILES
+   setPose.srv
+)
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -72,12 +73,13 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-#generate_messages(DEPENDENCIES
-  # geometry_msgs
-  # sensor_msgs
-  # std_msgs
-  # rigid2d
-  #)
+generate_messages(
+  DEPENDENCIES
+  #geometry_msgs
+  #sensor_msgs
+  std_msgs
+  #rigid2d
+)
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -111,7 +113,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES ${PROJECT_NAME}
- CATKIN_DEPENDS roscpp std_msgs
+ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime nav_msgs roscpp sensor_msgs tf2 tf2_ros
 #  DEPENDS system_lib
 )
 
@@ -161,6 +163,8 @@ target_link_libraries(${PROJECT_NAME}_odometer_node
         ${PROJECT_NAME}
   ${catkin_LIBRARIES}
 )
+add_dependencies(${PROJECT_NAME}_odometer_node rigid2d_gencpp)
+
 
 target_link_libraries(${PROJECT_NAME}_fake_diff_encoders_node
         ${PROJECT_NAME}
@@ -196,11 +200,11 @@ target_link_libraries(${PROJECT_NAME}_fake_diff_encoders_node
 #)
 
 # Mark cpp header files for installation
-#install(DIRECTORY include/${PROJECT_NAME}/
-#  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#  FILES_MATCHING PATTERN "*.h"
-#  PATTERN ".svn" EXCLUDE
-#)
+install(DIRECTORY include/${PROJECT_NAME}/
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  FILES_MATCHING PATTERN "*.h"
+  PATTERN ".svn" EXCLUDE
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 #install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)

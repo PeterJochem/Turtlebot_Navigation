@@ -68,8 +68,16 @@ namespace rigid2d {
 			/// \brief reset the robot to the given position/orientation
 			//void reset(Twist2D ps);
 
+			/// \brief Describe
 			// Store a Transform2D
 			rigid2d::Transform2D current_pose;
+			
+			/// \brief 
+			//
+			void setPose(double x, double y, double theta);
+
+			/// \brief Describe
+			Transform2D getPose(void);
 
 			double wheel_base;
 			double wheel_radius;
