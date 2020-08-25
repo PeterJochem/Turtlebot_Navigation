@@ -129,10 +129,10 @@ namespace rigid2d {
 	
 	void DiffDrive::setPose(double x, double y, double theta) {
 		
-		//Transform2D(const Vector2D & trans, double radians);
 		Vector2D p;
 		p.x = x;
 		p.y = y;
+		//Transform2D(const Vector2D & trans, double radians)
 		current_pose = Transform2D(p, theta);		
 	}
 
