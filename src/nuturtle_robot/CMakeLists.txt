@@ -215,6 +215,10 @@ target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_nuturtle_robot.cpp)
+# catkin_add_gtest(test_turtle_interface test/test_turtle_interface.cpp)
+add_rostest_gtest(test_turtle_interface test/test_turtle_interface.test src/test_turtle_interface.cpp)
+target_link_libraries(test_turtle_interface ${rigid2d_LIBRARIES} gtest_main ${catkin_LIBRARIES} ${nuturtlebot_LIBRARIES})
+
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
