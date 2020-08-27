@@ -101,7 +101,7 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 
 int main(int argc, char **argv) {
 	
-	ros::init(argc, argv, "turtle_interface_node"); 
+	ros::init(argc, argv, "turtle_interface"); 
         ros::NodeHandle n;
 	
 	// Get values from the param server

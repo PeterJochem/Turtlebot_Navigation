@@ -3,15 +3,23 @@ project(nuturtle_robot)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+add_compile_options(-Wall -Wextra -Wno-psabi)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
   message_generation
-  nuturtle_robot	
+  #nuturtle_robot	
   rigid2d
-)
+  nuturtlebot
+  tf2_ros
+  visualization_msgs
+ )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -106,7 +114,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES tsim 
-   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+   CATKIN_DEPENDS geometry_msgs nav_msgs roscpp sensor_msgs std_srvs tf2_ros visualization_msgs
 #  DEPENDS system_lib
 )
 
@@ -128,7 +136,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
 # include
-  ${catkin_INCLUDE_DIRS}
+${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -162,7 +170,6 @@ include_directories(
 # )
 
 add_executable(turtle_interface src/turtle_interface.cpp)
-target_link_libraries(turtle_interface ${catkin_LIBRARIES})
 set_target_properties(turtle_interface PROPERTIES OUTPUT_NAME turtle_interface PREFIX "")
 add_dependencies(turtle_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
@@ -173,6 +180,15 @@ target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 
 # all install targets should use catkin DESTINATION variables
 # See http://ros.org/doc/api/catkin/html/adv_user_guide/variables.html
+#install(TARGETS
+#	${PROJECT_NAME}_turtle_interface
+#    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+#)
+
+#install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
+#install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
+
+
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
@@ -216,8 +232,13 @@ target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_nuturtle_robot.cpp)
 # catkin_add_gtest(test_turtle_interface test/test_turtle_interface.cpp)
-add_rostest_gtest(test_turtle_interface test/test_turtle_interface.test src/test_turtle_interface.cpp)
-target_link_libraries(test_turtle_interface ${rigid2d_LIBRARIES} gtest_main ${catkin_LIBRARIES} ${nuturtlebot_LIBRARIES})
+#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread")
+
+if(CATKIN_ENABLE_TESTING)
+	find_package(rostest REQUIRED)
+	add_rostest_gtest(test_turtle_interface test/interface.test test/test_turtle_interface.cpp)
+	target_link_libraries(test_turtle_interface ${rigid2d_LIBRARIES} gtest_main ${catkin_LIBRARIES} ${nuturtlebot_LIBRARIES})
+endif()
 
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
@@ -225,3 +246,4 @@ target_link_libraries(test_turtle_interface ${rigid2d_LIBRARIES} gtest_main ${ca
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
