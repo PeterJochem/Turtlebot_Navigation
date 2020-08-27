@@ -1,0 +1,14 @@
+<launch>
+	
+	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
+	<rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
+        <rosparam command="load" file="$(find tsim)/config/params.yaml"/>
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>		
+
+	<!-- add robot argument -->
+	<include file = "$(find nuturtle_robot)/launch/basic_remote.launch"/>		
+	
+ 	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="turtlebot" if="$(eval robot >= 0)" />	 
+	<node name="rotate_node" pkg="nuturtle_robot" type="rotation" machine="turtlebot" if="$(eval robot >= 0)" />
+
+</launch>

@@ -170,9 +170,16 @@ ${catkin_INCLUDE_DIRS}
 # )
 
 add_executable(turtle_interface src/turtle_interface.cpp)
+add_executable(rotation src/rotation.cpp)
+
 set_target_properties(turtle_interface PROPERTIES OUTPUT_NAME turtle_interface PREFIX "")
+set_target_properties(rotation PROPERTIES OUTPUT_NAME rotation PREFIX "")
+
 add_dependencies(turtle_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(rotation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(rotation ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 
 #############
 ## Install ##
