@@ -15,7 +15,7 @@ Describe gtest and the unit tests and where they are etc
 
 # Hardware
 I am using the Turtlebot3 Burger. I am just getting rolling with the hardware. The lower level interface seems to work so far! Still working on finishing it though. Heres a video of the robot doing a pure rotation <br />
-[![Turtlebot Rotating](https://youtu.be/OWnSep3FGiw)](https://youtu.be/OWnSep3FGiw "Turtlebot Rotating")
+[![Turtlebot Rotating](http://img.youtube.com/vi/OWnSep3FGiw/0.jpg)](http://www.youtube.com/watch?v=OWnSep3FGiw "Turtlebot Rotating")
 
 ## TSim Package
 Describe
