@@ -9,27 +9,52 @@
 #include "nuturtlebot/SensorData.h"
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
+#include "nuturtle_robot/start.h"
+
+bool rotate = false;
+bool hasStarted = false;
+double rotation_speed = 0.0;
+
+/* req is a single double which tells robot how fast to rotate
+*/
+bool start(nuturtle_robot::start::Request  &req, nuturtle_robot::start::Response &res) {
+
+	rotation_speed = req.desired_angular_velocity;
+	rotate = true;
+	hasStarted = true;
+	return true;
+}
 
 
 int main(int argc, char **argv) {
-  
-  ros::init(argc, argv, "rotation");
 
-  ros::NodeHandle n;
-  ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
+	ros::init(argc, argv, "rotation");
+	ros::NodeHandle n;
+	
+	ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1000);
+	ros::ServiceServer start_service = n.advertiseService("start", start);
 
-  ros::Rate loop_rate(10);
+	// Create a diff drive robot to record the position and number of rotations?
+	
+	// What frequency to publish at? Doesn't matter for this?
+	ros::Rate loop_rate(10);
 
-  while (ros::ok()) {
-     
-     geometry_msgs::Twist newTwist;
-     newTwist.angular.z = 1.0;
-   
-     cmd_vel_pub.publish(newTwist); 
+	while(!hasStarted) {
+		ros::spinOnce();
+	}
 
-     ros::spinOnce();
-     loop_rate.sleep();
-  }
+	while (rotate) {   
 
-  return 0;
+		geometry_msgs::Twist newTwist;
+		newTwist.angular.z = rotation_speed;
+
+		cmd_vel_pub.publish(newTwist); 
+
+		// Count the number of rotations?
+			
+		ros::spinOnce();
+		loop_rate.sleep();
+	}
+
+	return 0;
 }
