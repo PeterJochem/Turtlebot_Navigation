@@ -18,6 +18,7 @@ ros::Publisher joints_pub;
 DiffDrive robot;
 
 double max_motor_rot, max_cmd, encoder_ticks_rotation;
+double wheel_base, wheel_radius, frequency;
 std::string left_wheel_joint, right_wheel_joint;
 
 int initial_encoder_left = 0;
@@ -85,8 +86,8 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	}	
 	
 
-	left_wheel_angle = normalize_angle( (newData.left_encoder - initial_encoder_left) / (encoder_ticks_rotation * 2 * PI) );  
-	right_wheel_angle = normalize_angle( (newData.right_encoder - initial_encoder_right) / (encoder_ticks_rotation * 2 * PI) );
+	left_wheel_angle = normalize_angle( (newData.left_encoder - initial_encoder_left) * (2 * PI) / (encoder_ticks_rotation) );  
+	right_wheel_angle = normalize_angle( (newData.right_encoder - initial_encoder_right) * (2 * PI) / (encoder_ticks_rotation) );
 	
 	WheelVelocities wheel_vels = robot.updateOdometry(left_wheel_angle, right_wheel_angle);
 
@@ -104,9 +105,6 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "turtle_interface"); 
         ros::NodeHandle n;
 	
-	// Get values from the param server
-	double wheel_base, wheel_radius, frequency, encoder_ticks_rotation;
-
         n.getParam("/wheel_base", wheel_base);
 	n.getParam("/wheel_radius", wheel_radius);
 	n.getParam("/frequency", frequency);
