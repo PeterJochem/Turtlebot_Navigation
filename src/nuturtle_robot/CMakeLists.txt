@@ -19,7 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   nuturtlebot
   tf2_ros
   visualization_msgs
- )
+)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -117,15 +117,6 @@ catkin_package(
 #  DEPENDS system_lib
 )
 
-#find_package(catkin REQUIRED COMPONENTS
-#  geometry_msgs
-#  message_generation
-#  std_srvs
-  #rigid2d
-  #  roscpp
-  #  std_msgs
-  #)
-
 
 ###########
 ## Build ##
@@ -133,9 +124,9 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
-# include
-${catkin_INCLUDE_DIRS}
+include_directories(	
+       	include
+	${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -179,6 +170,8 @@ add_dependencies(rotation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_
 
 target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(rotation ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
+
+
 
 #############
 ## Install ##

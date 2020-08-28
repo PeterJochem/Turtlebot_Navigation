@@ -89,6 +89,8 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	left_wheel_angle = normalize_angle( (newData.left_encoder - initial_encoder_left) * (2 * PI) / (encoder_ticks_rotation) );  
 	right_wheel_angle = normalize_angle( (newData.right_encoder - initial_encoder_right) * (2 * PI) / (encoder_ticks_rotation) );
 	
+	// This actually returns the encoder values!!
+	// FIX ME FIX ME FIX ME FIX ME	
 	WheelVelocities wheel_vels = robot.updateOdometry(left_wheel_angle, right_wheel_angle);
 
 	// Order must match!

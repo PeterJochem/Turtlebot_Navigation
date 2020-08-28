@@ -4,11 +4,15 @@
 	<rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
         <rosparam command="load" file="$(find tsim)/config/params.yaml"/>
 	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>		
-
+	
 	<!-- add robot argument -->
 	<include file = "$(find nuturtle_robot)/launch/basic_remote.launch"/>		
 	
  	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="turtlebot" if="$(eval robot >= 0)" />	 
-	<node name="rotate_node" pkg="nuturtle_robot" type="rotation" machine="turtlebot" if="$(eval robot >= 0)" />
+	<node name="rotate_node" pkg="nuturtle_robot" type="rotation" machine="turtlebot" if="$(eval robot >= 0)" output="screen" required = "true" />
+
+	<node type="odometer_node" name="odometer_node" pkg="rigid2d" output="screen" />
+		
+
 
 </launch>
