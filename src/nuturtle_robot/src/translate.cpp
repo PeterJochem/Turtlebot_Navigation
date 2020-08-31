@@ -12,12 +12,13 @@
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
 
-bool rotate = false;
+bool translate = false;
 bool hasStarted = false;
-double rotation_speed = 0.0;
+double trans_speed = 0.0;
+double segment_length = 1.0; // Length of each segment 
 int timerEventCount = 0;
-double publishRate, timeTo360, max_rotation_speed;
-int numRotations = 0;
+double publishRate, timeToTranslate, max_translational_speed;
+int numSegments = 0;
 ros::ServiceClient set_pose_client;
 ros::Publisher cmd_vel_pub;
 
@@ -26,12 +27,12 @@ inline bool isVelocityIllegal(double velocity) {
 	return (velocity < 0.0 || velocity > 1.0);		
 }
 
-inline bool stopRotating() {
-	return (rotate && std::abs(timerEventCount * publishRate) >= timeTo360); 
+inline bool stopTranslating() {
+	return (translate && std::abs(timerEventCount * publishRate) >= timeToTranslate); 
 }
 
-inline bool startRotating(double pausePeriod = timeTo360/10.0) {
-	return !rotate && std::abs(timerEventCount * publishRate) >= pausePeriod; 
+inline bool startTranslating(double pausePeriod = timeToTranslate/10.0) {
+	return !translate && std::abs(timerEventCount * publishRate) >= pausePeriod; 
 }
 
 /* req has two fields req.clockwise and req.fraction_of_max_angular_velocity 
@@ -49,17 +50,17 @@ bool start(nuturtle_robot::start::Request  &req, nuturtle_robot::start::Response
 	set_pose_client.call(newPose);	
 	
 	if (isVelocityIllegal(req.fraction_of_max_angular_velocity) ) {
-		rotation_speed = 0.5 * max_rotation_speed;	
+		trans_speed = 0.5 * max_translational_speed;	
 	}
 	else if (req.clockwise) {
-		rotation_speed = req.fraction_of_max_angular_velocity * max_rotation_speed;
+		trans_speed = req.fraction_of_max_angular_velocity * max_translational_speed;
 	}
 	else {
-		rotation_speed = -1 * req.fraction_of_max_angular_velocity * max_rotation_speed;	
+		trans_speed = -1 * req.fraction_of_max_angular_velocity * max_translational_speed;	
 	}
 	
-	numRotations = 0;
-	rotate = true;
+	numSegments = 0;
+	translate = true;
 	hasStarted = true;
 	return true;
 }
@@ -72,26 +73,26 @@ void publishNextTwist(const ros::TimerEvent&) {
 	geometry_msgs::Twist newTwist;	
 	timerEventCount++;	
 	
-	if (numRotations > 20) {
+	if (numSegments > 20) {
 		ros::shutdown();
 	}
 
-	if (stopRotating()) {
+	if (stopTranslating()) {
 		timerEventCount = 0;	
-		newTwist.angular.z = 0.0;
-		rotate = false;
-		numRotations++;
-		std::cout << "Completed Rotation " << numRotations << std::endl;
+		newTwist.linear.x = 0.0;
+		translate = false;
+		numSegments++;
+		std::cout << "Completed Segment " << numSegments << std::endl;
 	}
 	
-	else if (startRotating()) {
+	else if (startTranslating()) {
 		timerEventCount = 0;
-		newTwist.angular.z = rotation_speed;
-		rotate = true;
+		newTwist.linear.x = trans_speed;
+		translate = true;
 	}
 
-	if (rotate) {
-		newTwist.angular.z = rotation_speed;
+	if (translate) {
+		newTwist.linear.x = trans_speed;
 	}
 
 	cmd_vel_pub.publish(newTwist);
@@ -100,25 +101,26 @@ void publishNextTwist(const ros::TimerEvent&) {
 
 int main(int argc, char **argv) {
 
-	ros::init(argc, argv, "rotation");
+	ros::init(argc, argv, "translate");
 	ros::NodeHandle n;
 
 	cmd_vel_pub = n.advertise<geometry_msgs::Twist>("/turtle1/cmd_vel", 1);
 	
-	n.getParam("/rotational_vel_limit", max_rotation_speed);	
+	n.getParam("/trans_vel_limit", max_translational_speed);	
 
 	ros::service::waitForService("/set_pose", -1);
         ros::ServiceClient set_pose_client = n.serviceClient<rigid2d::setPose>("/set_pose");
-	
+		
 	ros::ServiceServer start_service = n.advertiseService("start", start);	
 	
 	while(!hasStarted) {
 		ros::spinOnce();
 	}
 		
-	timeTo360 = std::abs((2 * rigid2d::PI) / rotation_speed);
+	timeToTranslate = std::abs(segment_length / trans_speed);
 	publishRate = 1.0/100.0;
-	 
+	
+       	std::cout << "\n\n REACHED \n\n" << std::endl;	
 	ros::Timer timer = n.createTimer(ros::Duration(publishRate), publishNextTwist);	
 	ros::spin();			
 

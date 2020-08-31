@@ -161,16 +161,19 @@ include_directories(
 
 add_executable(turtle_interface src/turtle_interface.cpp)
 add_executable(rotation src/rotation.cpp)
+add_executable(translate src/translate.cpp)
 
 set_target_properties(turtle_interface PROPERTIES OUTPUT_NAME turtle_interface PREFIX "")
 set_target_properties(rotation PROPERTIES OUTPUT_NAME rotation PREFIX "")
+set_target_properties(translate PROPERTIES OUTPUT_NAME translate PREFIX "")
 
 add_dependencies(turtle_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(rotation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(translate ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(turtle_interface ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 target_link_libraries(rotation ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
-
+target_link_libraries(translate ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 
 
 #############
@@ -185,6 +188,7 @@ target_link_libraries(rotation ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 #)
 install(TARGETS
 	rotation
+	translate
 	turtle_interface
  	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

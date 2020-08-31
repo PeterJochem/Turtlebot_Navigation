@@ -186,8 +186,8 @@ odometer::odometer() {
 
 	robot = rigid2d::DiffDrive(rigid2d::Transform2D(), wheel_base, wheel_radius);
 
-	//ros::Rate r(frequency);
-	ros::Rate r(1.0);
+	ros::Rate r(frequency);
+	//ros::Rate r(1.0);
 
 	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);

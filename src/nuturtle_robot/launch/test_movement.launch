@@ -1,6 +1,8 @@
 <launch>
 	
 	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
+	<arg name='mode' default='0' doc='Indicates to use either the rotational or translational node. 0 is translate. 1 is rotate'/>	
+
 	<arg name="use_jsp_gui" default="false"/>
         <arg name="use_jsp" default="false" />
 
@@ -19,7 +21,11 @@
 	
 
 	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="turtlebot1" if="$(eval robot >= 0)" />	 
-	<node name="rotate_node" pkg="nuturtle_robot" type="rotation" machine="turtlebot1" if="$(eval robot >= 0)" output="screen" required = "true" />
+	
+	
+	<node name="rotate_node" pkg="nuturtle_robot" type="rotation" machine="turtlebot1" if="$(eval mode == 1)" output="screen" required = "true"/>
+	<node name="translate_node" pkg="nuturtle_robot" type="translate" machine="turtlebot1" if="$(eval mode == 0)" output="screen" required = "true"/>		
+
 	<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen" />
 	
 	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_description)/urdf/diff_drive.urdf.xacro"/>
@@ -36,7 +42,7 @@
 
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" machine="PeterJochem" />
 	
-	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="turtlebot1" >
+	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="turtlebot1" output="screen" >
 		<remap from="turtle1/cmd_vel" to="/cmd_vel"/>
 		<remap from="joint_states" to="fake/joint_states"/>	
 	 </node>	
