@@ -1,15 +1,16 @@
 <launch>
-	
-  	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
 
-  	<machine name="turtlebot" address="localhost" if="$(eval 0 == robot)"/>
-  	<machine name="turtlebot" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" if="$(eval robot > 0)" />
+	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
 
-  <!-- Start nodes for lower level control if we are running it on the turtlebot itself -->
-  <node name="serial_node" pkg="rosserial_python" type="serial_node.py" machine="turtlebot" if="$(eval robot >= 0)">
-      <param name="port" value="/dev/ttyACM0"/>
-      <param name="baud" value="115200"/>
-  </node>	
+	<!-- machine name="PeterJochem" address="localhost" if="$(eval 0 == robot)"/ -->
+	<machine name="PeterJochem" address="localhost" />	
+	<machine name="turtlebot1" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" if="$(eval robot > 0)" />
+
+	<!-- Start nodes for lower level control if we are running it on the turtlebot itself -->
+	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" machine="turtlebot1" if="$(eval robot >= 0)">
+		<param name="port" value="/dev/ttyACM0"/>
+		<param name="baud" value="115200"/> 
+	</node>	
 
 
 </launch>

@@ -86,8 +86,8 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	}	
 	
 
-	left_wheel_angle = normalize_angle( (newData.left_encoder - initial_encoder_left) * (2 * PI) / (encoder_ticks_rotation) );  
-	right_wheel_angle = normalize_angle( (newData.right_encoder - initial_encoder_right) * (2 * PI) / (encoder_ticks_rotation) );
+	left_wheel_angle = (newData.left_encoder - initial_encoder_left) * (2 * PI) / (encoder_ticks_rotation);  
+	right_wheel_angle = (newData.right_encoder - initial_encoder_right) * (2 * PI) / (encoder_ticks_rotation);
 	
 	// This actually returns the encoder values!!
 	// FIX ME FIX ME FIX ME FIX ME	
@@ -96,7 +96,8 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	// Order must match!
 	state.name = {left_wheel_joint, right_wheel_joint};
 	state.position = {left_wheel_angle, right_wheel_angle};
-	state.velocity = {wheel_vels.left, wheel_vels.right};	
+	//state.velocity = {wheel_vels.left, wheel_vels.right};	
+	state.header.stamp = ros::Time::now();
 
 	joints_pub.publish(state);
 }
@@ -132,7 +133,7 @@ int main(int argc, char **argv) {
 	
 
 	// What to set this to?
-  	ros::Rate loop_rate(10);
+  	// ros::Rate loop_rate(200);
 	
 	ros::spin();
 

@@ -85,6 +85,7 @@ int main(int argc, char** argv) {
 			
 			dataPresent = false;
 		}
+
 		ros::spinOnce();
       		r.sleep();	
 	}

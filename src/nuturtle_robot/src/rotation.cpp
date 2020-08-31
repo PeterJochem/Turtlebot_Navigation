@@ -27,7 +27,8 @@ inline bool isVelocityIllegal(double velocity) {
 }
 
 inline bool stopRotating() {
-	return (rotate && std::abs(timerEventCount * publishRate) >= timeTo360); 
+	//return (rotate && std::abs(timerEventCount * publishRate) >= timeTo360); 
+	return false;
 }
 
 inline bool startRotating(double pausePeriod = timeTo360/10.0) {
@@ -92,6 +93,7 @@ void publishNextTwist(const ros::TimerEvent&) {
 
 	if (rotate) {
 		newTwist.angular.z = rotation_speed;
+		// newTwist.linear.x = 1.0;
 	}
 
 	cmd_vel_pub.publish(newTwist);

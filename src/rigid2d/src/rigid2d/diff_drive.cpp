@@ -86,8 +86,10 @@ namespace rigid2d {
 		// Compute the twist of the robot's BODY frame
 		Twist2D Vb = wheelsToTwist(vel);
 		current_pose = current_pose.integrateTwist(Vb);
-	
-		return {encoder_left, encoder_right};
+
+		// Changed on August 31, 2020
+		// return {encoder_left, encoder_right};
+		return {vel.left, vel.right};
 	}
 			
 	/* Given a twist, update current_pose and the encoder angles

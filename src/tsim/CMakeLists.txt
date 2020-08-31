@@ -227,6 +227,15 @@ add_executable(serviceNode src/serviceNode.cpp)
 target_link_libraries(serviceNode ${catkin_LIBRARIES})
 # add_dependencies(serviceNode)
 
+
+install(TARGETS turtle_rect turtle_way
+	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
+install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)
+
+
 #############
 ## Testing ##
 #############

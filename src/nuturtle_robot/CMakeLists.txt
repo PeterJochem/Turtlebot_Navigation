@@ -183,6 +183,11 @@ target_link_libraries(rotation ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 #	${PROJECT_NAME}_turtle_interface
 #    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 #)
+install(TARGETS
+	rotation
+	turtle_interface
+ 	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 #install(DIRECTORY launch/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch)
 #install(DIRECTORY config/ DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/config)

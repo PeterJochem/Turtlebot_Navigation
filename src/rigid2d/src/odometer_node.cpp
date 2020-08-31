@@ -122,7 +122,8 @@ class odometer {
 			geometry_msgs::Pose2D pose = robot.pose();
 			tf2::Quaternion q;
 			q.setRPY(0, 0, pose.theta);
-
+			
+			// currentTime = ros::Time()::now();
 			nav_msgs::Odometry odom;
 			geometry_msgs::Quaternion q_msg = tf2::toMsg(q);
 			odom.header.stamp = ros::Time::now();
@@ -164,7 +165,7 @@ class odometer {
 // Default constructor
 odometer::odometer() {
 
-	odom_pub = n.advertise<nav_msgs::Odometry>("odom", 1);
+	odom_pub = n.advertise<nav_msgs::Odometry>("odom", 10);
 	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 	markerCount = 0;
 
@@ -175,17 +176,18 @@ odometer::odometer() {
 	}
 
 	// Check that they are on the server?
-	n.getParam("/wheel_base", wheel_base);
-	n.getParam("/wheel_radius", wheel_radius);
-	n.getParam("/odom_frame_id", odom_frame_id);
-	n.getParam("/base_frame_id", base_frame_id);
-	n.getParam("/left_wheel_joint", left_wheel_joint);
-	n.getParam("/right_wheel_joint", right_wheel_joint);
-	n.getParam("/frequency", frequency);
+	n.getParam("wheel_base", wheel_base);
+	n.getParam("wheel_radius", wheel_radius);
+	n.getParam("odom_frame_id", odom_frame_id);
+	n.getParam("base_frame_id", base_frame_id);
+	n.getParam("left_wheel_joint", left_wheel_joint);
+	n.getParam("right_wheel_joint", right_wheel_joint);
+	n.getParam("frequency", frequency);
 
 	robot = rigid2d::DiffDrive(rigid2d::Transform2D(), wheel_base, wheel_radius);
 
-	ros::Rate r(frequency);
+	//ros::Rate r(frequency);
+	ros::Rate r(1.0);
 
 	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);
