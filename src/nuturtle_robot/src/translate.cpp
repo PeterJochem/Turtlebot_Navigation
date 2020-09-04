@@ -120,7 +120,6 @@ int main(int argc, char **argv) {
 	timeToTranslate = std::abs(segment_length / trans_speed);
 	publishRate = 1.0/100.0;
 	
-       	std::cout << "\n\n REACHED \n\n" << std::endl;	
 	ros::Timer timer = n.createTimer(ros::Duration(publishRate), publishNextTwist);	
 	ros::spin();			
 

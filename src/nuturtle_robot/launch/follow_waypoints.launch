@@ -1,0 +1,58 @@
+<launch>
+	
+	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
+
+	<arg name="use_jsp_gui" default="false"/>
+        <arg name="use_jsp" default="false" />
+
+	<rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
+        <rosparam command="load" file="$(find tsim)/config/params.yaml"/>
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>		
+	
+	<!-- machine name="PeterJochem" address="localhost" if="$(eval 0 == robot)"/ -->
+        <machine name="PeterJochem" address="localhost" />
+        <machine name="turtlebot1" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" />		
+	<!-- add robot argument -->
+	<include file = "$(find nuturtle_robot)/launch/basic_remote.launch">
+		<arg name="robot" value="$(arg robot)" />
+	</include>		
+	
+
+	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="turtlebot1" if="$(eval robot >= 0)" />	 
+	<node name="real_waypoint" pkg="nuturtle_robot" type="real_waypoint" machine="turtlebot1" output="screen" required = "true"/>
+
+	<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen" />
+	
+	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_description)/urdf/diff_drive.urdf.xacro"/>
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  machine="turtlebot1">
+                  <!-- param name="rate" value="50" / -->	
+	</node>
+
+        <group if="$(arg use_jsp)">
+                <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"  machine="turtlebot1">
+       			<param name="use_gui" value="$(arg use_jsp_gui)" />
+        	</node>
+        </group>
+
+
+        <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" machine="PeterJochem" />
+	
+	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="turtlebot1" output="screen" >
+		<remap from="turtle1/cmd_vel" to="/cmd_vel"/>
+		<remap from="joint_states" to="fake/joint_states"/>	
+	 </node>	
+
+	<!-- use fake namespace (ns) -->
+	<group ns="fake">	
+		<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen">
+			<param name="odom_frame_id" value="fake_odom"/>
+      			<param name="base_frame_id" value="fake_base_link"/>
+     			<param name="left_wheel_joint" value="left_wheel_axle"/>
+      			<param name="right_wheel_joint" value="right_wheel_axle"/>		
+		</node>
+	</group>
+
+	
+	<node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 1 odom fake_odom" />
+
+</launch>

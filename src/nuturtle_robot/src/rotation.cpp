@@ -108,8 +108,7 @@ int main(int argc, char **argv) {
 	n.getParam("/rotational_vel_limit", max_rotation_speed);	
 
 	ros::service::waitForService("/set_pose", -1);
-        ros::ServiceClient set_pose_client = n.serviceClient<rigid2d::setPose>("/set_pose");
-	
+        ros::ServiceClient set_pose_client = n.serviceClient<rigid2d::setPose>("/set_pose");	
 	ros::ServiceServer start_service = n.advertiseService("start", start);	
 	
 	while(!hasStarted) {

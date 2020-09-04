@@ -26,3 +26,6 @@ Describe it
 ## nuturtle_description Package
 Describe it  
 
+export ROS_MASTER_URI=http://192.168.1.100:11311
+export ROS_IP=192.168.1.121
+

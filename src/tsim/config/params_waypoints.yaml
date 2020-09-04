@@ -8,3 +8,5 @@ trans_vel: 0.5   # maximum translational velocity of the robot
 rot_vel: 0.5     # maximum rotational velocity of the robot
 frequency: 60.0 # frequency of the control loop
 pentagon_length: 2.0 # Chord length of the pentagon
+pentagon_length_real_world: 1.0 # For following waypoint testing
+
