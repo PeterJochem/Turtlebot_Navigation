@@ -14,8 +14,8 @@ I used the gtest framework for testing my Rigid2D library. This was extremly hel
 Describe gtest and the unit tests and where they are etc
 
 # Hardware
-I am using the Turtlebot3 Burger. I am just getting rolling with the hardware. The lower level interface seems to work so far! Still working on finishing it though. Heres a video of the robot doing a pure rotation <br />
-[![Turtlebot Rotating](http://img.youtube.com/vi/OWnSep3FGiw/0.jpg)](http://www.youtube.com/watch?v=OWnSep3FGiw "Turtlebot Rotating")
+I am using the Turtlebot3 Burger. Here is a video of the robot following the same pentagon as in the above gif but in real life!! <br />
+!["Turtlebot Pentagon Outside"](images/pentagon.gif)
 
 ## TSim Package
 Describe
@@ -26,6 +26,9 @@ Describe it
 ## nuturtle_description Package
 Describe it  
 
+
+### Notes to Self 
+Remember to put this into the devel/setup.bash
 export ROS_MASTER_URI=http://192.168.1.100:11311
 export ROS_IP=192.168.1.121
 
