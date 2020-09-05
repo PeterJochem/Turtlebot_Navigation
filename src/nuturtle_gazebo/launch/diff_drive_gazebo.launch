@@ -14,6 +14,8 @@
         <machine name="turtlebot1" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" />		
 	
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+
+		<arg name="world_name" value="$(find nuturtle_gazebo)/config/myWorld.world"/>
     		<arg name="paused" value="false"/>
     		<arg name="use_sim_time" value="true"/>
     		<arg name="gui" value="true"/>
