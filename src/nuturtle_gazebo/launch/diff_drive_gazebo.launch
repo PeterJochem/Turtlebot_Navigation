@@ -13,6 +13,18 @@
         <machine name="PeterJochem" address="localhost" />
         <machine name="turtlebot1" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" />		
 	
+	<include file="$(find gazebo_ros)/launch/empty_world.launch">
+    		<arg name="paused" value="false"/>
+    		<arg name="use_sim_time" value="true"/>
+    		<arg name="gui" value="true"/>
+    		<arg name="recording" value="false"/>
+    		<arg name="debug" value="false"/>
+ 	</include>
+		
+	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    	args="-urdf -model rrbot -param robot_description"/>
+
+
 	<!-- add robot argument -->
 	<include file = "$(find nuturtle_robot)/launch/basic_remote.launch">
 		<arg name="robot" value="$(arg robot)" />
@@ -24,7 +36,8 @@
 
 	<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen" />
 	
-	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_description)/urdf/diff_drive.urdf.xacro"/>
+	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_gazebo)/urdf/diff_drive.gazebo.xacro"/>
+		
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  machine="turtlebot1">
                   <!-- param name="rate" value="50" / -->	
 	</node>

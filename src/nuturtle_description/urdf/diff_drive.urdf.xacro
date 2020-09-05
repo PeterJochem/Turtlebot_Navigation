@@ -11,7 +11,11 @@
 <xacro:property name="wheel_base" value="${props['wheel_base']}" />
 <xacro:property name="chassis_length" value="${props['chassis_length']}" />
 <xacro:property name="chassis_thickness" value="${props['chassis_thickness']}" />
-<xacro:property name="caster_radius" value="${(wheel_radius - (chassis_thickness/2.0)) / 2}" />
+
+<xacro:property name="wheel_axle_offset" value="${props['wheel_axle_offset']}" />
+<xacro:property name="caster_radius" value="${wheel_axle_offset/2}" />
+<xacro:property name="lidar_radius" value="${props['lidar_radius']}" />
+<xacro:property name="lidar_height" value="${props['lidar_height']}" />
 
 
 <!-- the movable body -->
@@ -25,7 +29,37 @@
 		</material>
 		<origin rpy="0 0 0" xyz="${chassis_length/2 - wheel_radius} 0.0 0.0"/>
 	</visual>
+	
+	<inertial>
+      		<origin rpy="0 0 0" xyz="${chassis_length/2 - wheel_radius} 0.0 0.0"/>
+      		<mass value = "1.0"/>
+		<inertia ixx="${(1/12)*(chassis_thickness**2 + wheel_base**2)}" 
+			iyy="${(1/12) * (chassis_thickness**2 + chassis_length**2)}" 
+			izz="${(1/12)*(chassis_length**2 + wheel_base**2)}" ixy="0" 
+			ixz="0" iyz="0"/>
+    	</inertial>
+
+	<collision>
+      		<origin rpy="0 0 0" xyz="${chassis_length/2 - wheel_radius} 0.0 0.0"/>
+    	  	<geometry>
+        		<box size="${chassis_length} ${wheel_base} ${chassis_thickness}" />
+     		</geometry>
+	</collision>
+
 </link>
+
+<link name="base_scan">
+        <visual>
+                <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0" />
+                <geometry>
+			<cylinder radius="${lidar_radius}" length="${lidar_height}" />
+                </geometry>
+                <material name="red_mat">
+                        <color rgba="0 0 1 0.4" />
+                </material>
+        </visual>
+</link>
+
 
 <link name="caster">
         <visual>
@@ -36,12 +70,31 @@
                         <color rgba="0 1 0 0.4" />
                 </material>
                 <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
-        </visual>
+	</visual>
+
+	<collision>
+		<geometry>
+                        <sphere radius="${caster_radius}" />
+                </geometry>
+                <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+	</collision>
+	
+	<inertial>
+                <origin rpy="0 0 0" xyz="0.0 0.0 0.0"/>
+                <mass value = "0.1"/>
+		<inertia ixx="${0.40 * 0.1 * caster_radius*caster_radius}"
+			 iyy="${0.40 * 0.1 * caster_radius*caster_radius}"
+			 izz="${0.40 * 0.1 * caster_radius*caster_radius}" 
+			 ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+
+
 </link>
+
 
 <link name="left_wheel">
 	<visual>
-		<origin xyz="0.0 0.0 0.0" rpy="${3.14/2} 0.0 0" />
+		<origin xyz="0.0 ${wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0" />
 		<geometry>
 			<cylinder radius="${wheel_radius}" length="${wheel_width}" />
 		</geometry>
@@ -49,11 +102,27 @@
 			<color rgba="0 0 1 0.4" />
 		</material>
 	</visual>
+
+	<inertial>
+		<origin xyz="0.0 ${wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0"/>
+		<mass value="0.1"/>
+		<inertia ixx="${(1/12)*0.1*(3 * wheel_radius**2 + wheel_width**2)}" iyy="${.5 * 0.1 * wheel_radius**2}" 
+			izz="${(1/12)*0.1*(3*wheel_radius**2+wheel_width**2)}" ixy="0" 
+			ixz="0" iyz="0"/>
+	</inertial>
+	
+	<collision>
+        	<origin xyz="0.0 ${wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0"/>
+        	<geometry>
+            		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
+       		</geometry>
+      	</collision>
+	
 </link>
 
 <link name="right_wheel">
 	<visual>
-		<origin xyz="0.0 0.0 0.0" rpy="${3.14/2} 0.0 0.0" />
+		<origin xyz="0.0 ${-1 * wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0.0" />
 		
 		<geometry>
 			<cylinder radius="${wheel_radius}" length="${wheel_width}" />
@@ -62,18 +131,34 @@
 			<color rgba="0 0 1 0.4" />
 		</material>
 	</visual>
+		
+	<inertial>
+                <origin xyz="0.0 ${-1 * wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0.0"/>
+		<mass value="0.1"/>
+		<inertia ixx="${(1/12)*0.1*(3 * wheel_radius**2 + wheel_width**2)}" iyy="${.5 * 0.1 * wheel_radius**2}" 
+			izz="${(1/12)*0.1*(3*wheel_radius**2+wheel_width**2)}" 
+			ixy="0" ixz="0" iyz="0"/>
+        </inertial>
+		
+	<collision>
+                <origin xyz="0.0 ${-1 * wheel_width/2} 0.0" rpy="${3.14/2} 0.0 0.0"/>
+                <geometry>
+                        <cylinder radius="${wheel_radius}" length="${wheel_width}" />
+                </geometry>
+        </collision>
+
 </link>
 
   <!-- Link body to base frame -->
   <joint name="base_caster" type="fixed">
-	  <origin xyz="${ (-1 * wheel_radius + chassis_length) - (caster_radius)  } 0 ${(-1 * wheel_radius) + (wheel_radius - chassis_thickness/2.0) / 2.0}" rpy="0 0 0" />
+	  <origin xyz="${ (-1 * wheel_radius + chassis_length) - (caster_radius) } 0.0 ${(-1 * chassis_thickness/2) - caster_radius}" rpy="0 0 0" />
           <parent link="base_link"/>
-          <child link="caster"/>
+	  <child link="caster"/>
   </joint>
 
 
   <joint name="left_wheel_axle" type="continuous">
-	  <origin xyz="0.0 ${wheel_base/2} 0.0" rpy="0 0 0" />
+	  <origin xyz="0.0 ${wheel_base/2} ${-1 * wheel_radius - wheel_axle_offset}" rpy="0 0 0" />
 	  <axis xyz = "0 1 0" />
 	  <parent link="base_link" />
 	  <child link="left_wheel" />
@@ -82,12 +167,21 @@
   </joint>
 
   <joint name="right_wheel_axle" type="continuous">
-	  <origin xyz="0.0 ${-1 * wheel_base/2} 0.0" rpy="0 0 0" />
+	  <origin xyz="0.0 ${-1 * wheel_base/2} ${-1 * wheel_radius - wheel_axle_offset}" rpy="0 0 0" />
 	  <axis xyz = "0 1 0" />
 	  <parent link="base_link" />
 	  <child link="right_wheel" />
 	  <limit velocity="1.0" effort="10" lower="0" upper="180"/>
   </joint>
+
+  <joint name="base_scanner" type="fixed">
+	  <origin xyz="0.0 0.0 ${lidar_height/2 + chassis_thickness/2}" rpy="0 0 0" />
+          <axis xyz = "0 1 0" />
+          <parent link="base_link" />
+          <child link="base_scan" />
+          <limit velocity="1.0" effort="10" lower="0" upper="180"/>
+  </joint>
+
 
 </robot>
 

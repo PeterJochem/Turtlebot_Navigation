@@ -15,4 +15,6 @@ odom_frame_id: "odom"
 base_frame_id: "base_link"
 left_wheel_joint: "left_wheel_axle" # Was left_wheel
 right_wheel_joint: "right_wheel_axle"
-
+wheel_axle_offset: 0.02
+lidar_radius: 0.020
+lidar_height: 0.015

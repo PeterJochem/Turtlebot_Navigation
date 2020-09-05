@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diff_drive" >
+
+<xacro:include filename="$(find nuturtle_description)/urdf/diff_drive.urdf.xacro" />
+
+
+<gazebo reference="base_link">
+	<material>Gazebo/BlueLaser</material>
+</gazebo>
+
+<gazebo reference="base_scan">
+    <material>Gazebo/DarkGrey</material>
+</gazebo>
+
+
+<gazebo reference="caster">
+    <material>Gazebo/DarkGrey</material>
+    <mu1>0.1</mu1>
+    <mu2>0.1</mu2>
+    <minDepth>0.001</minDepth>
+    <maxVel>1.0</maxVel>
+    <kp>1000000</kp>
+    <kd>100</kd>
+</gazebo>
+
+<gazebo reference="left_wheel">
+   <material>Gazebo/DarkGrey</material>
+   <mu1>0.1</mu1>
+   <mu2>0.1</mu2>
+   <!-- minDepth>0.001</minDepth !-->
+   <!-- fdir1>1 0 0 </fdir1 !-->
+   <maxVel>0.1</maxVel>
+   <kp>500000</kp>
+   <kd>10</kd>
+</gazebo>
+
+<gazebo reference="right_wheel">
+   <material>Gazebo/DarkGrey</material>
+   <mu1>0.1</mu1>
+   <mu2>0.1</mu2>
+   <!-- minDepth>0.001</minDepth -->
+   <!-- fdir1>1 0 0 </fdir1 -->
+   <maxVel>0.1</maxVel>
+   <kp>500000</kp>
+   <kd>10</kd>
+</gazebo>
+
+</robot>
+
+
+
+
+
+
