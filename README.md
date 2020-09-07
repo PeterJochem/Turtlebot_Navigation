@@ -17,6 +17,11 @@ Describe gtest and the unit tests and where they are etc
 I am using the Turtlebot3 Burger. Here is a video of the robot following the same pentagon as in the above gif but in real life!! <br />
 !["Turtlebot Pentagon Outside"](images/pentagon.gif)
 
+# Gazebo 
+I wrote a plugin for Gazebo to simulate my differential drive robot. Below is a video of the robot navigating to waypoints in gazebo. It also shows RVIZ which displays the robot's internal data about where it thinks it is <br />
+[![](http://img.youtube.com/vi/eHXuRXVKE6k/0.jpg)](http://www.youtube.com/watch?v=eHXuRXVKE6k "Gazebo and RVIZ Comparison")  
+
+
 ## TSim Package
 Describe
 
@@ -31,5 +36,4 @@ Describe it
 Remember to put this into the devel/setup.bash
 export ROS_MASTER_URI=http://192.168.1.100:11311
 export ROS_IP=192.168.1.100
-export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/nuturtle_gazebo/build
 
