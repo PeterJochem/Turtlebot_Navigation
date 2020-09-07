@@ -1,0 +1,12 @@
+# Describe file
+k_p_trans: 10.0
+
+k_p_rot: 100.0
+
+k_i_trans: 1.0
+
+k_i_rot: 1.0
+
+linear_threshold: 2.0 # Describe
+
+angular_threshold: 0.025 # Describe

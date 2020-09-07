@@ -8,14 +8,14 @@
 	<rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
         <rosparam command="load" file="$(find tsim)/config/params.yaml"/>
 	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>		
+	<rosparam command="load" file="$(find nuturtle_gazebo)/config/plugin_params.yaml"/>	
 	
 	<!-- machine name="PeterJochem" address="localhost" if="$(eval 0 == robot)"/ -->
         <machine name="PeterJochem" address="localhost" />
-        <machine name="turtlebot1" timeout="200" address="turtlebot1" env-loader="/home/student/install/env.sh" user="student" />		
 	
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
 
-		<arg name="world_name" value="$(find nuturtle_gazebo)/config/myWorld.world"/>
+		<!-- arg name="world_name" value="$(find nuturtle_gazebo)/config/myWorld.world"/ -->
     		<arg name="paused" value="false"/>
     		<arg name="use_sim_time" value="true"/>
     		<arg name="gui" value="true"/>
@@ -26,26 +26,19 @@
 	<node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     	args="-urdf -model rrbot -param robot_description"/>
 
+	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="PeterJochem" if="$(eval robot >= 0)" />	 
+	<node name="gazebo_waypoints" pkg="nuturtle_gazebo" type="gazebo_waypoints" machine="PeterJochem" output="screen" required = "true"/>
 
-	<!-- add robot argument -->
-	<include file = "$(find nuturtle_robot)/launch/basic_remote.launch">
-		<arg name="robot" value="$(arg robot)" />
-	</include>		
-	
-
-	<node name="turtle_interface" pkg="nuturtle_robot" type="turtle_interface" machine="turtlebot1" if="$(eval robot >= 0)" />	 
-	<node name="real_waypoint" pkg="nuturtle_robot" type="real_waypoint" machine="turtlebot1" output="screen" required = "true"/>
-
-	<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen" />
+	<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="PeterJochem" output="screen" />
 	
 	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_gazebo)/urdf/diff_drive.gazebo.xacro"/>
 		
-	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  machine="turtlebot1">
+	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  machine="PeterJochem">
                   <!-- param name="rate" value="50" / -->	
 	</node>
 
         <group if="$(arg use_jsp)">
-                <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"  machine="turtlebot1">
+                <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher"  machine="PeterJochem">
        			<param name="use_gui" value="$(arg use_jsp_gui)" />
         	</node>
         </group>
@@ -53,14 +46,14 @@
 
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" machine="PeterJochem" />
 	
-	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="turtlebot1" output="screen" >
+	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="PeterJochem" output="screen" >
 		<remap from="turtle1/cmd_vel" to="/cmd_vel"/>
 		<remap from="joint_states" to="fake/joint_states"/>	
 	 </node>	
 
 	<!-- use fake namespace (ns) -->
 	<group ns="fake">	
-		<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="turtlebot1" output="screen">
+		<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="PeterJochem" output="screen">
 			<param name="odom_frame_id" value="fake_odom"/>
       			<param name="base_frame_id" value="fake_base_link"/>
      			<param name="left_wheel_joint" value="left_wheel_axle"/>

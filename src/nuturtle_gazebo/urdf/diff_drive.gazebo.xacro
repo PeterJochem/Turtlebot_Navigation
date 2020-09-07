@@ -3,7 +3,28 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diff_drive" >
 
 <xacro:include filename="$(find nuturtle_description)/urdf/diff_drive.urdf.xacro" />
+<xacro:property name="yaml_file" value="$(find nuturtle_description)/config/diff_params.yaml" />
+<xacro:property name="props" value="${load_yaml(yaml_file)}"/>
 
+
+<xacro:property name="encoder_ticks_per_revolution" value="${props['encoder_ticks_per_revolution']}" />
+<xacro:property name="motor_power" value="${props['motor_power']}" />
+<xacro:property name="motor_torque" value="${props['motor_torque']}" />
+<xacro:property name="left_wheel_joint" value="${props['left_wheel_joint']}" />
+<xacro:property name="right_wheel_joint" value="${props['right_wheel_joint']}" />
+
+
+
+<gazebo> 
+	<plugin name="turtle_drive_plugin" filename="/home/peter/Desktop/Turtlebot/catkin_ws/devel/lib/libturtle_drive_plugin.so">
+		<sensor_frequency>200.0</sensor_frequency>
+		<encoder_ticks_per_revolution>${encoder_ticks_per_revolution}</encoder_ticks_per_revolution>
+		<motor_power>${motor_power}</motor_power>
+		<motor_torque>${motor_torque}</motor_torque>
+		<left_wheel_joint>${left_wheel_joint}</left_wheel_joint>
+		<right_wheel_joint>${right_wheel_joint}</right_wheel_joint>
+	</plugin>
+</gazebo>	
 
 <gazebo reference="base_link">
 	<material>Gazebo/BlueLaser</material>
@@ -16,8 +37,8 @@
 
 <gazebo reference="caster">
     <material>Gazebo/DarkGrey</material>
-    <mu1>0.1</mu1>
-    <mu2>0.1</mu2>
+    <mu1>0.01</mu1>
+    <mu2>0.01</mu2>
     <minDepth>0.001</minDepth>
     <maxVel>1.0</maxVel>
     <kp>1000000</kp>

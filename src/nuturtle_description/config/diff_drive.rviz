@@ -65,6 +65,31 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base_scan:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        caster:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_wheel:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -77,11 +102,19 @@ Visualization Manager:
       Frames:
         All Enabled: false
         base_link:
-          Value: true
+          Value: false
+        base_scan:
+          Value: false
+        caster:
+          Value: false
         fake_odom:
-          Value: true
+          Value: false
+        left_wheel:
+          Value: false
         odom:
-          Value: true
+          Value: false
+        right_wheel:
+          Value: false
       Marker Scale: 1
       Name: TF
       Show Arrows: true
@@ -90,7 +123,14 @@ Visualization Manager:
       Tree:
         odom:
           base_link:
-            {}
+            base_scan:
+              {}
+            caster:
+              {}
+            left_wheel:
+              {}
+            right_wheel:
+              {}
           fake_odom:
             {}
       Update Interval: 0
@@ -131,7 +171,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 2.1090636253356934
+      Distance: 3.8451035022735596
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1

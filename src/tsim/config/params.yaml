@@ -6,4 +6,4 @@ width: 4.0       # width of the rectangle
 height: 5.0      # height of the rectangle
 trans_vel: 2.0   # maximum translational velocity of the robot
 rot_vel: 1.0     # maximum rotational velocity of the robot
-frequency: 1000.0 # frequency of the control loop, was 100 on August 31
+frequency: 100.0 # frequency of the control loop, was 100 on August 31

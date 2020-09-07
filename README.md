@@ -31,4 +31,5 @@ Describe it
 Remember to put this into the devel/setup.bash
 export ROS_MASTER_URI=http://192.168.1.100:11311
 export ROS_IP=192.168.1.121
+export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:~/nuturtle_gazebo/build
 
