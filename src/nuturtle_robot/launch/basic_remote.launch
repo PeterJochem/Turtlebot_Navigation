@@ -10,7 +10,11 @@
 	<node name="serial_node" pkg="rosserial_python" type="serial_node.py" machine="turtlebot1" if="$(eval robot >= 0)">
 		<param name="port" value="/dev/ttyACM0"/>
 		<param name="baud" value="115200"/> 
-	</node>	
+	</node>
 
+	<node machine="turtlebot1" pkg="hls_lfcd_lds_driver" type="hlds_laser_publisher" name="hlds_laser_publisher">
+		<param name="port" value="/dev/ttyUSB0"/>
+		<param name="frame_id" value="base_scan"/>
+	</node>
 
 </launch>
