@@ -25,11 +25,9 @@ This provides methods for storing and updating a robot's odometry data from publ
 # Equations of Motion
 Below is a derivation of the robot's kinematic equations of motion. We want to derive equations relating a desired twist in the robot's body frame to the wheel's angular velocities. We want to know how to control the wheels in order to achieve a given twist of the body frame. We also want to know, given arbitrary wheel velocities, what twist is followed by the body frame. These calculations are purely kinematic. I never modeled the robot's dynamic qualities but a next step might be to do so. <br />
 
-<object data="Kinematics_Equations.pdf" type="application/pdf" width="700px" height="700px">
-    <embed src="">
-        <p>This browser does not support PDFs. Please download the PDF to view it: <a href="Kinematics_Equations.pdf">Download PDF</a>.</p>
-    </embed>
-</object>
+![Page1 of Derivation](Derivations/page1.jpg)
+![Page2 of Derivation](Derivations/page2.jpg)
+![Page3 of Derivation](Derivations/page3.jpg)
 
 
 
