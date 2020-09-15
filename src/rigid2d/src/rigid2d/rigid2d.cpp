@@ -1,5 +1,5 @@
 /** @file
-* @brief rigid2d.cpp implements screw theory calculations useful for odometry and motion planning. */
+*   @brief rigid2d.cpp implements screw theory calculations useful for odometry and motion planning. */
 
 #include "rigid2d/rigid2d.hpp"
 #include <iostream>
@@ -9,8 +9,8 @@
 namespace rigid2d {
 	
 	/** @brief Print a vector2D in a human readable format
-	*  @param os - The output stream
-	*  @param v - the vector to be printed */
+	*   @param os - The output stream
+	*   @param v - the vector to be printed */
 	std::ostream & operator<<(std::ostream & os, const Vector2D & v) {
 		return os << "[" << v.x << ", " << v.y <<  "]" << std::endl;  
 	}

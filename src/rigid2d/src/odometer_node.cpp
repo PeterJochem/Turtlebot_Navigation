@@ -1,11 +1,12 @@
 /** @file 
  *  @brief Implements methods for storing and updating a robot's odometry data from published encoder data.
  *
- * Publishes: /odom, /visualization_marker
+ *  Publishes: /odom: Standard ROS odometry message
+ * 	       /visualization_marker: Markers for RVIZ
  *
- * Subscribes: /joint_states
+ *  Subscribes: /joint_states: Current state of robot's joints
  *
- * Services: /set_pose - Reset the robot to a new SE(2) configuration */
+ *  Services: /set_pose - Reset the robot to a new SE(2) configuration */
 
 #include "rigid2d/setPose.h"
 #include "rigid2d/rigid2d.hpp"

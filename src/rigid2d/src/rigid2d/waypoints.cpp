@@ -1,17 +1,7 @@
-/*! \file
-* \brief Waypoints.cpp implements methods for navigating to a series of waypoints. The robot adopts a 
-* rotate and translate strategy. I only used
-* this for testing code in the turtlesim environment.
-*
-* PARAMETERS:
-*     None
-* PUBLISHES:
-*     None
-* SUBSCRIBES:
-*     None
-* SERVICES:
-* 	None
-!*/
+/** @file
+*   @brief Waypoints.cpp implements methods for navigating to a series of waypoints. The robot adopts a 
+* 	   rotate and translate strategy. I only used
+* 	   this for testing code in the turtlesim environment */
 
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
@@ -22,9 +12,8 @@
 
 namespace rigid2d {
 	
-       	/*! \brief Default constructor. If there are waypoints, just have the robot stay at (0, 0)
-	* so add the point (0, 0) to the list of waypoints.
-	!*/
+       	/** @brief Default constructor. If there are waypoints, just have the robot stay at (0, 0)
+	* 	   so add the point (0, 0) to the list of waypoints. */
 	WayPoints::WayPoints() {
                 this->points = std::vector<Vector2D>();
 		Vector2D v;
@@ -35,24 +24,22 @@ namespace rigid2d {
         }
 
 
-	/*! \brief Default constructor. If there are waypoints, just have the robot stay at (0, 0)
-        * so add the point (0, 0) to the list of waypoints.
-	* \tparam points - the list of points to navigate to
-	!*/
+	/** @brief Default constructor. If there are waypoints, just have the robot stay at (0, 0)
+        * 	   so add the point (0, 0) to the list of waypoints.
+	*   @param points - The list of points to navigate to */
 	WayPoints::WayPoints(std::vector<Vector2D> points) {
 		// FIX ME - if length of list is 0, add the (0, 0) point
 		this->points = points;
 		this->index = 0;
 	}
 	
-	/*! \brief Uses the given robot's SE(2) orientation
-	* to compute what the next waypoint is and if we 
-	* should rotate or translate. Constrains the robot
-	* to a rotate and then translate strategy.  
+	/** @brief Uses the given robot's SE(2) orientation
+	*          to compute what the next waypoint is and if we 
+	* 	   should rotate or translate. Constrains the robot
+	* 	   to a rotate and then translate strategy.  
 	* 
-	* \param T_world_robot - the robot's SE(2) orientation
-	* \return Twist2D - the twist that the robot should follow
-	!*/
+	*  @param T_world_robot - the robot's SE(2) orientation
+	*  @return Twist2D - the twist that the robot should follow */
 	Twist2D WayPoints::nextWayPoint(Transform2D T_world_robot) {
 		
 		Vector2D current_point = points[index];

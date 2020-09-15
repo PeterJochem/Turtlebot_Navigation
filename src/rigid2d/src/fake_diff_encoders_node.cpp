@@ -3,10 +3,9 @@
 * 	   simulates what the encoder data should look like if we 
 * 	   followed the twist for a unit of time.  
 *
-* Subscribes: /turtle1/cmd_vel 
+* Subscribes: /turtle1/cmd_vel: Twists for the robot to perform 
 *
-* Publishes: /joint_states
-*/
+* Publishes: /joint_states: State of robot's joints */
 
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
