@@ -37,8 +37,11 @@ Below is a video of the robot navigating to waypoints in gazebo using a feedback
 [![](http://img.youtube.com/vi/eHXuRXVKE6k/0.jpg)](http://www.youtube.com/watch?v=eHXuRXVKE6k "Gazebo and RVIZ Comparison")  
 
 
-# Testing
+# Testing 
 I used the gtest framework for testing my Rigid2D library. This was extremly helpful for debugging and I will definitely use gtest again! I also used rostest to test that my ROS nodes were being set up correctly. More details about testing can be found in the rigid2d package. 
+
+# Doxygen
+I also used Doxygen to generate documentation of files, classes, and methods. The Doxygen documentation is available at 
 
 # ROS Packages
 I implemented a few ROS packages for this project. Below is a quick description of each. More details can be found in the README.md for each package. 
