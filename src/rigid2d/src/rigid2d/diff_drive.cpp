@@ -1,4 +1,5 @@
-/// @brief Implements high level abstraction and tracking of a differential drive robot 
+/** @file 
+*   @brief Implements high level abstraction and tracking of a differential drive robot */
 
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
