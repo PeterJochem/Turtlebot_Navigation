@@ -4,13 +4,13 @@ The first major step of this project was creating a C++ library for representing
 # Rigid2D Library 
 
 ### rigid2d.cpp  
-This implements the rigid body transoformations as well as the screw theory calculations. 
+This implements the rigid body transoformations as well as the screw theory calculations.  
 
 ### diff_drive.cpp  
 This provides a class for modeling a differential drive robot. It has fields for tracking the robot's current SE(2) pose as well as other odometry data.
 
 ### waypoints.cpp
-This provides methods for a robot to navigate to waypoints. 
+This provides methods for a robot to navigate to waypoints. It subscribes to a list of waypoints on the ROS server and provides methods for navigating to them.   
 
 
 # ROS Nodes 

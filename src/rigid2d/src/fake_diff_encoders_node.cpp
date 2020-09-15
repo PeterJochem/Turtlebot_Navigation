@@ -1,4 +1,11 @@
-/// \brief describe this file 
+/// \brief fake_diff_encoders_node.cpp is a ROS node 
+// that listens for twists for the robot to follow and 
+// simulates what the encoder data should look like if we 
+// followed the twist for a unit of time.  
+//
+// Subscibes: 
+//
+// Publishes:  
 
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
