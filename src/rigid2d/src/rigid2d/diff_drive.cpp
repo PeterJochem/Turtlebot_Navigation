@@ -1,4 +1,4 @@
-/// \brief describe this file 
+/// @brief Implements high level abstraction and tracking of a differential drive robot 
 
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
@@ -8,15 +8,12 @@
 
 namespace rigid2d {
 
-	/* Create a diff_drive robot at (0, 0, 0) 
-         */
+	/** @brief Default Constructor - Creates a diff_drive robot at (0, 0, 0) */
        	DiffDrive::DiffDrive() {
 	
 		this->current_pose = Transform2D();	
 	
-		// FIX ME 
-		// What to set this to?
-		// Wheel base is the distance between the center of the wheels
+		// Arbitrary wheel_base and wheel_radius
 		this->wheel_base = 0.5;
                 this->wheel_radius = 0.1;
         
@@ -24,9 +21,10 @@ namespace rigid2d {
 		this->encoder_right = 0.0;
 	}
 	
-	/* Describe 
-	 * FIX ME - add defaults for the wheel base and wheel radius
-	 */
+	/** @brief Constructor
+	 * @param pose - the robot's SE(2) configiration
+	 * @param wheel_base - half the distance between the wheels
+	 * @param wheel_radius - the wheel's radius */
 	DiffDrive::DiffDrive(Transform2D pose, double wheel_base, double wheel_radius) {
 		
 		this->current_pose = pose;
@@ -37,27 +35,20 @@ namespace rigid2d {
 		this->encoder_right = 0.0;
 	}
 
-	/* Map a desired twist in the body frame to the
-	 * wheel velocities
-	 * The derivation of these equations is at (FIX ME)  
-	 */
+	/** @brief Map a desired twist in the body frame to the wheel velocities
+	 * @param tw - the twist to map down to the wheel commands
+	 * @returns the wheel velocities
+	 * The derivation of these equations is in the README.md */
 	WheelVelocities DiffDrive::twistToWheels(Twist2D tw) {
 		
 		WheelVelocities wheel_vel;
-			
-		// Wheel base is the distance between the center of the wheels
-		// what is relationship between wheel base and d in derivation?
 		wheel_vel.left = (tw.w * (-wheel_base/ (2 * wheel_radius) ) ) + (tw.dx/wheel_radius);       
-					
 		wheel_vel.right = (tw.w * wheel_base/ (2 * wheel_radius) ) + (tw.dx/wheel_radius);
-				
 		return wheel_vel;
 	}		
 	
-	/* Given wheel velocities, 
-	 * compute the twist in the body frame
-	 * Returns Twist2D in the body frame 
-	 */
+	/** @brief Given wheel velocities, compute the twist in the body frame
+	 *  @returns Twist2D in the body frame */
 	Twist2D DiffDrive::wheelsToTwist(WheelVelocities vel) {
 					
 		double A = 1.0 / wheel_base;	
@@ -69,10 +60,10 @@ namespace rigid2d {
 		return Twist2D(w, dx, dy);		
 	}
 	
-	/* Update the robot's odometry given new encoder angles
-	 * left - the left encoder angle (in radians)
-    	 * right - the right encoder angle (in radians)
-	 */	
+	/** @brief Update the robot's odometry given new encoder angles
+	 *  @param left - the left encoder angle (in radians)
+    	 *  @param right - the right encoder angle (in radians) 
+	 *  @return the wheel displacements */	
 	WheelVelocities DiffDrive::updateOdometry(double left, double right) { 
 		
 		WheelVelocities vel;
@@ -92,11 +83,9 @@ namespace rigid2d {
 		return {vel.left, vel.right};
 	}
 			
-	/* Given a twist, update current_pose and the encoder angles
-	 * of the robot assuming the twist was followed for 1 unit 
-	 * of time
-	 * Twist2D tw is the twist the robot follows for unit time
-	 */
+	/** @brief Given a twist, update current_pose and the encoder angles
+	 * 	   of the robot assuming the twist was followed for 1 unit of time
+	 *  @param tw is the twist the robot follows for one unit time */
 	void DiffDrive::feedforward(Twist2D tw) { 
 		
 		WheelVelocities vel = twistToWheels(tw);
@@ -109,9 +98,8 @@ namespace rigid2d {
 		current_pose = current_pose.integrateTwist(tw); 	 
 	}
 	
-	/* Return the robot's current pose as a geometry_msgs
-	 * Pose2D  
-	 */	
+	/** @brief Compute the robot's current pose as a geometry_msgs Pose2D  
+	 *  @return the pose as geometry_msgs::Pose type */	
 	geometry_msgs::Pose2D DiffDrive::pose() {
 
 		geometry_msgs::Pose2D pose;
@@ -122,21 +110,21 @@ namespace rigid2d {
 		return pose;
 	}	
 		
-	/* Get method for the encoder values
-	 */
-	std::tuple<double, double> DiffDrive::getEncoders(void) {
-		
+	/** @brief Get method for the encoder values
+	 *  @return The two encoder values */
+	std::tuple<double, double> DiffDrive::getEncoders(void) {	
 		return {encoder_left, encoder_right};
 	}
 	
+	/** @brief Set the robot's SE(2) pose
+	 *  @param x - the robot's x position
+	 *  @param y - the robot's y position
+	 *  @param theta - the robot's angle about the z-axis */	
 	void DiffDrive::setPose(double x, double y, double theta) {
 		
 		Vector2D p;
 		p.x = x;
 		p.y = y;
-		//Transform2D(const Vector2D & trans, double radians)
 		current_pose = Transform2D(p, theta);		
-	}
-
-	
+	}	
 }

@@ -1,15 +1,12 @@
 <?xml version="1.0"?>
 <package format="2">
   <name>nuturtle_description</name>
-  <version>0.0.1</version>
-  <description>Contains urdf files, basic debugging, testing, and visualization code </description>
+  <version>1.0.0</version>
+  <description>URDF files, basic debugging, testing, and visualization code </description>
 
   <maintainer email="peterjochem2020@u.northwestern.edu">Peter Jochem</maintainer>
-
   <license>MIT</license>
-
   <url type="website">https://peterjochem.github.io/Portfolio</url>
-
   <author email="peterjochem2020@u.northwestern.edu">Peter Jochem</author>
   
   <buildtool_depend>catkin</buildtool_depend>

@@ -11,5 +11,5 @@ test3.json has T_ab as a translation and T_bc as a rotation <br \>
 test4.json has T_ab as a pure translation and T_bc as a pure rotation <br \>
 test5.json has T_ab as a pure rotation and T_bc as a pure rotation <br \>
 
-REMEMEBR that the angles in the transforms are entered in degrees and under the hood converted to radians
+REMEMBER that the angles in the transforms are entered in degrees and under the hood converted to radians
 

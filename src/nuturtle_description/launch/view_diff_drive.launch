@@ -1,8 +1,6 @@
-
 <!-- This launch file lets the user visualize the robot and its geometry -->
 <launch>
 
-	<!-- read value of arg -->
 	<!-- Launch the joint_state_publisher gui to publish joint angles -->
 	<arg name="use_jsp_gui" default="false"/>
 	<arg name="use_jsp" default="true"/>
@@ -14,11 +12,9 @@
 	<!-- load the xacro into the parameter server -->
 	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_description)/urdf/diff_drive.urdf.xacro"/>
 
-
 	<!-- The robot_state_publisher reads the urdf from /robot_description parameter
 	and listens to joint information on the /joint_states topic -->
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher">
-		  <!-- param name="rate" value="50" / -->
 	</node>
 
 	<group if="$(arg use_jsp)">
@@ -27,7 +23,6 @@
 		<param name="use_gui" value="$(arg use_jsp_gui)" /> 
 	</node>
 	</group>
-
 
 	<!-- rviz will enable us to see the robot -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" />

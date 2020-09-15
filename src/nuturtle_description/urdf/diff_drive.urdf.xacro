@@ -87,8 +87,6 @@
 			 izz="${0.40 * 0.1 * caster_radius*caster_radius}" 
 			 ixy="0" ixz="0" iyz="0"/>
         </inertial>
-
-
 </link>
 
 
@@ -117,7 +115,6 @@
             		<cylinder radius="${wheel_radius}" length="${wheel_width}" />
        		</geometry>
       	</collision>
-	
 </link>
 
 <link name="right_wheel">
@@ -146,7 +143,6 @@
                         <cylinder radius="${wheel_radius}" length="${wheel_width}" />
                 </geometry>
         </collision>
-
 </link>
 
   <!-- Link body to base frame -->
@@ -155,7 +151,6 @@
           <parent link="base_link"/>
 	  <child link="caster"/>
   </joint>
-
 
   <joint name="left_wheel_axle" type="continuous">
 	  <origin xyz="0.0 ${wheel_base/2} ${-1 * wheel_radius - wheel_axle_offset}" rpy="0 0 0" />
@@ -181,7 +176,5 @@
           <child link="base_scan" />
           <limit velocity="1.0" effort="10" lower="0" upper="180"/>
   </joint>
-
-
 </robot>
 

@@ -12,15 +12,13 @@ This provides a class for modeling a differential drive robot. It has fields for
 ### waypoints.cpp
 This provides methods for a robot to navigate to waypoints. It subscribes to a list of waypoints on the ROS server and provides methods for navigating to them.   
 
-
 # ROS Nodes 
 
 ### fake_diff_encoders_node.cpp 
 This node publishes fake encoder data so that we can run the robot in RVIZ without setting up the real robot.
 
 ### odometer_node.cpp
-This provides methods for storing and updating a robot's odometry data from published encoder data. 
-
+This node provides tracking and updating of a robot's odometry from published encoder data. 
 
 # Equations of Motion
 Below is a derivation of the robot's kinematic equations of motion. We want to derive equations relating a desired twist in the robot's body frame to the wheel's angular velocities. We want to know how to control the wheels in order to achieve a given twist of the body frame. We also want to know, given arbitrary wheel velocities, what twist is followed by the body frame. These calculations are purely kinematic. I never modeled the robot's dynamic qualities but a next step might be to do so. <br />

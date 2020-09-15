@@ -1,12 +1,16 @@
-/// \brief describe this file 
+/** @brief Implements methods for storing and updating a robot's odometry data from published encoder data.
+ *
+ * Publishes: /odom, /visualization_marker
+ *
+ * Subscribes: /joint_states
+ *
+ * Services: /set_pose - Reset the robot to a new SE(2) configuration 
+ */
 
+#include "rigid2d/setPose.h"
 #include "rigid2d/rigid2d.hpp"
 #include "rigid2d/diff_drive.hpp"
-#include <iostream>
-#include <math.h>
 #include <geometry_msgs/Pose.h>
-#include <string>
-#include <ros/ros.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
 #include <sensor_msgs/JointState.h>
@@ -14,18 +18,19 @@
 #include <geometry_msgs/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <visualization_msgs/Marker.h>
-#include "rigid2d/setPose.h"
+#include <iostream>
+#include <math.h>
+#include <string>
+#include <ros/ros.h>
 
-namespace rigid2d {
-}
-
+/// @brief High level abstraction and trakcing of a robot's odometry 
 class odometer {
 
 	public:
 		ros::NodeHandle n;			
 		odometer(); // Default constructor
 		std::string odom_frame_id, body_frame_id, left_wheel_joint, 
-			right_wheel_joint, base_frame_id;
+			    right_wheel_joint, base_frame_id;
 
 		double wheel_base, wheel_radius, frequency;
 		int markerCount;
@@ -40,9 +45,9 @@ class odometer {
 		ros::Timer timer;
 		ros::ServiceServer set_pose;		
 		bool set_pose_srv(rigid2d::setPose::Request &req, rigid2d::setPose::Response &res);
-		/* Describe
-		 * Check for no match case?
-		 */
+	
+		/** @brief Update the object's fields tracking the robot's wheel angles
+		 *  @param current_joint_state - a message with the new wheel angles */
 		std::tuple<double, double> getWheelPositions(sensor_msgs::JointState& current_joint_state) {
 
 			double left_wheel_rads, right_wheel_rads;	
@@ -64,13 +69,14 @@ class odometer {
 			return {left_wheel_rads, right_wheel_rads};
 		}
 
-		/* Describe 
-		*/
+		/** Publishes a marker for RVIZ of where the robot is 
+		 * @param TimerEvent is for ROS to use function with a ROS timer */
 		void publishMarker(const ros::TimerEvent&) {
 
 			// Set our initial shape type to be a cube
 			uint32_t shape = visualization_msgs::Marker::CUBE;
 			visualization_msgs::Marker marker;
+
 			// Set the frame ID and timestamp.  See the TF tutorials for information on these.
 			marker.header.frame_id = base_frame_id;
 			marker.header.stamp = ros::Time::now();
@@ -110,6 +116,8 @@ class odometer {
 			marker_pub.publish(marker);
 		}
 
+		/** @brief Functions runs when we recieve a new joint state message 
+		 *  @param current_joint_state - The new state of the robot's joints */
 		void callback(sensor_msgs::JointState current_joint_state) {
 			
 			// Find the joint state position for the left wheel and right wheel
@@ -123,7 +131,6 @@ class odometer {
 			tf2::Quaternion q;
 			q.setRPY(0, 0, pose.theta);
 			
-			// currentTime = ros::Time()::now();
 			nav_msgs::Odometry odom;
 			geometry_msgs::Quaternion q_msg = tf2::toMsg(q);
 			odom.header.stamp = ros::Time::now();
@@ -161,8 +168,7 @@ class odometer {
 		}
 };
 
-
-// Default constructor
+// Default Constructor
 odometer::odometer() {
 
 	odom_pub = n.advertise<nav_msgs::Odometry>("odom", 10);
@@ -175,7 +181,6 @@ odometer::odometer() {
 		;
 	}
 
-	// Check that they are on the server?
 	n.getParam("wheel_base", wheel_base);
 	n.getParam("wheel_radius", wheel_radius);
 	n.getParam("odom_frame_id", odom_frame_id);
@@ -189,16 +194,13 @@ odometer::odometer() {
 	ros::Rate r(frequency);
 	//ros::Rate r(1.0);
 
-	// Setup the subscriber
 	sub = n.subscribe("joint_states", 1, &odometer::callback, this);
 	
 	set_pose = n.advertiseService("set_pose", &odometer::set_pose_srv, this); 	
-	
-	//timer = n.createTimer(ros::Duration(3.0), &odometer::publishMarker, this);
 }
 
-/* Describe 
- */
+/** @brief Implements the set_pose service
+ * 	   Resets the robot to a new SE(2) configuration */
 bool odometer::set_pose_srv(rigid2d::setPose::Request &req, rigid2d::setPose::Response &res) {
 	
 	robot.setPose(req.x, req.y, req.theta);
@@ -207,12 +209,8 @@ bool odometer::set_pose_srv(rigid2d::setPose::Request &req, rigid2d::setPose::Re
 
 int main(int argc, char** argv) {
 
-	// Init ROS Node
 	ros::init(argc, argv, "odometer_node");
-		
 	ros::NodeHandle n;
-	
 	odometer myOdom = odometer();	
-	
 	ros::spin();
 }

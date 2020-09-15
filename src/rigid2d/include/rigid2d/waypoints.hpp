@@ -1,27 +1,33 @@
-/// \file
-/// \brief Describe this file
+/// @file
+/// @brief Implements methods for navigating to a series of waypoints
 
-#include<iosfwd> // contains forward definitions for iostream objects
+#include<iosfwd> 
 #include <cmath>
 #include "rigid2d/rigid2d.hpp"
 #include <geometry_msgs/Pose2D.h>
 
-
 namespace rigid2d {
+
+	/// @brief implements methods for navigating to a series of waypoints via a rotate and then translate strategy.
 	class WayPoints {
 		public:
-			/// \brief the default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius
+			/// @brief The Default constructor. Creates a robot at (0,0,0), with an arbitrary wheel base and wheel radius
 			WayPoints(void);
-
-			WayPoints(std::vector<Vector2D>);
-
-			Twist2D nextWayPoint(Transform2D);
 			
-			Twist2D computeNextWayPoint(Transform2D T_world_robot, Vector2D point);
+			/** @brief Constructor 
+			 *  @param points - a list of waypoints to navigate to */
+			WayPoints(std::vector<Vector2D> points);
 
-			// Fix me
+			/** @brief Uses the given robot's SE(2) orientation
+                         * 	   to compute what the next waypoint is and if we 
+   		         * 	   should rotate or translate. Constrains the robot
+        		 *         to a rotate and then translate strategy.  
+			 * @param current_SE2 is the robot's current transform
+			 * @return Twist2D - the twist that the robot should follow */
+			Twist2D nextWayPoint(Transform2D current_SE2);
+			
 			std::vector<Vector2D> points;
-			int index;
+			int index; // position in the list of waypoints
 	};
 }
 
