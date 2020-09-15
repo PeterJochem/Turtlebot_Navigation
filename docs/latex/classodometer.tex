@@ -1,0 +1,141 @@
+\hypertarget{classodometer}{}\section{odometer Class Reference}
+\label{classodometer}\index{odometer@{odometer}}
+
+
+Implements methods for storing and updating a robot\textquotesingle{}s odometry data from published encoder data.  
+
+
+
+
+Collaboration diagram for odometer\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=194pt]{classodometer__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classodometer_a72accc63053cf45e591d588e2c5c54b1}\label{classodometer_a72accc63053cf45e591d588e2c5c54b1}} 
+bool \hyperlink{classodometer_a72accc63053cf45e591d588e2c5c54b1}{set\+\_\+pose\+\_\+srv} (rigid2d\+::set\+Pose\+::\+Request \&req, rigid2d\+::set\+Pose\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em Implements the set\+\_\+pose service Resets the robot to a new S\+E(2) configuration. \end{DoxyCompactList}\item 
+std\+::tuple$<$ double, double $>$ \hyperlink{classodometer_a246018786026cc9d61b97c80f340e771}{get\+Wheel\+Positions} (sensor\+\_\+msgs\+::\+Joint\+State \&current\+\_\+joint\+\_\+state)
+\begin{DoxyCompactList}\small\item\em Update the object\textquotesingle{}s fields tracking the robot\textquotesingle{}s wheel angles. \end{DoxyCompactList}\item 
+void \hyperlink{classodometer_a70ae27127c495fde6b970b4ef432b326}{publish\+Marker} (const ros\+::\+Timer\+Event \&)
+\item 
+void \hyperlink{classodometer_a239d6c3386d056bd69978ae3021c4a55}{callback} (sensor\+\_\+msgs\+::\+Joint\+State current\+\_\+joint\+\_\+state)
+\begin{DoxyCompactList}\small\item\em Functions runs when we recieve a new joint state message. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classodometer_a773e2f50570c57bdcbf86a56b09a9630}\label{classodometer_a773e2f50570c57bdcbf86a56b09a9630}} 
+ros\+::\+Node\+Handle {\bfseries n}
+\item 
+\mbox{\Hypertarget{classodometer_afcf3b6d28e203e698e5b42d213b337e9}\label{classodometer_afcf3b6d28e203e698e5b42d213b337e9}} 
+std\+::string {\bfseries odom\+\_\+frame\+\_\+id}
+\item 
+\mbox{\Hypertarget{classodometer_a41f335bfc5071f6c8209fa9f35f56cf5}\label{classodometer_a41f335bfc5071f6c8209fa9f35f56cf5}} 
+std\+::string {\bfseries body\+\_\+frame\+\_\+id}
+\item 
+\mbox{\Hypertarget{classodometer_a9dd1a055106627755635ed43a25b4586}\label{classodometer_a9dd1a055106627755635ed43a25b4586}} 
+std\+::string {\bfseries left\+\_\+wheel\+\_\+joint}
+\item 
+\mbox{\Hypertarget{classodometer_a4c93f953fd318450895497f8e4554103}\label{classodometer_a4c93f953fd318450895497f8e4554103}} 
+std\+::string {\bfseries right\+\_\+wheel\+\_\+joint}
+\item 
+\mbox{\Hypertarget{classodometer_a4a8b870a74d361ffe37f37edf054abb1}\label{classodometer_a4a8b870a74d361ffe37f37edf054abb1}} 
+std\+::string {\bfseries base\+\_\+frame\+\_\+id}
+\item 
+\mbox{\Hypertarget{classodometer_ae9cdc488dd5c235b25aab107449bd1a5}\label{classodometer_ae9cdc488dd5c235b25aab107449bd1a5}} 
+double {\bfseries wheel\+\_\+base}
+\item 
+\mbox{\Hypertarget{classodometer_a3956f99786cd6c01eadb97b83c2b9d9b}\label{classodometer_a3956f99786cd6c01eadb97b83c2b9d9b}} 
+double {\bfseries wheel\+\_\+radius}
+\item 
+\mbox{\Hypertarget{classodometer_ab94a536e1b9a0e92d59acbfff618ac89}\label{classodometer_ab94a536e1b9a0e92d59acbfff618ac89}} 
+double {\bfseries frequency}
+\item 
+\mbox{\Hypertarget{classodometer_a34f1a2ad42d8862ae1cc67ce106cf389}\label{classodometer_a34f1a2ad42d8862ae1cc67ce106cf389}} 
+int {\bfseries marker\+Count}
+\item 
+\mbox{\Hypertarget{classodometer_a095f9edb9abe2c2f292e5601f16421bc}\label{classodometer_a095f9edb9abe2c2f292e5601f16421bc}} 
+ros\+::\+Publisher {\bfseries marker\+\_\+pub}
+\item 
+\mbox{\Hypertarget{classodometer_ac8cb1419d75e761754625b8545f58db8}\label{classodometer_ac8cb1419d75e761754625b8545f58db8}} 
+tf2\+\_\+ros\+::\+Transform\+Broadcaster {\bfseries odom\+\_\+broadcaster}
+\item 
+\mbox{\Hypertarget{classodometer_a1fbe3a51851f04f7e23d08ae9effce6e}\label{classodometer_a1fbe3a51851f04f7e23d08ae9effce6e}} 
+ros\+::\+Publisher {\bfseries odom\+\_\+pub}
+\item 
+\mbox{\Hypertarget{classodometer_aaf5de7e9f79d6eec30f89e8fdf72768a}\label{classodometer_aaf5de7e9f79d6eec30f89e8fdf72768a}} 
+ros\+::\+Subscriber {\bfseries sub}
+\item 
+\mbox{\Hypertarget{classodometer_abf9b513857c6af2fc2cbe26e17e3295a}\label{classodometer_abf9b513857c6af2fc2cbe26e17e3295a}} 
+\hyperlink{classrigid2d_1_1DiffDrive}{rigid2d\+::\+Diff\+Drive} {\bfseries robot}
+\item 
+\mbox{\Hypertarget{classodometer_ad3e50ca62482e4768a49487b2c7938b8}\label{classodometer_ad3e50ca62482e4768a49487b2c7938b8}} 
+ros\+::\+Timer {\bfseries timer}
+\item 
+\mbox{\Hypertarget{classodometer_a40093da249f61b22cf5fd3600135412e}\label{classodometer_a40093da249f61b22cf5fd3600135412e}} 
+ros\+::\+Service\+Server {\bfseries set\+\_\+pose}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implements methods for storing and updating a robot\textquotesingle{}s odometry data from published encoder data. 
+
+Publishes\+: /odom, /visualization\+\_\+marker
+
+Subscribes\+: /joint\+\_\+states
+
+Services\+: /set\+\_\+pose -\/ Reset the robot to a new S\+E(2) configuration High level abstraction and trakcing of a robot\textquotesingle{}s odometry 
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classodometer_a239d6c3386d056bd69978ae3021c4a55}\label{classodometer_a239d6c3386d056bd69978ae3021c4a55}} 
+\index{odometer@{odometer}!callback@{callback}}
+\index{callback@{callback}!odometer@{odometer}}
+\subsubsection{\texorpdfstring{callback()}{callback()}}
+{\footnotesize\ttfamily void odometer\+::callback (\begin{DoxyParamCaption}\item[{sensor\+\_\+msgs\+::\+Joint\+State}]{current\+\_\+joint\+\_\+state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Functions runs when we recieve a new joint state message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+\_\+joint\+\_\+state} & -\/ The new state of the robot\textquotesingle{}s joints \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classodometer_a246018786026cc9d61b97c80f340e771}\label{classodometer_a246018786026cc9d61b97c80f340e771}} 
+\index{odometer@{odometer}!get\+Wheel\+Positions@{get\+Wheel\+Positions}}
+\index{get\+Wheel\+Positions@{get\+Wheel\+Positions}!odometer@{odometer}}
+\subsubsection{\texorpdfstring{get\+Wheel\+Positions()}{getWheelPositions()}}
+{\footnotesize\ttfamily std\+::tuple$<$double, double$>$ odometer\+::get\+Wheel\+Positions (\begin{DoxyParamCaption}\item[{sensor\+\_\+msgs\+::\+Joint\+State \&}]{current\+\_\+joint\+\_\+state }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+
+
+Update the object\textquotesingle{}s fields tracking the robot\textquotesingle{}s wheel angles. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+\_\+joint\+\_\+state} & -\/ a message with the new wheel angles \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classodometer_a70ae27127c495fde6b970b4ef432b326}\label{classodometer_a70ae27127c495fde6b970b4ef432b326}} 
+\index{odometer@{odometer}!publish\+Marker@{publish\+Marker}}
+\index{publish\+Marker@{publish\+Marker}!odometer@{odometer}}
+\subsubsection{\texorpdfstring{publish\+Marker()}{publishMarker()}}
+{\footnotesize\ttfamily void odometer\+::publish\+Marker (\begin{DoxyParamCaption}\item[{const ros\+::\+Timer\+Event \&}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Publishes a marker for R\+V\+IZ of where the robot is 
+\begin{DoxyParams}{Parameters}
+{\em Timer\+Event} & is for R\+OS to use function with a R\+OS timer \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/rigid2d/src/odometer\+\_\+node.\+cpp\end{DoxyCompactItemize}

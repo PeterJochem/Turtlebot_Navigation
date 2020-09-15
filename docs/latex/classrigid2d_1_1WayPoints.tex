@@ -1,0 +1,77 @@
+\hypertarget{classrigid2d_1_1WayPoints}{}\section{rigid2d\+:\+:Way\+Points Class Reference}
+\label{classrigid2d_1_1WayPoints}\index{rigid2d\+::\+Way\+Points@{rigid2d\+::\+Way\+Points}}
+
+
+implements methods for navigating to a series of waypoints via a rotate and then translate strategy.  
+
+
+
+
+{\ttfamily \#include $<$waypoints.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1WayPoints_a4dcf881b5408aae8ad77256eff299e1e}\label{classrigid2d_1_1WayPoints_a4dcf881b5408aae8ad77256eff299e1e}} 
+\hyperlink{classrigid2d_1_1WayPoints_a4dcf881b5408aae8ad77256eff299e1e}{Way\+Points} (void)
+\begin{DoxyCompactList}\small\item\em The Default constructor. Creates a robot at (0,0,0), with an arbitrary wheel base and wheel radius. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1WayPoints_abdfac145bd6c5ab064876e7c9934dcd9}{Way\+Points} (std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ points)
+\begin{DoxyCompactList}\small\item\em Constructor. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \hyperlink{classrigid2d_1_1WayPoints_ab196e9fa96a7de086586e787b99af600}{next\+Way\+Point} (\hyperlink{classrigid2d_1_1Transform2D}{Transform2D} current\+\_\+\+S\+E2)
+\begin{DoxyCompactList}\small\item\em Uses the given robot\textquotesingle{}s S\+E(2) orientation to compute what the next waypoint is and if we should rotate or translate. Constrains the robot to a rotate and then translate strategy. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1WayPoints_a5c021a785b45910ea869b5485146680c}\label{classrigid2d_1_1WayPoints_a5c021a785b45910ea869b5485146680c}} 
+std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$ {\bfseries points}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1WayPoints_ab13ae3823d5d7b703a0d94865b03ee41}\label{classrigid2d_1_1WayPoints_ab13ae3823d5d7b703a0d94865b03ee41}} 
+int {\bfseries index}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+implements methods for navigating to a series of waypoints via a rotate and then translate strategy. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1WayPoints_abdfac145bd6c5ab064876e7c9934dcd9}\label{classrigid2d_1_1WayPoints_abdfac145bd6c5ab064876e7c9934dcd9}} 
+\index{rigid2d\+::\+Way\+Points@{rigid2d\+::\+Way\+Points}!Way\+Points@{Way\+Points}}
+\index{Way\+Points@{Way\+Points}!rigid2d\+::\+Way\+Points@{rigid2d\+::\+Way\+Points}}
+\subsubsection{\texorpdfstring{Way\+Points()}{WayPoints()}}
+{\footnotesize\ttfamily rigid2d\+::\+Way\+Points\+::\+Way\+Points (\begin{DoxyParamCaption}\item[{std\+::vector$<$ \hyperlink{structrigid2d_1_1Vector2D}{Vector2D} $>$}]{points }\end{DoxyParamCaption})}
+
+
+
+Constructor. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em points} & -\/ a list of waypoints to navigate to \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1WayPoints_ab196e9fa96a7de086586e787b99af600}\label{classrigid2d_1_1WayPoints_ab196e9fa96a7de086586e787b99af600}} 
+\index{rigid2d\+::\+Way\+Points@{rigid2d\+::\+Way\+Points}!next\+Way\+Point@{next\+Way\+Point}}
+\index{next\+Way\+Point@{next\+Way\+Point}!rigid2d\+::\+Way\+Points@{rigid2d\+::\+Way\+Points}}
+\subsubsection{\texorpdfstring{next\+Way\+Point()}{nextWayPoint()}}
+{\footnotesize\ttfamily \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} rigid2d\+::\+Way\+Points\+::next\+Way\+Point (\begin{DoxyParamCaption}\item[{\hyperlink{classrigid2d_1_1Transform2D}{Transform2D}}]{current\+\_\+\+S\+E2 }\end{DoxyParamCaption})}
+
+
+
+Uses the given robot\textquotesingle{}s S\+E(2) orientation to compute what the next waypoint is and if we should rotate or translate. Constrains the robot to a rotate and then translate strategy. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em current\+\_\+\+S\+E2} & is the robot\textquotesingle{}s current transform \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} -\/ the twist that the robot should follow 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/rigid2d/include/rigid2d/\hyperlink{waypoints_8hpp}{waypoints.\+hpp}\end{DoxyCompactItemize}

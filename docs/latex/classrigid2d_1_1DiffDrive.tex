@@ -1,0 +1,232 @@
+\hypertarget{classrigid2d_1_1DiffDrive}{}\section{rigid2d\+:\+:Diff\+Drive Class Reference}
+\label{classrigid2d_1_1DiffDrive}\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+
+
+Implements high level abstraction and tracking of a diff drive robot.  
+
+
+
+
+{\ttfamily \#include $<$diff\+\_\+drive.\+hpp$>$}
+
+
+
+Collaboration diagram for rigid2d\+:\+:Diff\+Drive\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=194pt]{classrigid2d_1_1DiffDrive__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a2d646290b7a03d391a59e8a296fea30d}\label{classrigid2d_1_1DiffDrive_a2d646290b7a03d391a59e8a296fea30d}} 
+\hyperlink{classrigid2d_1_1DiffDrive_a2d646290b7a03d391a59e8a296fea30d}{Diff\+Drive} ()
+\begin{DoxyCompactList}\small\item\em The default constructor creates a robot at (0,0,0), with a fixed wheel base and wheel radius. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1DiffDrive_a40b4756591df4548335371fea7bf60b4}{Diff\+Drive} (\hyperlink{classrigid2d_1_1Transform2D}{Transform2D}, double wheel\+\_\+base, double wheel\+\_\+radius)
+\begin{DoxyCompactList}\small\item\em Constructor -\/ create a \hyperlink{classrigid2d_1_1DiffDrive}{Diff\+Drive} model by specifying the pose, and geometry. \end{DoxyCompactList}\item 
+std\+::tuple$<$ double, double $>$ \hyperlink{classrigid2d_1_1DiffDrive_a9f8e57efccb3ea515c844e25828a373e}{get\+Encoders} (void)
+\begin{DoxyCompactList}\small\item\em Compute the robot\textquotesingle{}s encoder values. \end{DoxyCompactList}\item 
+\hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities} \hyperlink{classrigid2d_1_1DiffDrive_a62e097a7ce1162a9731f184679002573}{twist\+To\+Wheels} (\hyperlink{classrigid2d_1_1Twist2D}{Twist2D})
+\begin{DoxyCompactList}\small\item\em Determine the wheel velocities required to make the robot move with the desired linear and angular velocities. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \hyperlink{classrigid2d_1_1DiffDrive_a726f6bc97c6431bd80164e0403f36c2b}{wheels\+To\+Twist} (\hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities} vel)
+\begin{DoxyCompactList}\small\item\em determine the body twist of the robot from its wheel velocities \end{DoxyCompactList}\item 
+\hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities} \hyperlink{classrigid2d_1_1DiffDrive_af0ec14baf8f1bd40e1d55226f087ef74}{update\+Odometry} (double, double)
+\begin{DoxyCompactList}\small\item\em Update the robot\textquotesingle{}s odometry based on the current encoder readings. \end{DoxyCompactList}\item 
+void \hyperlink{classrigid2d_1_1DiffDrive_a87ba3d5ad02cef8285789a2cebe22961}{feedforward} (\hyperlink{classrigid2d_1_1Twist2D}{Twist2D})
+\begin{DoxyCompactList}\small\item\em update the odometry of the diff drive robot, assuming that it follows the given body twist for one time unit \end{DoxyCompactList}\item 
+geometry\+\_\+msgs\+::\+Pose2D \hyperlink{classrigid2d_1_1DiffDrive_ae4d0c4e53e8558fed8c7711724f585d3}{pose} ()
+\begin{DoxyCompactList}\small\item\em Get the current pose of the robot. \end{DoxyCompactList}\item 
+void \hyperlink{classrigid2d_1_1DiffDrive_a2554a9bce4ecada65a159498a432d444}{reset} (\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} ps)
+\begin{DoxyCompactList}\small\item\em reset the robot to the given position/orientation \end{DoxyCompactList}\item 
+void \hyperlink{classrigid2d_1_1DiffDrive_a82198f5be806b6f772a1718f3887f5c9}{set\+Pose} (double x, double y, double theta)
+\begin{DoxyCompactList}\small\item\em Set the robot\textquotesingle{}s pose. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_ac9e0ed189932445e27c86839b918b282}\label{classrigid2d_1_1DiffDrive_ac9e0ed189932445e27c86839b918b282}} 
+\hyperlink{classrigid2d_1_1Transform2D}{Transform2D} {\bfseries get\+Pose} (void)
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a6d07f9fdff01d212a975386e7798f156}\label{classrigid2d_1_1DiffDrive_a6d07f9fdff01d212a975386e7798f156}} 
+\hyperlink{classrigid2d_1_1Transform2D}{rigid2d\+::\+Transform2D} {\bfseries current\+\_\+pose}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_ac98ca684c26df696998545c9061bdcef}\label{classrigid2d_1_1DiffDrive_ac98ca684c26df696998545c9061bdcef}} 
+double {\bfseries wheel\+\_\+base}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_aebc2a573e61f048b0e0817d38a56aa81}\label{classrigid2d_1_1DiffDrive_aebc2a573e61f048b0e0817d38a56aa81}} 
+double {\bfseries wheel\+\_\+radius}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_ae21880890a8cbcb1195a0e9e2b16fbe5}\label{classrigid2d_1_1DiffDrive_ae21880890a8cbcb1195a0e9e2b16fbe5}} 
+double {\bfseries encoder\+\_\+left}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_ac8d8b3b66fa054874f89f52dc25ac0bc}\label{classrigid2d_1_1DiffDrive_ac8d8b3b66fa054874f89f52dc25ac0bc}} 
+double {\bfseries encoder\+\_\+right}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Implements high level abstraction and tracking of a diff drive robot. 
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a40b4756591df4548335371fea7bf60b4}\label{classrigid2d_1_1DiffDrive_a40b4756591df4548335371fea7bf60b4}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!Diff\+Drive@{Diff\+Drive}}
+\index{Diff\+Drive@{Diff\+Drive}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{Diff\+Drive()}{DiffDrive()}}
+{\footnotesize\ttfamily rigid2d\+::\+Diff\+Drive\+::\+Diff\+Drive (\begin{DoxyParamCaption}\item[{\hyperlink{classrigid2d_1_1Transform2D}{Transform2D}}]{,  }\item[{double}]{wheel\+\_\+base,  }\item[{double}]{wheel\+\_\+radius }\end{DoxyParamCaption})}
+
+
+
+Constructor -\/ create a \hyperlink{classrigid2d_1_1DiffDrive}{Diff\+Drive} model by specifying the pose, and geometry. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em pose} & -\/ the current position of the robot \\
+\hline
+{\em wheel\+\_\+base} & -\/ the distance between the wheel centers \\
+\hline
+{\em wheel\+\_\+radius} & -\/ the radius of the wheels \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a87ba3d5ad02cef8285789a2cebe22961}\label{classrigid2d_1_1DiffDrive_a87ba3d5ad02cef8285789a2cebe22961}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!feedforward@{feedforward}}
+\index{feedforward@{feedforward}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{feedforward()}{feedforward()}}
+{\footnotesize\ttfamily void rigid2d\+::\+Diff\+Drive\+::feedforward (\begin{DoxyParamCaption}\item[{\hyperlink{classrigid2d_1_1Twist2D}{Twist2D}}]{ }\end{DoxyParamCaption})}
+
+
+
+update the odometry of the diff drive robot, assuming that it follows the given body twist for one time unit 
+
+
+\begin{DoxyParams}{Parameters}
+{\em cmd} & -\/ the twist command to send to the robot \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a9f8e57efccb3ea515c844e25828a373e}\label{classrigid2d_1_1DiffDrive_a9f8e57efccb3ea515c844e25828a373e}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!get\+Encoders@{get\+Encoders}}
+\index{get\+Encoders@{get\+Encoders}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{get\+Encoders()}{getEncoders()}}
+{\footnotesize\ttfamily std\+::tuple$<$double, double$>$ rigid2d\+::\+Diff\+Drive\+::get\+Encoders (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})}
+
+
+
+Compute the robot\textquotesingle{}s encoder values. 
+
+\begin{DoxyReturn}{Returns}
+the robot\textquotesingle{}s current encoder values 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_ae4d0c4e53e8558fed8c7711724f585d3}\label{classrigid2d_1_1DiffDrive_ae4d0c4e53e8558fed8c7711724f585d3}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!pose@{pose}}
+\index{pose@{pose}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{pose()}{pose()}}
+{\footnotesize\ttfamily geometry\+\_\+msgs\+::\+Pose2D rigid2d\+::\+Diff\+Drive\+::pose (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Get the current pose of the robot. 
+
+\begin{DoxyReturn}{Returns}
+the current pose of the robot 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a2554a9bce4ecada65a159498a432d444}\label{classrigid2d_1_1DiffDrive_a2554a9bce4ecada65a159498a432d444}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!reset@{reset}}
+\index{reset@{reset}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{reset()}{reset()}}
+{\footnotesize\ttfamily void rigid2d\+::\+Diff\+Drive\+::reset (\begin{DoxyParamCaption}\item[{\hyperlink{classrigid2d_1_1Twist2D}{Twist2D}}]{ps }\end{DoxyParamCaption})}
+
+
+
+reset the robot to the given position/orientation 
+
+
+\begin{DoxyParams}{Parameters}
+{\em ps} & -\/ the new pose of the robot \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a82198f5be806b6f772a1718f3887f5c9}\label{classrigid2d_1_1DiffDrive_a82198f5be806b6f772a1718f3887f5c9}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!set\+Pose@{set\+Pose}}
+\index{set\+Pose@{set\+Pose}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{set\+Pose()}{setPose()}}
+{\footnotesize\ttfamily void rigid2d\+::\+Diff\+Drive\+::set\+Pose (\begin{DoxyParamCaption}\item[{double}]{x,  }\item[{double}]{y,  }\item[{double}]{theta }\end{DoxyParamCaption})}
+
+
+
+Set the robot\textquotesingle{}s pose. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em x} & -\/ the new x coordinate \\
+\hline
+{\em y} & -\/ the new y coordinate \\
+\hline
+{\em theta} & -\/ the robot\textquotesingle{}s new angle in the plane \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a62e097a7ce1162a9731f184679002573}\label{classrigid2d_1_1DiffDrive_a62e097a7ce1162a9731f184679002573}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!twist\+To\+Wheels@{twist\+To\+Wheels}}
+\index{twist\+To\+Wheels@{twist\+To\+Wheels}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{twist\+To\+Wheels()}{twistToWheels()}}
+{\footnotesize\ttfamily \hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities} rigid2d\+::\+Diff\+Drive\+::twist\+To\+Wheels (\begin{DoxyParamCaption}\item[{\hyperlink{classrigid2d_1_1Twist2D}{Twist2D}}]{ }\end{DoxyParamCaption})}
+
+
+
+Determine the wheel velocities required to make the robot move with the desired linear and angular velocities. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em twist} & -\/ the desired twist in the body frame of the robot \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/ the wheel velocities to use 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em std\+::exception} & \\
+\hline
+\end{DoxyExceptions}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_af0ec14baf8f1bd40e1d55226f087ef74}\label{classrigid2d_1_1DiffDrive_af0ec14baf8f1bd40e1d55226f087ef74}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!update\+Odometry@{update\+Odometry}}
+\index{update\+Odometry@{update\+Odometry}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{update\+Odometry()}{updateOdometry()}}
+{\footnotesize\ttfamily \hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities} rigid2d\+::\+Diff\+Drive\+::update\+Odometry (\begin{DoxyParamCaption}\item[{double}]{,  }\item[{double}]{ }\end{DoxyParamCaption})}
+
+
+
+Update the robot\textquotesingle{}s odometry based on the current encoder readings. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left} & -\/ the left encoder angle (in radians) \\
+\hline
+{\em right} & -\/ the right encoder angle (in radians) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classrigid2d_1_1DiffDrive_a726f6bc97c6431bd80164e0403f36c2b}\label{classrigid2d_1_1DiffDrive_a726f6bc97c6431bd80164e0403f36c2b}} 
+\index{rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}!wheels\+To\+Twist@{wheels\+To\+Twist}}
+\index{wheels\+To\+Twist@{wheels\+To\+Twist}!rigid2d\+::\+Diff\+Drive@{rigid2d\+::\+Diff\+Drive}}
+\subsubsection{\texorpdfstring{wheels\+To\+Twist()}{wheelsToTwist()}}
+{\footnotesize\ttfamily \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} rigid2d\+::\+Diff\+Drive\+::wheels\+To\+Twist (\begin{DoxyParamCaption}\item[{\hyperlink{structrigid2d_1_1WheelVelocities}{Wheel\+Velocities}}]{vel }\end{DoxyParamCaption})}
+
+
+
+determine the body twist of the robot from its wheel velocities 
+
+
+\begin{DoxyParams}{Parameters}
+{\em vel} & -\/ the velocities of the wheels, assumed to be held constant for one time unit \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the twist in the original body frame of the robot 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/rigid2d/include/rigid2d/\hyperlink{diff__drive_8hpp}{diff\+\_\+drive.\+hpp}\end{DoxyCompactItemize}

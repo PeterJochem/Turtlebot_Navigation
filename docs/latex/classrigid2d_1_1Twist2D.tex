@@ -1,0 +1,165 @@
+\hypertarget{classrigid2d_1_1Twist2D}{}\section{rigid2d\+:\+:Twist2D Class Reference}
+\label{classrigid2d_1_1Twist2D}\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classrigid2d_1_1Twist2D_af389fe01053df9f380a252acb27bd2a7}{Twist2D} (double w, double dx, double dy)
+\begin{DoxyCompactList}\small\item\em Constructor for \hyperlink{classrigid2d_1_1Twist2D}{Twist2D}. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a3c6a0ed4e27f7c179ccc1fac93d4ac30}\label{classrigid2d_1_1Twist2D_a3c6a0ed4e27f7c179ccc1fac93d4ac30}} 
+\hyperlink{classrigid2d_1_1Twist2D_a3c6a0ed4e27f7c179ccc1fac93d4ac30}{Twist2D} (void)
+\begin{DoxyCompactList}\small\item\em Default constructor. Creates the (0.\+0, 0.\+0, 0.\+0) twist. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a79fe58069e57184bb5b8beeb21ca3988}\label{classrigid2d_1_1Twist2D_a79fe58069e57184bb5b8beeb21ca3988}} 
+void \hyperlink{classrigid2d_1_1Twist2D_a79fe58069e57184bb5b8beeb21ca3988}{set\+Vars} (double, double, double)
+\begin{DoxyCompactList}\small\item\em Set/update a twist\textquotesingle{}s fields  w -\/ the angular velocity about the z-\/axis  dx -\/ cartesian x velocity in the plane  dy -\/ cartesian y velocity in the plane. \end{DoxyCompactList}\item 
+\hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \hyperlink{classrigid2d_1_1Twist2D_a777041352439c853197d2bca414ec4cf}{scale\+Twist} (double)
+\begin{DoxyCompactList}\small\item\em Take a twist and scale it by dt. \end{DoxyCompactList}\item 
+double \hyperlink{classrigid2d_1_1Twist2D_a1858b9ff8ceefd361a948fab83860ebe}{get\+Dx} () const
+\begin{DoxyCompactList}\small\item\em Retrieves the x component of robot\textquotesingle{}s position. \end{DoxyCompactList}\item 
+double \hyperlink{classrigid2d_1_1Twist2D_aff295b650a5b848b74ab5d15436efb8a}{get\+Dy} () const
+\begin{DoxyCompactList}\small\item\em Retrieves the y component of robot\textquotesingle{}s position. \end{DoxyCompactList}\item 
+double \hyperlink{classrigid2d_1_1Twist2D_abf67b8c02aad46cdcd83936037e1c99a}{getW} () const
+\begin{DoxyCompactList}\small\item\em Retrieves the angular component of robot\textquotesingle{}s position. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a51cf04849d5dee162f9f5c2b208d97c7}\label{classrigid2d_1_1Twist2D_a51cf04849d5dee162f9f5c2b208d97c7}} 
+double {\bfseries w}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a9819a1a827432b65e4f7f82a3a52979f}\label{classrigid2d_1_1Twist2D_a9819a1a827432b65e4f7f82a3a52979f}} 
+double {\bfseries dx}
+\item 
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a4d4b0d68d3d7847c702def808c90fab7}\label{classrigid2d_1_1Twist2D_a4d4b0d68d3d7847c702def808c90fab7}} 
+double {\bfseries dy}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \hyperlink{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}{operator$<$$<$} (std\+::ostream \&os, const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&tw)
+\begin{DoxyCompactList}\small\item\em Print a human readable description of the twist. \end{DoxyCompactList}\item 
+std\+::istream \& \hyperlink{classrigid2d_1_1Twist2D_ab527608eeb57bab63fae6b12e45f6537}{operator$>$$>$} (std\+::istream \&is, const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&tw)
+\begin{DoxyCompactList}\small\item\em Read in a Twist2d from the user. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_af389fe01053df9f380a252acb27bd2a7}\label{classrigid2d_1_1Twist2D_af389fe01053df9f380a252acb27bd2a7}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!Twist2D@{Twist2D}}
+\index{Twist2D@{Twist2D}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{Twist2\+D()}{Twist2D()}}
+{\footnotesize\ttfamily rigid2d\+::\+Twist2\+D\+::\+Twist2D (\begin{DoxyParamCaption}\item[{double}]{w,  }\item[{double}]{dx,  }\item[{double}]{dy }\end{DoxyParamCaption})}
+
+
+
+Constructor for \hyperlink{classrigid2d_1_1Twist2D}{Twist2D}. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em w} & -\/ the angular velocity \\
+\hline
+{\em dx} & -\/ the x velocity \\
+\hline
+{\em dy} & -\/ the y velocity \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a1858b9ff8ceefd361a948fab83860ebe}\label{classrigid2d_1_1Twist2D_a1858b9ff8ceefd361a948fab83860ebe}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!get\+Dx@{get\+Dx}}
+\index{get\+Dx@{get\+Dx}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{get\+Dx()}{getDx()}}
+{\footnotesize\ttfamily double rigid2d\+::\+Twist2\+D\+::get\+Dx (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Retrieves the x component of robot\textquotesingle{}s position. 
+
+\begin{DoxyReturn}{Returns}
+the x component of robot\textquotesingle{}s position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_aff295b650a5b848b74ab5d15436efb8a}\label{classrigid2d_1_1Twist2D_aff295b650a5b848b74ab5d15436efb8a}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!get\+Dy@{get\+Dy}}
+\index{get\+Dy@{get\+Dy}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{get\+Dy()}{getDy()}}
+{\footnotesize\ttfamily double rigid2d\+::\+Twist2\+D\+::get\+Dy (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Retrieves the y component of robot\textquotesingle{}s position. 
+
+\begin{DoxyReturn}{Returns}
+the x component of robot\textquotesingle{}s position 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_abf67b8c02aad46cdcd83936037e1c99a}\label{classrigid2d_1_1Twist2D_abf67b8c02aad46cdcd83936037e1c99a}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!getW@{getW}}
+\index{getW@{getW}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{get\+W()}{getW()}}
+{\footnotesize\ttfamily double rigid2d\+::\+Twist2\+D\+::getW (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption}) const}
+
+
+
+Retrieves the angular component of robot\textquotesingle{}s position. 
+
+\begin{DoxyReturn}{Returns}
+the angle of the robot in the plane 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_a777041352439c853197d2bca414ec4cf}\label{classrigid2d_1_1Twist2D_a777041352439c853197d2bca414ec4cf}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!scale\+Twist@{scale\+Twist}}
+\index{scale\+Twist@{scale\+Twist}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{scale\+Twist()}{scaleTwist()}}
+{\footnotesize\ttfamily \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} rigid2d\+::\+Twist2\+D\+::scale\+Twist (\begin{DoxyParamCaption}\item[{double}]{ }\end{DoxyParamCaption})}
+
+
+
+Take a twist and scale it by dt. 
+
+\begin{DoxyReturn}{Returns}
+the scaled Twist 
+\end{DoxyReturn}
+
+
+\subsection{Friends And Related Function Documentation}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}\label{classrigid2d_1_1Twist2D_aa73bc548f9e2f87b66c08cd96443e792}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{operator$<$$<$}{operator<<}}
+{\footnotesize\ttfamily std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&}]{tw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Print a human readable description of the twist. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & -\/ the output stream \\
+\hline
+{\em tw} & -\/ the twist we are describing \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the output stream 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classrigid2d_1_1Twist2D_ab527608eeb57bab63fae6b12e45f6537}\label{classrigid2d_1_1Twist2D_ab527608eeb57bab63fae6b12e45f6537}} 
+\index{rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}!operator$>$$>$@{operator$>$$>$}}
+\index{operator$>$$>$@{operator$>$$>$}!rigid2d\+::\+Twist2D@{rigid2d\+::\+Twist2D}}
+\subsubsection{\texorpdfstring{operator$>$$>$}{operator>>}}
+{\footnotesize\ttfamily std\+::istream\& operator$>$$>$ (\begin{DoxyParamCaption}\item[{std\+::istream \&}]{is,  }\item[{const \hyperlink{classrigid2d_1_1Twist2D}{Twist2D} \&}]{tw }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Read in a Twist2d from the user. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em is} & -\/ the input stream \\
+\hline
+{\em tw} & -\/ the twist object we are inputing \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the input stream 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+src/rigid2d/include/rigid2d/\hyperlink{rigid2d_8hpp}{rigid2d.\+hpp}\end{DoxyCompactItemize}
