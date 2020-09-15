@@ -1,7 +1,6 @@
 <launch>
 	
 	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
-
 	<arg name="use_jsp_gui" default="false"/>
         <arg name="use_jsp" default="false" />
 
@@ -34,7 +33,6 @@
 	<param name="robot_description" command="$(find xacro)/xacro $(find nuturtle_gazebo)/urdf/diff_drive.gazebo.xacro"/>
 		
 	<node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"  machine="PeterJochem">
-                  <!-- param name="rate" value="50" / -->	
 	</node>
 
         <group if="$(arg use_jsp)">
@@ -43,15 +41,13 @@
         	</node>
         </group>
 
-
         <node name="rviz" pkg="rviz" type="rviz" args="-d $(find nuturtle_description)/config/diff_drive.rviz" required="true" machine="PeterJochem" />
 	
-	 <node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="PeterJochem" output="screen" >
+	<node type="fake_diff_encoders_node" name="fake_diff_encoders_node" pkg="rigid2d" machine="PeterJochem" output="screen" >
 		<remap from="turtle1/cmd_vel" to="/cmd_vel"/>
 		<remap from="joint_states" to="fake/joint_states"/>	
 	 </node>	
 
-	<!-- use fake namespace (ns) -->
 	<group ns="fake">	
 		<node name="odometer_node" pkg="rigid2d" type="odometer_node" machine="PeterJochem" output="screen">
 			<param name="odom_frame_id" value="fake_odom"/>
@@ -60,8 +56,6 @@
       			<param name="right_wheel_joint" value="right_wheel_axle"/>		
 		</node>
 	</group>
-
 	
 	<node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 1 odom fake_odom" />
-
 </launch>

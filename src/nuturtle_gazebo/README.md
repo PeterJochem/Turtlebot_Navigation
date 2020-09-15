@@ -1,7 +1,7 @@
 # Description
 This ROS package is used for simulating the robot in Gazebo. I wrote a plugin for Gazebo to simulate my differential drive robot. This allows me to iterate faster and avoid using the robot. The plugin listens for wheel commands that are normally sent to the real robot's motors and uses them to update the simulated robot's wheel velocities. The plugin also simulates the encoder and laser data normally published by the real robot. This allows us to have a pretty realistic and dynamic simulation of the robot and its enviroment.
 
-# Run code 
+# Running My Code 
 To launch Gazebo and have the Turtlebot navigate to a series of waypoints, run ```roslaunch nuturtle_gazebo diff_drive_gazebo.launch``` <br />
 
 # Results
@@ -11,13 +11,13 @@ Below is a video of the robot navigating to waypoints in gazebo using a feedback
 
 
 # Files in ROS Package
-gazebo_waypoints.cpp implements a ROS node to drive the robot to a series of waypoints with a feedback controller.
+src/gazebo_waypoints.cpp implements a ROS node to drive the robot to a series of waypoints with a feedback controller.
 <br />
 
-turtle_drive_plugin.cpp is the Gazebo plugin. More details and documentation on writing Gazebo plugins can be found [here](http://gazebosim.org/tutorials?tut=plugins_model).
+src/turtle_drive_plugin.cpp is the Gazebo plugin. More details and documentation on writing Gazebo plugins can be found [here](http://gazebosim.org/tutorials?tut=plugins_model).
 <br />
 
-diff_drive.gazebo.xacro is a xacro file which includes the original xacro file but then adds the extra details needed for a dynamic simulation in Gazebo.
+urdf/diff_drive.gazebo.xacro is a xacro file which includes the original xacro file but then adds the extra details needed for a dynamic simulation in Gazebo.
 <br />
 
 config/plugin_params.yaml is a file specifying the simulated robot's max velocity and other physical properties.

@@ -1,4 +1,5 @@
-/** @brief Implements methods for storing and updating a robot's odometry data from published encoder data.
+/** \file 
+ * @brief Implements methods for storing and updating a robot's odometry data from published encoder data.
  *
  * Publishes: /odom, /visualization_marker
  *

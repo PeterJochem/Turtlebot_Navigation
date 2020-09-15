@@ -1,8 +1,25 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "std_srvs/Empty.h"
-#include "turtlesim/Pose.h"
-#include "geometry_msgs/Twist.h"
+/** @file
+ * @brief Launch robot in Gazebo and navigate to waypoints on the server  
+ *
+ * Parameters: /rotational_vel_limit: max rotational speed
+ *             /trans_vel_limit: max translational speed
+ *	       /k_p_trans: proportional gain for translating
+ *	       /k_i_trans: integral gain for translating
+ *	       /k_p_rot: proportional gain for rotating
+ *	       /k_i_rot: integral gain for rotating
+ *	       /linear_threshold: linear distance where we consider robot at a point
+ *             /angular_threshold: angular distance where we consider robot'a angle to be equal
+ *
+ *
+ * Publishes: /odom: standard ROS odometry message
+ * 	      /visualization_marker: Marker for RVIZ to denote where the robot has been
+ *
+ * Subscribes: /joint_states: The current state of each of the robot's joints
+ *
+ * Services: /set_pose: Reset the robot to a new SE(2) configuration */
+
+#include <geometry_msgs/Pose2D.h>
+#include <visualization_msgs/Marker.h>
 #include <turtlesim/TeleportAbsolute.h>
 #include <turtlesim/SetPen.h>
 #include <tsim/PoseError.h>
@@ -11,12 +28,14 @@
 #include <sstream>
 #include <stdlib.h>
 #include <tf/tf.h>
-#include <geometry_msgs/Pose2D.h>
-#include <visualization_msgs/Marker.h>
+#include "ros/ros.h"
+#include "std_msgs/String.h"
+#include "std_srvs/Empty.h"
+#include "turtlesim/Pose.h"
+#include "geometry_msgs/Twist.h"
 #include "rigid2d/waypoints.hpp"
 #include "rigid2d/setPose.h"
 #include "nuturtle_robot/start_waypoints.h"
-//#include "rigid2d/rigid2d.hpp"
 
 double max_rotation_speed, max_translational_speed, frac_rot_vel, frac_trans_vel;
 double current_odom_x = 0.0; 
@@ -29,11 +48,8 @@ double k_p_trans, k_i_trans, k_p_rot, k_i_rot;
 bool hasStarted = false;
 ros::ServiceClient set_pose_client;
 
-bool wp1 = false;
-
-/* Describe this class
-*/
-class FSM_Feedforward {
+/** @brief Implements a feedback controller for the Gazebo simulation */
+class FSM_Feedback {
 
 	bool translate;
 	int timeQuantas;
@@ -43,29 +59,28 @@ class FSM_Feedforward {
 	double pentagon_length;
 	
 	public:
-		double rot_vel;
-        	double trans_vel;
-
-		FSM_Feedforward(double);
-		FSM_Feedforward();
+		FSM_Feedback(double);
+		FSM_Feedback();
 		void createPentagonWayPoints();
 		void setRates();
 		std::tuple<double, double> nextWaypoint();
 		geometry_msgs::Twist checkUpdate();
+		void publishMarker();
+
 		std::vector<double> waypoints;
 		int currentWaypoint;
 		ros::NodeHandle n;
-	
 		int markerCount;
       		ros::Publisher marker_pub;
-		void publishMarker();	
 		std::string base_frame_id;
 		rigid2d::WayPoints current_waypoints;		
+		double rot_vel;
+                double trans_vel;
 };
 
-/* This is the constructor for the FSM
-*/
-FSM_Feedforward::FSM_Feedforward(double frequency = 100.0) {
+/** @brief Constructor for the FSM
+ *  @param frequency - rate at which to update FSM. Optional. Defaults to 100.0 */
+FSM_Feedback::FSM_Feedback(double frequency = 100.0) {
 
 	translate = false;	
 	timeQuantas = 0;
@@ -82,9 +97,9 @@ FSM_Feedforward::FSM_Feedforward(double frequency = 100.0) {
         desired_angle = current_odom_theta + std::atan2(nextY - current_odom_y, nextX - current_odom_x); 
 
 }
-/* This is the constructor for the FSM
-*/
-FSM_Feedforward::FSM_Feedforward() {
+
+/** @brief Default Constructor for the FSM */
+FSM_Feedback::FSM_Feedback() {
 
         translate = false;
         timeQuantas = 0;
@@ -100,28 +115,29 @@ FSM_Feedforward::FSM_Feedforward() {
         desired_angle = current_odom_theta + std::atan2(nextY - current_odom_y, nextX - current_odom_x);
 }
 
-/* Describe
-*/
-std::tuple<double, double> FSM_Feedforward::nextWaypoint() {
+/** @brief Compute and return the next (x, y) pair to navigate to
+ *  @return the next waypoint as a (x, y) tuple */
+std::tuple<double, double> FSM_Feedback::nextWaypoint() {
 	
-
-	// FIX ME FIX ME FIX ME FIX ME - shpuld loop back to the list start
 	double nextX = waypoints.at(currentWaypoint * 2);
 	double nextY = waypoints.at(currentWaypoint * 2 + 1);
 
 	return {nextX, nextY};
 }
 
-void FSM_Feedforward::setRates() {
+/** @brief Set the robot's rotational and translational speeds */
+void FSM_Feedback::setRates() {
 	rot_vel = max_rotation_speed * frac_rot_vel; 
 	trans_vel = max_translational_speed * frac_trans_vel; 	
 }
 
-void FSM_Feedforward::publishMarker() {
+/* @brief Publish a marker at the robot's location */
+void FSM_Feedback::publishMarker() {
 
 	// Set our initial shape type to be a cube
 	uint32_t shape = visualization_msgs::Marker::CUBE;
 	visualization_msgs::Marker marker;
+	
 	// Set the frame ID and timestamp.  See the TF tutorials for information on these.
 	marker.header.frame_id = base_frame_id;
 	marker.header.stamp = ros::Time::now();
@@ -131,6 +147,7 @@ void FSM_Feedforward::publishMarker() {
 	marker.ns = "basic_shapes";
 	marker.id = markerCount;
 	markerCount++;
+	
 	// Set the marker type.  Initially this is CUBE, and cycles between that and SPHERE, ARROW, and CYLINDER
 	marker.type = shape;
 
@@ -162,12 +179,10 @@ void FSM_Feedforward::publishMarker() {
 }
 
 
-
-/* Compute the 5 vertices of a pentagon with the given
- * length between vertices. Write the list of points 
- * to the parameter server
- */
-void FSM_Feedforward::createPentagonWayPoints() { 
+/** @brief Compute the 5 vertices of a pentagon with the given
+ * 	   length between vertices. Write the list of points 
+ * 	   to the parameter server */
+void FSM_Feedback::createPentagonWayPoints() { 
 
 	double angle = (2 * 3.14 / 5.0);
 	double nextX, nextY;
@@ -189,24 +204,18 @@ void FSM_Feedforward::createPentagonWayPoints() {
 	n.setParam("/waypoints", waypoints);
 }
 
-/* Describe this method here
- * Inputs:
- * Returns: The next twist to be sent to the Turtlebot 
- */
-geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
+/** @brief Check if we reached the waypoint and also
+ * 	   compute our next twist 
+ *  @return the next twist to be sent to the Turtlebot */
+geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 
-	// Read the parameters from the server  
-	std::string s;
-
-	if (waypoints.size() == 0) {
+	if (waypoints.size() == 0) { 
 		std::cout << "No waypoints on the server" << std::endl;
-		// Throw error?
+		geometry_msgs::Twist zero_twist;
+		return zero_twist;	
 	}
 
 	auto [nextX, nextY] = nextWaypoint();
-
-	// double desired_angle = current_odom_theta + std::atan2(nextY - current_odom_y, nextX - current_odom_x); 
-	// double desired_angle = 0.52 * currentWaypoint;
 
 	geometry_msgs::Twist nextTwist;
 	nextTwist.linear.x = 0.0;
@@ -219,14 +228,7 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 		
 	double cartesian_error = sqrt((pow((nextX - current_odom_x), 2) + pow((nextY - current_odom_y), 2)));
         double angular_error = desired_angle - current_odom_theta;
-	
 		
-	//std::cout << "The next point is (" << nextX << ", " << nextY << ")" << std::endl;
-	//std::cout << "The desired angle is " << rigid2d::rad2deg(desired_angle) << " degrees" << std::endl;
-	//std::cout << "The current odom angle is " << rigid2d::rad2deg(current_odom_theta) << " degrees" << std::endl;
-	std::cout << "The cartesian error is " << cartesian_error << std::endl;
-	std::cout << "The angular error is " << angular_error << std::endl;	
-
 	if (translate) {
 			
 		if (cartesian_error <= linear_threshold) {
@@ -239,18 +241,15 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 			auto [nextX, nextY] = nextWaypoint();
 			desired_angle = std::atan2(nextY - current_odom_y, nextX - current_odom_x);
 			
-			//wp1 = true;
 			std::cout << "The desired angle is " << desired_angle << " degrees" << std::endl;
 		}
 		else {
-			//if (!wp1) {
-				nextTwist.linear.x = k_p_trans * cartesian_error;
-			//}
+			nextTwist.linear.x = k_p_trans * cartesian_error;
 			timeQuantas++;
 		}
 	}	
 	else {
-	 						
+
 		if (abs(angular_error) <= angular_threshold) {
 			translate = true;
 			timeQuantas = 0;
@@ -270,16 +269,11 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 }
 
 
-/* Describe this function
-*/
+/** @brief Read parameters from the server and print them to the log
+ * 	   Helpful for debugging purposes */
 void logParams(void) {
 
-	double pentagon_length;
-	double rot_vel;
-	double trans_vel;
-	double starting_x;
-	double starting_y;
-
+	double pentagon_length, rot_vel, trans_vel, starting_x, starting_y;
 	ros::NodeHandle n;
 
 	n.getParam("/pentagon_length_real_world", pentagon_length);
@@ -298,17 +292,19 @@ void logParams(void) {
 	ROS_INFO("/y is %f", starting_y);	
 }
 
+/** @brief Check that the user defined velocity is legal */
 inline bool isVelocityIllegal(double velocity) {
         return (velocity < 0.0 || velocity > 1.0);
 }
 
-/* req has two fields req.clockwise and req.fraction_of_max_angular_velocity 
- * clockwise indicates which direction to rotate in
- * fraction of max velocity indicates the percent of the max angular velocity
- * to rotate at. Defaults to one half max velocity if given value is not legal
- *  
-*/
-bool start_waypoints(nuturtle_robot::start_waypoints::Request  &req, nuturtle_robot::start_waypoints::Response &res) {
+/** @brief Lets robot start navigating
+ *  @param req has two fields req.clockwise and req.fraction_of_max_angular_velocity 
+ * 	  clockwise indicates which direction to rotate in
+ * 	  fraction of max velocity indicates the percent of the max angular velocity
+ * 	  to rotate at. Defaults to one half max velocity if given value is not legal
+ *  @param res is not used but is there for ROS to compile/be able to run
+ *  @return true */
+bool start_waypoints(nuturtle_robot::start_waypoints::Request &req, nuturtle_robot::start_waypoints::Response &res) {
 
         rigid2d::setPose newPose;
         newPose.request.x = 0.0;
@@ -330,11 +326,11 @@ bool start_waypoints(nuturtle_robot::start_waypoints::Request  &req, nuturtle_ro
 }
 
 
-/* Take the odometry data and update our local values 
- * of where the robot is according to the odometry data
- * Remeber that the odometry data is still just a prediction
- * of where we are. It is not the ground truth 
- */
+/** @brief Take the odometry data and update our local values 
+ * 	   of where the robot is according to the odometry data
+ * 	   Remeber that the odometry data is still just a prediction
+ *         of where we are. It is not the ground truth 
+ *  @param odom_data is the new odometry message */
 void odomCallback(const nav_msgs::Odometry odom_data) {
 	
 	current_odom_x = odom_data.pose.pose.position.x;
@@ -351,20 +347,15 @@ void odomCallback(const nav_msgs::Odometry odom_data) {
 
 	// yaw is rotation about the z-axis
     	m.getRPY(roll, pitch, yaw);
-    
     	current_odom_theta = yaw;
-	//std::cout << "The current odom_theta is " << current_odom_theta << std::endl;
 }
 
 
-/* Add description
-*/
 int main(int argc, char **argv) {
 
 	ros::init(argc, argv, "waypoint_node");
 	ros::NodeHandle n;
 	
-	//logParams();
 	n.getParam("/rotational_vel_limit", max_rotation_speed);
         n.getParam("/trans_vel_limit", max_translational_speed);
 	n.getParam("/k_p_trans", k_p_trans);
@@ -374,7 +365,6 @@ int main(int argc, char **argv) {
 	n.getParam("/linear_threshold", linear_threshold);
         n.getParam("/angular_threshold", angular_threshold);
 
-
 	ros::service::waitForService("/set_pose", -1);
         set_pose_client = n.serviceClient<rigid2d::setPose>("/set_pose");	
         ros::ServiceServer start_service = n.advertiseService("start_waypoints", start_waypoints);
@@ -383,14 +373,11 @@ int main(int argc, char **argv) {
 	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
 	ros::Subscriber odom_sub = n.subscribe("/odom", 1, odomCallback);
 
-
-	int frequency;
+	int frequency; // This specifies the rate at which we loop - this means loop at 1000 Hz
 	n.getParam("/frequency", frequency);
-	// This specifies the rate at which we loop - this means loop at 1000 Hz
 	ros::Rate loop_rate(frequency);
 
-	//FSM_Feedback myFSM = FSM_Feedback();
-	FSM_Feedforward myFSM = FSM_Feedforward(double(frequency));
+	FSM_Feedback myFSM = FSM_Feedback(double(frequency));
 	
 	turtlesim::Pose poseNow;
 	int count = 0;
@@ -399,18 +386,12 @@ int main(int argc, char **argv) {
                 ros::spinOnce();
         }
 	ros::spinOnce();
-
+	
 	myFSM.setRates();
-
 	while (ros::ok()) {
-
 		geometry_msgs::Twist currentTwist = myFSM.checkUpdate(); 
-
 		cmd_vel_pub.publish(currentTwist);
-
 		ros::spinOnce();
-
-		//loop_rate.sleep();
 		count++;
 	}
 

@@ -1,4 +1,5 @@
-/** @brief ROS node that listens for twists for the robot to follow and 
+/** \file 
+* @brief ROS node that listens for twists for the robot to follow and 
 * 	   simulates what the encoder data should look like if we 
 * 	   followed the twist for a unit of time.  
 *

@@ -1,3 +1,3 @@
-float64 frac_rot_vel
-float64 frac_trans_vel
+float64 frac_rot_vel # Fraction of maximum rotational velocity to set robot to run at
+float64 frac_trans_vel # Fraction of maximum translational velocity to set robot to run at
 ---
