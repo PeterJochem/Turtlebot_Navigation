@@ -6,11 +6,10 @@ Here is a video of the robot navigating to a series of waypoints in the real wor
 !["Turtlebot Pentagon Outside"](../..images/pentagon.gif)
 
 # How to Run my Code
-FIX ME - running code on real robot versus running it in RVIZ/simulation
-```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in the real world.
-```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in RVIZ.
-```roslaunch nuturtle_robot test_movement.launch``` to make the robot do 20 rotations in the real world.
-
+FIX ME - running code on real robot versus running it in RVIZ/simulation <br />
+```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in the real world. <br />
+```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in RVIZ. <br />
+```roslaunch nuturtle_robot test_movement.launch``` to make the robot do 20 rotations in the real world. <br />
 
 # Files in ROS Package
 turtle_interface.cpp is a ROS node that serves as a low layer link to OpenCR and the actual hardware. It listens for twists for the robot to perform and converts this to the corresponding wheel commands (ie motor commands). It also takes sensor_data and repackages it as easier to use forms. For example, it takes the encoder ticks values and converts them to the angles of the wheels.
