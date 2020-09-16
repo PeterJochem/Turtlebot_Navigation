@@ -1,8 +1,21 @@
-#include "ros/ros.h"
-#include "std_msgs/String.h"
-#include "std_srvs/Empty.h"
-#include "turtlesim/Pose.h"
-#include "geometry_msgs/Twist.h"
+/** @file
+ *  @brief Have robot navigate to a pentagon of waypoints in the real world
+ *
+ *  Parameters: /base_frame_id: Name of the base frame 
+ *  		/pentagon_length_real_world: the side lengths of pentagon 
+ *		/x: robot's starting_x
+ *		/y: robot's starting position in world frame
+ *		/rot_vel: Angular speed at which to rotate
+ *		/trans_vel: Speed at which to translate
+ *		/frequency: The number of times/s to run controller updates
+ *
+ *  Publishers: /turtle1/cmd_vel: Twists for the robot to perform
+ *  		/visualization_markers: Markers for RVIZ to show the robot's path 
+ *	
+ *  Subscribers: None 
+ *	
+ *  Services: Calls /set_pose to reset the robot's position */
+
 #include <turtlesim/TeleportAbsolute.h>
 #include <turtlesim/SetPen.h>
 #include <tsim/PoseError.h>
@@ -13,14 +26,18 @@
 #include "rigid2d/waypoints.hpp"
 #include "rigid2d/setPose.h"
 #include "nuturtle_robot/start_waypoints.h"
-//#include "rigid2d/rigid2d.hpp"
+#include "ros/ros.h"
+#include "std_msgs/String.h"
+#include "std_srvs/Empty.h"
+#include "turtlesim/Pose.h"
+#include "geometry_msgs/Twist.h"
+
 
 double max_rotation_speed, max_translational_speed, frac_rot_vel, frac_trans_vel;
 bool hasStarted = false;
 ros::ServiceClient set_pose_client;
 
-/* Describe this class
-*/
+/** @brief A feed forward controller and finite state machine */
 class FSM_Feedforward {
 
 	bool translate;
@@ -51,8 +68,8 @@ class FSM_Feedforward {
 		rigid2d::WayPoints current_waypoints;		
 };
 
-/* This is the constructor for the FSM
-*/
+/** @brief This is the constructor for the FSM 
+ *  @param frequency - The frequency to check for updates to controls */
 FSM_Feedforward::FSM_Feedforward(double frequency = 100.0) {
 
 	translate = false;	
@@ -60,14 +77,11 @@ FSM_Feedforward::FSM_Feedforward(double frequency = 100.0) {
 	this->frequency = frequency;
 	createPentagonWayPoints();
 	currentWaypoint = 1;
-	
 	marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1000);
-	
 	n.getParam("/base_frame_id", base_frame_id);
 	markerCount = 0;
 }
-/* This is the constructor for the FSM
-*/
+/** @brief Default constructor for the FSM */
 FSM_Feedforward::FSM_Feedforward() {
 
         translate = false;
@@ -81,8 +95,8 @@ FSM_Feedforward::FSM_Feedforward() {
         markerCount = 0;
 }
 
-/* Describe
-*/
+/** @brief Compute next waypoint  
+ *  @return (nextX, nextY, priorX, priorY) as a tuple */
 std::tuple<double, double, double, double> FSM_Feedforward::nextWaypoint() {
 
 	double nextX = waypoints.at(currentWaypoint * 2);
@@ -102,16 +116,19 @@ std::tuple<double, double, double, double> FSM_Feedforward::nextWaypoint() {
 	return {nextX, nextY, priorX, priorY};
 }
 
+/** @brief Set the rates at which to have robot rotate and translate at */
 void FSM_Feedforward::setRates() {
 	rot_vel = max_rotation_speed * frac_rot_vel; 
 	trans_vel = max_translational_speed * frac_trans_vel; 	
 }
 
+/** @brief Publish a marker for RVIZ to visualize where robot's path */
 void FSM_Feedforward::publishMarker() {
 
 	// Set our initial shape type to be a cube
 	uint32_t shape = visualization_msgs::Marker::CUBE;
 	visualization_msgs::Marker marker;
+	
 	// Set the frame ID and timestamp.  See the TF tutorials for information on these.
 	marker.header.frame_id = base_frame_id;
 	marker.header.stamp = ros::Time::now();
@@ -121,6 +138,7 @@ void FSM_Feedforward::publishMarker() {
 	marker.ns = "basic_shapes";
 	marker.id = markerCount;
 	markerCount++;
+	
 	// Set the marker type.  Initially this is CUBE, and cycles between that and SPHERE, ARROW, and CYLINDER
 	marker.type = shape;
 
@@ -152,11 +170,9 @@ void FSM_Feedforward::publishMarker() {
 }
 
 
-
-/* Compute the 5 vertices of a pentagon with the given
- * length between vertices. Write the list of points 
- * to the parameter server
- */
+/** @brief Compute the 5 vertices of a pentagon with the given
+ * 	   length between vertices. Write the list of points 
+ * 	   to the parameter server */
 void FSM_Feedforward::createPentagonWayPoints() { 
 
 	double angle = (2 * 3.14 / 5.0);
@@ -179,14 +195,9 @@ void FSM_Feedforward::createPentagonWayPoints() {
 	n.setParam("/waypoints", waypoints);
 }
 
-/* Describe this method here
- * Inputs:
- * Returns: The next twist to be sent to the Turtlebot 
- */
+/** @brief Feed forward controller's update method
+ *  @return Next twist to be sent to the Turtlebot  */
 geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
-
-	// Read the parameters from the server  
-	std::string s;
 
 	if (waypoints.size() == 0) {
 		std::cout << "No waypoints on the server" << std::endl;
@@ -207,10 +218,9 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 	if (translate) {
 
 		// Distance = Rate * time
-		//double schedLinear = pentagon_length / trans_vel; 
 		double schedLinear = sqrt((pow((nextX - priorX), 2) + pow((nextY - priorY), 2))) / trans_vel;
 
-		if ( (timeQuantas * (1.0/frequency) ) >= schedLinear ) {
+		if ((timeQuantas * (1.0/frequency) ) >= schedLinear) {
 			translate = false;
 			timeQuantas = 0;
 			publishMarker();
@@ -227,7 +237,7 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 		double angle = (2 * 3.14 / 5.0); 
 		double schedRotational = angle / rot_vel;
 	
-		if ( (timeQuantas * (1.0/frequency) ) >= schedRotational ) {
+		if ((timeQuantas * (1.0/frequency) ) >= schedRotational) {
 			translate = true;
 			timeQuantas = 0;
 		}
@@ -241,31 +251,10 @@ geometry_msgs::Twist FSM_Feedforward::checkUpdate() {
 }
 
 
-/* Describe this method 
-*/
-void makeSetPen(bool on, turtlesim::SetPen& sp) {
-
-	unsigned int a = 1;
-	sp.request.r = a;
-	sp.request.g = a;
-	sp.request.b = a;
-	sp.request.width = a;
-	sp.request.off = !on;
-
-	return;
-}
-
-
-/* Describe this function
-*/
+/** @brief Read parameters from server and log them to ROS_INFO */
 void logParams(void) {
 
-	double pentagon_length;
-	double rot_vel;
-	double trans_vel;
-	double starting_x;
-	double starting_y;
-
+	double pentagon_length, rot_vel, trans_vel, starting_x, starting_y;
 	ros::NodeHandle n;
 
 	n.getParam("/pentagon_length_real_world", pentagon_length);
@@ -284,16 +273,20 @@ void logParams(void) {
 	ROS_INFO("/y is %f", starting_y);	
 }
 
+/** @brief Check if the velocity is legal
+ *  @param velocity is a percentage of the total velocity
+ *  @return True if velocity is within 0 and 1, False otherwise */
 inline bool isVelocityIllegal(double velocity) {
         return (velocity < 0.0 || velocity > 1.0);
 }
 
-/* req has two fields req.clockwise and req.fraction_of_max_angular_velocity 
- * clockwise indicates which direction to rotate in
- * fraction of max velocity indicates the percent of the max angular velocity
- * to rotate at. Defaults to one half max velocity if given value is not legal
- *  
-*/
+/** @brief Service function 
+ *  @param req - Two fields req.clockwise and req.fraction_of_max_angular_velocity 
+ * 		 clockwise indicates which direction to rotate in
+ * 		 fraction of max velocity indicates the percent of the max angular velocity
+ * 		 to rotate at. Defaults to one half max velocity if given value is not legal
+ *  @param res - I do not use. Required for ROS service
+ *  @return True */ 
 bool start_waypoints(nuturtle_robot::start_waypoints::Request  &req, nuturtle_robot::start_waypoints::Response &res) {
 
         rigid2d::setPose newPose;
@@ -315,15 +308,11 @@ bool start_waypoints(nuturtle_robot::start_waypoints::Request  &req, nuturtle_ro
         return true;
 }
 
-
-/* Add description
-*/
 int main(int argc, char **argv) {
 
 	ros::init(argc, argv, "waypoint_node");
 	ros::NodeHandle n;
 	
-	//logParams();
 	n.getParam("/rotational_vel_limit", max_rotation_speed);
         n.getParam("/trans_vel_limit", max_translational_speed);
 
@@ -333,13 +322,11 @@ int main(int argc, char **argv) {
 
 	ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1);
 	ros::Publisher marker_pub = n.advertise<visualization_msgs::Marker>("visualization_marker", 1);
-
-	int frequency;
+	
+	int frequency; // This specifies the rate at which we loop
 	n.getParam("/frequency", frequency);
-	// This specifies the rate at which we loop - this means loop at 1000 Hz
 	ros::Rate loop_rate(frequency);
 
-	//FSM_Feedback myFSM = FSM_Feedback();
 	FSM_Feedforward myFSM = FSM_Feedforward(double(frequency));
 	
 	turtlesim::Pose poseNow;
@@ -350,7 +337,6 @@ int main(int argc, char **argv) {
         }
 
 	myFSM.setRates();
-
 	while (ros::ok()) {
 
 		geometry_msgs::Twist currentTwist = myFSM.checkUpdate(); 
@@ -363,9 +349,7 @@ int main(int argc, char **argv) {
 		current_error.theta_error = ( (1 / float(frequency)) * currentTwist.angular.z) - poseNow.theta; 
 
 		cmd_vel_pub.publish(currentTwist);
-
 		ros::spinOnce();
-
 		loop_rate.sleep();
 		count++;
 	}

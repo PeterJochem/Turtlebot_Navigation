@@ -1,3 +1,14 @@
+/** @file
+ *  @brief Has robot do a few 1 meter translations in the real world. Each translation is followd by a short pause 
+ *  
+ *  Parameters: /trans_vel_limit: Maximum speed the robot can translate at
+ * 
+ *  Publishes: /turtle1/cmd_vel: Twist for the robot to follow
+ *
+ *  Subscribes: None 
+ *
+ *  Services: /start: Start the robot rotating */
+
 #include <sstream>
 #include <stdlib.h>
 #include <cmath> 
@@ -23,24 +34,32 @@ ros::ServiceClient set_pose_client;
 ros::Publisher cmd_vel_pub;
 
 
+/** @brief Check if user defined velocity is legal
+ *  @param velocity is the fraction of the maximum velocity the robot moves at
+ *  @return true if velocity is within 0 and 1, false otherwise */
 inline bool isVelocityIllegal(double velocity) {
 	return (velocity < 0.0 || velocity > 1.0);		
 }
 
+/** @brief Check if we shoud top translating 
+ *  @return true if we translated for as long as scheduled translation period is, false otherwise */
 inline bool stopTranslating() {
 	return (translate && std::abs(timerEventCount * publishRate) >= timeToTranslate); 
 }
 
+/** @brief Check if we should make robot translate 
+ *  @return true if it is time to translate, false otherwise */
 inline bool startTranslating(double pausePeriod = timeToTranslate/10.0) {
 	return !translate && std::abs(timerEventCount * publishRate) >= pausePeriod; 
 }
 
-/* req has two fields req.clockwise and req.fraction_of_max_angular_velocity 
- * clockwise indicates which direction to rotate in
- * fraction of max velocity indicates the percent of the max angular velocity
- * to rotate at. Defaults to one half max velocity if given value is not legal
- *  
-*/
+/** @brief Start the robot rotating  
+ *  @param req - Two fields req.clockwise and req.fraction_of_max_angular_velocity 
+ *         clockwise indicates which direction to rotate in
+ *         fraction of max velocity indicates the percent of the max angular velocity
+ *         to rotate at. Defaults to one half max velocity if given value is not legal
+ *  @param res - I do not use but is required for ROS.
+ *  @return True */
 bool start(nuturtle_robot::start::Request  &req, nuturtle_robot::start::Response &res) {
 	
 	rigid2d::setPose newPose;
@@ -65,9 +84,9 @@ bool start(nuturtle_robot::start::Request  &req, nuturtle_robot::start::Response
 	return true;
 }
 
-/* Timer callback which publishes the next 
- * twist for the robot to follow 
- */
+/** @brief Timer callback which publishes the next 
+ *         twist for the robot to follow 
+ *  @param TimerEvent is ROS object */
 void publishNextTwist(const ros::TimerEvent&) {
 	
 	geometry_msgs::Twist newTwist;	
@@ -97,7 +116,6 @@ void publishNextTwist(const ros::TimerEvent&) {
 
 	cmd_vel_pub.publish(newTwist);
 }
-
 
 int main(int argc, char **argv) {
 

@@ -1,3 +1,23 @@
+/** @file
+ *  @brief ROS node serves as interface between OpenCR board and higher level ROS code  
+ *   
+ *  Parameters: /wheel_base: Half the distance between the robot's wheels
+ *       	/wheel_radius: Radius of robot's wheels
+ *       	/frequency: Frequency at which to update/run ROS loop
+ *       	/motor_limit: Maximum torque motor can generate
+ *       	/motor_power: Largest integer value/motor command we can send to motor
+ *       	/encoder_ticks_per_revolution: Number of encoder ticks per revolution of the wheel
+ *       	/left_wheel_joint: Name of the left_wheel_joint
+ *       	/right_wheel_joint: Name of the right_wheel_joint  
+ *	
+ *
+ *  Publishers: /wheel_cmd: Commands for wheel velocities
+ * 		/joint_states: Current state of each of robot's joints 
+ *  
+ *
+ *  Subscribers: /turtle1/cmd_vel: Twists for the robot to follow
+ *		 /sensor_data: IMU, encoder, and laser data */
+
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include <sensor_msgs/JointState.h>
@@ -26,8 +46,8 @@ int initial_encoder_right = 0;
 bool measuredInitialEncoder = false;
 
 
-/* Map the desired velocities into the allowable range of values
- */
+/** @brief Map the desired velocities into the allowable range of values
+ *  @param wheel_vel - Desired wheel velocities */
 void clampVelocity(WheelVelocities& wheel_vel) {
         
 	if (wheel_vel.left > max_motor_rot) {
@@ -45,11 +65,10 @@ void clampVelocity(WheelVelocities& wheel_vel) {
         }
 }
 
-
-/* When we recieve a cmd_vel, this runs and converts the 
- * desired twist into a command to the motors to set the 
- * speed of the two wheels accordingly    
- */
+/** @brief When we recieve a cmd_vel, this runs and converts the 
+ * 	   desired twist into a command to the motors to set the 
+ * 	   speed of the two wheels accordingly 
+ *  @param twist3D - twist to follow */
 void cmd_vel_callback(geometry_msgs::Twist twist3D) {
 		
 	Twist2D twist2D = convert3DTo2D(twist3D);
@@ -68,9 +87,9 @@ void cmd_vel_callback(geometry_msgs::Twist twist3D) {
 	wheel_pub.publish(wheel_cmd);				
 }
 
-/* Convert the encoder data from the motor and convert it 
- * it to a joint states message with the position and velocity fields set 
- */
+/** @brief Convert the encoder data from the motor and convert it 
+ * 	   it to a joint states message with the position and velocity fields set 
+ *  @param newData - IMU, encoder, and laser data in ROS format */
 void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	
 	double left_wheel_angle, right_wheel_angle;
@@ -84,7 +103,6 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 		initial_encoder_left = newData.left_encoder;
 		initial_encoder_right = newData.right_encoder;
 	}	
-	
 
 	left_wheel_angle = (newData.left_encoder - initial_encoder_left) * (2 * PI) / (encoder_ticks_rotation);  
 	right_wheel_angle = (newData.right_encoder - initial_encoder_right) * (2 * PI) / (encoder_ticks_rotation);
@@ -98,10 +116,8 @@ void sensor_sub_callback(nuturtlebot::SensorData newData) {
 	state.position = {left_wheel_angle, right_wheel_angle};
 	//state.velocity = {wheel_vels.left, wheel_vels.right};	
 	state.header.stamp = ros::Time::now();
-
 	joints_pub.publish(state);
 }
-
 
 int main(int argc, char **argv) {
 	
@@ -117,9 +133,6 @@ int main(int argc, char **argv) {
 	n.getParam("/left_wheel_joint", left_wheel_joint);
 	n.getParam("/right_wheel_joint", right_wheel_joint);
 
-	// Log?	
-	//ROS_INFO("/wheel_radius is %f", wheel_radius);
-
 	// Get the current pose? Set to (0, 0, 0)? Does it even matter for this?
 	robot = DiffDrive(Transform2D(), wheel_base, wheel_radius);
 				
@@ -130,12 +143,9 @@ int main(int argc, char **argv) {
 	
 	cmd_vel_sub = n.subscribe("/turtle1/cmd_vel", 1, cmd_vel_callback);
         sensor_sub = n.subscribe("/sensor_data", 1, sensor_sub_callback);
-	
 
 	// What to set this to?
   	// ros::Rate loop_rate(200);
-	
 	ros::spin();
-
 	return 0;
 }
