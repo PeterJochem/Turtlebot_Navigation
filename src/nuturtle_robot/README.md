@@ -3,12 +3,12 @@ This package implements ROS nodes to make the robot navigate in the real world.
 
 # Results
 Here is a video of the robot navigating to a series of waypoints in the real world. The waypoints form a pentagon in this case. <br /> 
-!["Turtlebot Pentagon Outside"](../..images/pentagon.gif)
+!["Turtlebot Pentagon Outside"](../../images/pentagon.gif)
 
 # How to Run my Code
 FIX ME - running code on real robot versus running it in RVIZ/simulation <br />
-```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in the real world. <br />
-```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoins in RVIZ. <br />
+```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoints in the real world. <br />
+```roslaunch nuturtle_robot follow_waypoints.launch robot:=1``` to make the robot navigate to waypoints in RVIZ. <br />
 ```roslaunch nuturtle_robot test_movement.launch``` to make the robot do 20 rotations in the real world. <br />
 
 # Files in ROS Package
