@@ -12,16 +12,10 @@ FIX ME - running code on real robot versus running it in RVIZ/simulation <br />
 ```roslaunch nuturtle_robot test_movement.launch``` to make the robot do 20 rotations in the real world. <br />
 
 # Files in ROS Package
-turtle_interface.cpp is a ROS node that serves as a low layer link to OpenCR and the actual hardware. It listens for twists for the robot to perform and converts this to the corresponding wheel commands (ie motor commands). It also takes sensor_data and repackages it as easier to use forms. For example, it takes the encoder ticks values and converts them to the angles of the wheels.
-<br />
+turtle_interface.cpp is a ROS node that serves as a low layer link to OpenCR and the actual hardware. It listens for twists for the robot to perform and converts this to the corresponding wheel commands (ie motor commands). It also takes sensor_data and repackages it as easier to use forms. For example, it takes the encoder ticks values and converts them to the angles of the wheels. <br />
 
-real_waypoint.cpp is a ROS node which makes the robot navigate to a pentagon of waypoints in the real world.
-<br />
+real_waypoint.cpp is a ROS node which makes the robot navigate to a pentagon of waypoints in the real world. <br />
 
-rotation.cpp is a ROS node which has the robot rotate 20 times in the real world. Each rotation is followed by a brief pause.  
-<br />
+rotation.cpp is a ROS node which has the robot rotate 20 times in the real world. Each rotation is followed by a brief pause. <br />
 
-translate.cpp is a ROS node which has the robot do a few short translations followed by a brief pause.
-<br />
-
-
+translate.cpp is a ROS node which has the robot do a few short translations followed by a brief pause. <br />

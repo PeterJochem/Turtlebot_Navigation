@@ -3,6 +3,7 @@
 	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
 	<arg name="use_jsp_gui" default="false"/>
         <arg name="use_jsp" default="false" />
+	<arg name="use_gmapping" default="true" />
 
 	<rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
         <rosparam command="load" file="$(find tsim)/config/params.yaml"/>
@@ -14,7 +15,7 @@
 	
 	<include file="$(find gazebo_ros)/launch/empty_world.launch">
 
-		<!-- arg name="world_name" value="$(find nuturtle_gazebo)/config/myWorld.world"/ -->
+		<arg name="world_name" value="$(find nuturtle_gazebo)/config/grid_world.world"/>
     		<arg name="paused" value="false"/>
     		<arg name="use_sim_time" value="true"/>
     		<arg name="gui" value="true"/>
@@ -58,4 +59,11 @@
 	</group>
 	
 	<node pkg="tf2_ros" type="static_transform_publisher" name="static_transform_publisher" args="0 0 0 0 0 0 1 odom fake_odom" />
+
+	<group if="$(arg use_gmapping)">
+                <node name="slam_node" pkg="gmapping" type="slam_gmapping"  machine="PeterJochem">
+                	<param name="scan" value="scan" />
+		</node>
+        </group>
+
 </launch>
