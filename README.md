@@ -36,6 +36,9 @@ Below is a video of the robot navigating to waypoints in gazebo using a feedback
 !["Gazebo Waypoints"](images/gazebo_waypoints.gif)
 [![](http://img.youtube.com/vi/eHXuRXVKE6k/0.jpg)](http://www.youtube.com/watch?v=eHXuRXVKE6k "Gazebo and RVIZ Comparison")  
 
+## SLAM
+After I graduate, I want to implement Feature-Based Kalman Filtering SLAM on the Turtlebot. In the meantime, I have been using ROS's gmapping package for my SLAM. Below is an image of my Turtlebot running GMapping. <br />
+!["Gazebo Waypoints"](images/gmapping.png)
 
 # Testing 
 I used the gtest framework for testing my Rigid2D library. This was extremly helpful for debugging and I will definitely use gtest again! I also used rostest to test that my ROS nodes were being set up correctly. More details about testing can be found in the rigid2d package. 
