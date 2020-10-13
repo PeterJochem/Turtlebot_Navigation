@@ -46,9 +46,16 @@ include_directories(
 )
 
 add_executable(gazebo_waypoints src/gazebo_waypoints.cpp)
+add_executable(gazebo_motion_planning src/gazebo_motion_planning.cpp)
+
 set_target_properties(gazebo_waypoints PROPERTIES OUTPUT_NAME gazebo_waypoints PREFIX "")
+set_target_properties(gazebo_motion_planning PROPERTIES OUTPUT_NAME gazebo_motion_planning PREFIX "")
+
 add_dependencies(gazebo_waypoints ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(gazebo_motion_planning ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
 target_link_libraries(gazebo_waypoints ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
+target_link_libraries(gazebo_motion_planning ${rigid2d_LIBRARIES} ${catkin_LIBRARIES})
 
 include_directories(${GAZEBO_INCLUDE_DIRS})
 link_directories(${GAZEBO_LIBRARY_DIRS})

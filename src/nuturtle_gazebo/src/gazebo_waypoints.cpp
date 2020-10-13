@@ -37,6 +37,10 @@
 #include "rigid2d/setPose.h"
 #include "nuturtle_robot/start_waypoints.h"
 
+#include <tf/transform_listener.h>
+#include <geometry_msgs/PointStamped.h>
+#include <nav_msgs/OccupancyGrid.h>
+
 double max_rotation_speed, max_translational_speed, frac_rot_vel, frac_trans_vel;
 double current_odom_x = 0.0; 
 double current_odom_y = 0.0;
@@ -76,6 +80,15 @@ class FSM_Feedback {
 		rigid2d::WayPoints current_waypoints;		
 		double rot_vel;
                 double trans_vel;
+		
+		void convertOdomPoseToMap();
+		tf::TransformListener listener;
+		//void updateAngle();
+		void processMap(const nav_msgs::OccupancyGrid map);
+	
+		bool resetReady = false;
+
+		double priorAngleError = 0.0;
 };
 
 /** @brief Constructor for the FSM
@@ -118,11 +131,28 @@ FSM_Feedback::FSM_Feedback() {
 /** @brief Compute and return the next (x, y) pair to navigate to
  *  @return the next waypoint as a (x, y) tuple */
 std::tuple<double, double> FSM_Feedback::nextWaypoint() {
-	
-	double nextX = waypoints.at(currentWaypoint * 2);
-	double nextY = waypoints.at(currentWaypoint * 2 + 1);
 
-	return {nextX, nextY};
+	double nextX_map = waypoints.at(currentWaypoint * 2);
+	double nextY_map = waypoints.at(currentWaypoint * 2 + 1);
+
+	geometry_msgs::PointStamped map_goal;
+	geometry_msgs::PointStamped odom_goal;
+	map_goal.header.frame_id = "map";
+	map_goal.header.stamp = ros::Time();
+
+	map_goal.point.x = nextX_map;
+	map_goal.point.y = nextY_map;
+	map_goal.point.z = 0;
+
+	// convert to the odom frame
+	try{
+     		listener.transformPoint("odom", map_goal, odom_goal);
+    	}
+    	catch (tf::TransformException &ex) {
+      		ROS_ERROR("%s",ex.what());
+    	}
+	
+	return {odom_goal.point.x, odom_goal.point.y};
 }
 
 /** @brief Set the robot's rotational and translational speeds */
@@ -214,7 +244,7 @@ geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 		geometry_msgs::Twist zero_twist;
 		return zero_twist;	
 	}
-
+	
 	auto [nextX, nextY] = nextWaypoint();
 
 	geometry_msgs::Twist nextTwist;
@@ -225,23 +255,29 @@ geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 	nextTwist.angular.x = 0.0;
 	nextTwist.angular.y = 0.0;
 	nextTwist.angular.z = 0.0;
-		
+	
+	// compute heading using the laser data rather than odometry
 	double cartesian_error = sqrt((pow((nextX - current_odom_x), 2) + pow((nextY - current_odom_y), 2)));
-        double angular_error = desired_angle - current_odom_theta;
+        
+	desired_angle = std::atan2(nextY - current_odom_y, nextX - current_odom_x);
+	double angular_error = desired_angle - current_odom_theta;
 		
+	if (abs(angular_error) > angular_threshold) {
+			translate = false;
+        		timeQuantas = 0;
+	}
+	
 	if (translate) {
-			
+		
 		if (cartesian_error <= linear_threshold) {
 			translate = false;
 			timeQuantas = 0;
 			publishMarker();
 			currentWaypoint++;
 			currentWaypoint = currentWaypoint % 5; 
-			
+					
 			auto [nextX, nextY] = nextWaypoint();
 			desired_angle = std::atan2(nextY - current_odom_y, nextX - current_odom_x);
-			
-			std::cout << "The desired angle is " << desired_angle << " degrees" << std::endl;
 		}
 		else {
 			nextTwist.linear.x = k_p_trans * cartesian_error;
@@ -259,12 +295,18 @@ geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 		}
 		else {
 			
-			nextTwist.angular.z = k_p_rot * angular_error; //+ (angle_integral); // 1000.0; // k_p_rot * angular_error;
+			// Fixes issue with discontinuity and finds shortest angular path			
+			if (abs(angular_error) > 3.14) {
+				// double larger = max(desired_angle, current_odom_theta)
+				angular_error = (3.14 - desired_angle) + (current_odom_theta - 3.14); 	
+			}
+
+			nextTwist.angular.z = k_p_rot * angular_error; // + (angle_integral); // 1000.0; // k_p_rot * angular_error;	
 			angle_integral = angle_integral + angular_error * k_i_rot;
 			timeQuantas++;	
 		}
 	}
-
+	
 	return nextTwist;
 }
 
@@ -337,10 +379,8 @@ void odomCallback(const nav_msgs::Odometry odom_data) {
 	current_odom_y = odom_data.pose.pose.position.y;
 	
 	// Convert the quaternion to an angle 
-	tf::Quaternion q(odom_data.pose.pose.orientation.x,
-        		 odom_data.pose.pose.orientation.y,
-        		 odom_data.pose.pose.orientation.z,
-       			 odom_data.pose.pose.orientation.w);
+	tf::Quaternion q(odom_data.pose.pose.orientation.x, odom_data.pose.pose.orientation.y,
+        		 odom_data.pose.pose.orientation.z, odom_data.pose.pose.orientation.w);
     
 	tf::Matrix3x3 m(q);
     	double roll, pitch, yaw;
@@ -350,6 +390,30 @@ void odomCallback(const nav_msgs::Odometry odom_data) {
     	current_odom_theta = yaw;
 }
 
+// When we get new map data, we get a new transform from
+// map to odom so we should relocalize ourselves
+void FSM_Feedback::processMap(const nav_msgs::OccupancyGrid map) {
+	
+   	tf::StampedTransform transform;
+	try {
+		listener.lookupTransform("/odom", "/map", ros::Time(0), transform);
+   	}
+   	catch (tf::TransformException &ex) {
+     		ROS_ERROR("%s",ex.what());
+   	}
+	
+	// Convert quaternion to the robot's orientation in the plane	
+	double roll, pitch, yaw; // yaw is rotation about the z-axis
+   	tf::Quaternion myQ = transform.getRotation();
+	tf::Matrix3x3 m(myQ);
+    	m.getRPY(roll, pitch, yaw);
+
+    	current_odom_theta = yaw;
+    	current_odom_x = transform.getOrigin().x();
+    	current_odom_y = transform.getOrigin().y();
+
+    return;
+}
 
 int main(int argc, char **argv) {
 
@@ -378,7 +442,8 @@ int main(int argc, char **argv) {
 	ros::Rate loop_rate(frequency);
 
 	FSM_Feedback myFSM = FSM_Feedback(double(frequency));
-	
+	ros::Subscriber map_sub = n.subscribe("/map", 1, &FSM_Feedback::processMap, &myFSM);
+
 	turtlesim::Pose poseNow;
 	int count = 0;
 

@@ -1,6 +1,7 @@
 # Describe file
 k_p_trans: 10.0
 
+#k_p_rot: 10.0
 k_p_rot: 10.0
 
 k_i_trans: 0.1

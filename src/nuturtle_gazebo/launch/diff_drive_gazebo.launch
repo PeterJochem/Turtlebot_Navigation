@@ -64,6 +64,10 @@
                 <node name="slam_node" pkg="gmapping" type="slam_gmapping"  machine="PeterJochem">
                 	<param name="scan" value="scan" />
 		</node>
+		<node name="motion_planning_node" pkg="nuturtle_gazebo" type="gazebo_motion_planning" machine="PeterJochem" output="screen">
+               	
+		</node> 
+                
         </group>
 
 </launch>

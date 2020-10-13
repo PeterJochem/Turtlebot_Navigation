@@ -126,18 +126,19 @@ Visualization Manager:
       Show Names: false
       Tree:
         map:
-          odom:
-            base_link:
-              base_scan:
-                {}
-              caster:
-                {}
-              left_wheel:
-                {}
-              right_wheel:
-                {}
-            fake_odom:
+          {}
+        odom:
+          base_link:
+            base_scan:
               {}
+            caster:
+              {}
+            left_wheel:
+              {}
+            right_wheel:
+              {}
+          fake_odom:
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -231,10 +232,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.5753983855247498
+      Pitch: 0.7053982615470886
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.605409145355225
+      Yaw: 3.4104084968566895
     Saved: ~
 Window Geometry:
   Displays:
@@ -253,4 +254,4 @@ Window Geometry:
     collapsed: false
   Width: 1389
   X: 531
-  Y: 47
+  Y: 27
