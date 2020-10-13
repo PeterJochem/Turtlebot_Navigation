@@ -37,7 +37,7 @@ Below is a video of the robot navigating to waypoints in gazebo using a feedback
 [![](http://img.youtube.com/vi/eHXuRXVKE6k/0.jpg)](http://www.youtube.com/watch?v=eHXuRXVKE6k "Gazebo and RVIZ Comparison")  
 
 ## SLAM
-After I graduate, I want to implement Feature-Based Kalman Filtering SLAM on the Turtlebot. In the meantime, I have been using ROS's gmapping package for my SLAM. Below is an image of my Turtlebot running GMapping. <br />
+After I graduate, I want to implement Feature-Based Kalman Filtering SLAM on the Turtlebot. In the meantime, I have been using ROS's gmapping package for my SLAM. Below is an image of my Turtlebot running GMapping. A video of the robot navigating to a series of waypoints can be found [here](https://youtu.be/un_52ommASM) <br />
 !["Gazebo Waypoints"](images/gmapping.png)
 
 # Testing 
