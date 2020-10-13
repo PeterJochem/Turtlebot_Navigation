@@ -71,24 +71,18 @@ class FSM_Feedback {
 		geometry_msgs::Twist checkUpdate();
 		void publishMarker();
 
-		std::vector<double> waypoints;
+		std::vector<double> waypoints; // (x1, y1), (x2, y2) ...
+		int numWaypoints; // Number of (x, y) pairs in the above list
 		int currentWaypoint;
 		ros::NodeHandle n;
 		int markerCount;
       		ros::Publisher marker_pub;
 		std::string base_frame_id;
 		rigid2d::WayPoints current_waypoints;		
-		double rot_vel;
-                double trans_vel;
-		
-		void convertOdomPoseToMap();
+		double rot_vel, trans_vel;	
 		tf::TransformListener listener;
-		//void updateAngle();
 		void processMap(const nav_msgs::OccupancyGrid map);
-	
-		bool resetReady = false;
-
-		double priorAngleError = 0.0;
+		void updateWaypoints(const ros::TimerEvent&);
 };
 
 /** @brief Constructor for the FSM
@@ -129,7 +123,7 @@ FSM_Feedback::FSM_Feedback() {
 }
 
 /** @brief Compute and return the next (x, y) pair to navigate to
- *  @return the next waypoint as a (x, y) tuple */
+ *  @return the next waypoint as a (x, y) tuple defined in the odom frame */
 std::tuple<double, double> FSM_Feedback::nextWaypoint() {
 
 	double nextX_map = waypoints.at(currentWaypoint * 2);
@@ -214,6 +208,7 @@ void FSM_Feedback::publishMarker() {
  * 	   to the parameter server */
 void FSM_Feedback::createPentagonWayPoints() { 
 
+	numWaypoints = 5;
 	double angle = (2 * 3.14 / 5.0);
 	double nextX, nextY;
 
@@ -231,7 +226,15 @@ void FSM_Feedback::createPentagonWayPoints() {
 		waypoints.push_back(nextY);
 	}
 
-	n.setParam("/waypoints", waypoints);
+	n.setParam("/waypoints", waypoints); // Puts the points on the ROS server
+}
+
+/** @brief Ros timer callback. Updates the vector of waypoints 
+ */
+void FSM_Feedback::updateWaypoints(const ros::TimerEvent&) {
+		
+	n.getParam("/waypoints", waypoints);			
+	numWaypoints = waypoints.size()/2;
 }
 
 /** @brief Check if we reached the waypoint and also
@@ -263,8 +266,8 @@ geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 	double angular_error = desired_angle - current_odom_theta;
 		
 	if (abs(angular_error) > angular_threshold) {
-			translate = false;
-        		timeQuantas = 0;
+		translate = false;
+        	timeQuantas = 0;
 	}
 	
 	if (translate) {
@@ -274,7 +277,7 @@ geometry_msgs::Twist FSM_Feedback::checkUpdate() {
 			timeQuantas = 0;
 			publishMarker();
 			currentWaypoint++;
-			currentWaypoint = currentWaypoint % 5; 
+			currentWaypoint = currentWaypoint % numWaypoints; 
 					
 			auto [nextX, nextY] = nextWaypoint();
 			desired_angle = std::atan2(nextY - current_odom_y, nextX - current_odom_x);
@@ -452,6 +455,8 @@ int main(int argc, char **argv) {
         }
 	ros::spinOnce();
 	
+	ros::Timer updateWayptsTimer = n.createTimer(ros::Duration(1.0), &FSM_Feedback::updateWaypoints, &myFSM);
+
 	myFSM.setRates();
 	while (ros::ok()) {
 		geometry_msgs::Twist currentTwist = myFSM.checkUpdate(); 
