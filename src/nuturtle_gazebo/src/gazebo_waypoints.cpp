@@ -226,14 +226,15 @@ void FSM_Feedback::createPentagonWayPoints() {
 		waypoints.push_back(nextY);
 	}
 
-	n.setParam("/waypoints", waypoints); // Puts the points on the ROS server
+	// Removed for testing
+	//n.setParam("/waypoints", waypoints); // Puts the points on the ROS server
 }
 
 /** @brief Ros timer callback. Updates the vector of waypoints 
  */
 void FSM_Feedback::updateWaypoints(const ros::TimerEvent&) {
 		
-	n.getParam("/waypoints", waypoints);			
+	n.getParam("/waypoints", waypoints); // vector of (x1, y1), (x2, y2), ...			
 	numWaypoints = waypoints.size()/2;
 }
 
@@ -454,7 +455,11 @@ int main(int argc, char **argv) {
                 ros::spinOnce();
         }
 	ros::spinOnce();
-	
+
+
+	// testing, put the new waypoints onto the server. These are points in the map frame
+	//std::vector<double> newPts = {0, 0, 0.5, 0.5, 0.5, 1, 1.0, 1.5};
+	//n.setParam("/waypoints", newPts);	
 	ros::Timer updateWayptsTimer = n.createTimer(ros::Duration(1.0), &FSM_Feedback::updateWaypoints, &myFSM);
 
 	myFSM.setRates();
