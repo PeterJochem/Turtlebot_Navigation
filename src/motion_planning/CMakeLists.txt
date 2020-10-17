@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -228,6 +229,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 if(CATKIN_ENABLE_TESTING)
         catkin_add_gtest(${PROJECT_NAME}_${PROJECT_NAME}_testing test/test_astar.cpp)
-        target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_testing ${PROJECT_NAME} gtest_main)
+        target_link_libraries(${PROJECT_NAME}_${PROJECT_NAME}_testing ${PROJECT_NAME} ${catkin_LIBRARIES} gtest_main)
 endif()
 
