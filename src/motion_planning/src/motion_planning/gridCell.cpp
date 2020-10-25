@@ -22,8 +22,12 @@ gridCell::gridCell(int x, int y, double occupiedProbability) {
         this->y = y;
 
         parent = nullptr;
+	
+	// FIX ME - use INT_MAX
+        cost_to_reach = 0.0;
+        est_cost_end = 0.0;
 
-	estimatedDistance = 1000000; // FIX ME - should be INT_MAX
+	//estimatedDistance = 1000000; // FIX ME - should be INT_MAX
 	probability = occupiedProbability;
 	explored = false;
 }
@@ -47,5 +51,5 @@ std::vector<std::tuple<int, int>> gridCell::generateChildren() {
         int downX = x;
         int downY = y - 1;
 
-        return {make_tuple(leftX, leftY), make_tuple(rightX, rightY), make_tuple(upX, upY), make_tuple(downX, downY) };
+        return {make_tuple(leftX, leftY), make_tuple(rightX, rightY), make_tuple(upX, upY), make_tuple(downX, downY)};
 }

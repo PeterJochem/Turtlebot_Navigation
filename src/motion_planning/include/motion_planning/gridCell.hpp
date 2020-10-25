@@ -16,6 +16,7 @@ class gridCell {
                 int x, y; // In grid coords - change the name to grid_x and grid_y
                 bool explored;
                 int estimatedDistance, probability;
+		double cost_to_reach, est_cost_end;
 		gridCell* parent;
 
 		/** @brief Constructor for the gridCell

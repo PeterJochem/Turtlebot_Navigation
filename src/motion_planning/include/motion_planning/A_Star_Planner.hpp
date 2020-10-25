@@ -23,7 +23,7 @@
 // See http://neutrofoton.github.io/blog/2016/12/29/c-plus-plus-priority-queue-with-comparator/
 struct gridCellCompare {
     bool operator()(const gridCell* lhs, const gridCell* rhs) {
-        return lhs->estimatedDistance < rhs->estimatedDistance;
+        return (lhs->est_cost_end + lhs->cost_to_reach) > (rhs->est_cost_end + rhs->cost_to_reach);
     }
 };
 
@@ -37,7 +37,7 @@ class A_Star_Planner {
 		 *  @param height Height of the map in grid units
 		 *  @param width Width of the map in grid units 
 		 *  @param resolution Describes the relative scale between the map and the grid (m/cell) */
-		A_Star_Planner(int* map, int height, int width, int resolution);
+		A_Star_Planner(int* map, int height, int width, double resolution);
 		
 		//void processMap(const nav_msgs::OccupancyGrid& map);	
 			
@@ -53,7 +53,14 @@ class A_Star_Planner {
 		 *  @param goal_map_y Path's destination y coordinate (meters) in the map frame 
 		 *  @return True if the start and goal points are legal, False otherwise */
                 bool setGoal(double start_map_x, double start_map_y, double goal_map_x, double goal_map_y);
-				
+		
+		/* @param map linear array (row major order) of occupancy probabilities. 
+                *         [-1, 100] where -1 means unknown
+                *  @param height Height of the map in grid units
+                *  @param width Width of the map in grid units 
+                *  @param resolution The relative scale between the map and the grid (m/cell) */
+                void updateMap(int* map, int width, int height, double resolution);	
+
 	private:
 		// Priority queue of pointers to the static grid vector below
 		std::priority_queue<gridCell*, std::vector<gridCell*>, gridCellCompare> frontier;
@@ -83,7 +90,14 @@ class A_Star_Planner {
 		/** @brief Pop top of frontier off list and add its children to the frontier  
 		 *  @return True if we pop off the goal node. False otherwise */
 		bool expandFrontier();
-	
+		
+		/** @brief Computes the Manhattan distance from
+		 *  	   the gridCell at (grid_x, grid_y) to the goal cell 
+		 *  @param grid_x The x coordinate in the map frame  
+		 *  @param grid_y The y coordinate in the map frame
+		 *  @return The Manhattan distance */
+		double manhattanDistance(int grid_x, int grid_y);
+
 		/** @brief Convert an index of the vector of gridCells into the gridCells (x, y) location  
 		 *  @param Index is the gridCell's index in the linear array
 		 *  @return Tuple of the grid's location (x, y) in grid coordinates */
@@ -153,4 +167,10 @@ class A_Star_Planner {
 		*  @param goal_map_y The proposed starting point's (in the map frame) y coordinate
  		*  @return True if the point is legal, false otherwise */	
 		bool isStartPointLegal(double, double);
+
+		/** @brief Print a list of points in a human readable format
+		 *  @param path The list of points in the map frame */
+		void printPlan(std::vector<std::tuple<double, double>>&);
+
+
 };	
