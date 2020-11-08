@@ -57,7 +57,7 @@ TEST(A_Star_Planner, simplePath1) {
 	using namespace std;
 
 	// Must use the absolute path because where the binary runs is not in this folder with the source file
-	string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid1.csv";
+	string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid1.csv";
 	auto[grid, width, height] = readGrid(fileName); 
 
 	// int* map, int height, int width, int resolution)
@@ -72,7 +72,7 @@ TEST(A_Star_Planner, simplePath2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -89,7 +89,7 @@ TEST(A_Star_Planner, multiplePathsPossible_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid3.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid3.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -106,7 +106,7 @@ TEST(A_Star_Planner, multiplePathsPossible_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid4.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid4.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -123,7 +123,7 @@ TEST(A_Star_Planner, goalIsOutsideMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -137,7 +137,7 @@ TEST(A_Star_Planner, startPointIsOutsideMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -152,7 +152,7 @@ TEST(A_Star_Planner, startPointIsGoalPoint) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -169,7 +169,7 @@ TEST(A_Star_Planner, startNodeIsNotFree) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -184,7 +184,7 @@ TEST(A_Star_Planner, replanning_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -204,7 +204,7 @@ TEST(A_Star_Planner, replanning_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";
         auto[grid, width, height] = readGrid(fileName);
 
         // int* map, int height, int width, int resolution)
@@ -224,11 +224,11 @@ TEST(A_Star_Planner, updateMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid3.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid3.csv";
 	auto[grid, width, height] = readGrid(fileName);
         A_Star_Planner myPlanner = A_Star_Planner(grid.data(), height, width, 1);
 	
-	fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";	
+	fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid2.csv";	
 	tie(grid, width, height) = readGrid(fileName);
 	myPlanner.updateMap(grid.data(), width, height, 1);
 
@@ -270,7 +270,7 @@ TEST(A_Star_Planner, variableResolution_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid5.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid5.csv";
         auto[grid, width, height] = readGrid(fileName);
         A_Star_Planner myPlanner = A_Star_Planner(grid.data(), height, width, 0.33);
 	
@@ -285,7 +285,7 @@ TEST(A_Star_Planner, variableResolution_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
-        string fileName = "/home/peter/Desktop/Turtlebot/catkin_ws/src/motion_planning/test/test_grids/grid5.csv";
+        string fileName = "/home/peterjochem/Desktop/catkin_ws/src/motion_planning/test/test_grids/grid5.csv";
         auto[grid, width, height] = readGrid(fileName);
         A_Star_Planner myPlanner = A_Star_Planner(grid.data(), height, width, 4.0);
 
