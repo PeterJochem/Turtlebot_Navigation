@@ -6,17 +6,14 @@
 <xacro:property name="yaml_file" value="$(find nuturtle_description)/config/diff_params.yaml" />
 <xacro:property name="props" value="${load_yaml(yaml_file)}"/>
 
-
 <xacro:property name="encoder_ticks_per_revolution" value="${props['encoder_ticks_per_revolution']}" />
 <xacro:property name="motor_power" value="${props['motor_power']}" />
 <xacro:property name="motor_torque" value="${props['motor_torque']}" />
 <xacro:property name="left_wheel_joint" value="${props['left_wheel_joint']}" />
 <xacro:property name="right_wheel_joint" value="${props['right_wheel_joint']}" />
 
-
-
 <gazebo> 
-	<plugin name="turtle_drive_plugin" filename="/home/peter/Desktop/Turtlebot/catkin_ws/devel/lib/libturtle_drive_plugin.so">
+	<plugin name="turtle_drive_plugin" filename="/home/peterjochem/Desktop/catkin_ws/devel/lib/libturtle_drive_plugin.so">
 		<sensor_frequency>200.0</sensor_frequency>
 		<encoder_ticks_per_revolution>${encoder_ticks_per_revolution}</encoder_ticks_per_revolution>
 		<motor_power>${motor_power}</motor_power>
