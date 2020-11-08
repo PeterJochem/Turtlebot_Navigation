@@ -53,7 +53,7 @@ std::tuple<std::vector<int>, int, int> readGrid(std::string fileName) {
 	return {grid, width, height};	
 }
 
-TEST(testSuiteName, simplePath1) {	
+TEST(A_Star_Planner, simplePath1) {	
 	using namespace std;
 
 	// Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -68,7 +68,7 @@ TEST(testSuiteName, simplePath1) {
 	std::vector<std::tuple<double, double>> path = myPlanner.plan();
 }
 
-TEST(testSuiteName, simplePath2) {
+TEST(A_Star_Planner, simplePath2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -85,7 +85,7 @@ TEST(testSuiteName, simplePath2) {
 	ASSERT_EQ(path.size(), 11);
 }
 
-TEST(testSuiteName, multiplePathsPossible_1) {
+TEST(A_Star_Planner, multiplePathsPossible_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -102,7 +102,7 @@ TEST(testSuiteName, multiplePathsPossible_1) {
 	ASSERT_EQ(path.size(), 11);
 }
 
-TEST(testSuiteName, multiplePathsPossible_2) {
+TEST(A_Star_Planner, multiplePathsPossible_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -119,7 +119,7 @@ TEST(testSuiteName, multiplePathsPossible_2) {
 	ASSERT_EQ(path.size(), 14);
 }
 
-TEST(testSuiteName, goalIsOutsideMap) {
+TEST(A_Star_Planner, goalIsOutsideMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -133,7 +133,7 @@ TEST(testSuiteName, goalIsOutsideMap) {
         ASSERT_EQ(myPlanner.setGoal(0.0, 0.0, 5.0, 7.0), false);
 }
 
-TEST(testSuiteName, startPointIsOutsideMap) {
+TEST(A_Star_Planner, startPointIsOutsideMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -148,7 +148,7 @@ TEST(testSuiteName, startPointIsOutsideMap) {
         //std::vector<std::tuple<double, double>> path = myPlanner.plan();
 }
 
-TEST(testSuiteName, startPointIsGoalPoint) {
+TEST(A_Star_Planner, startPointIsGoalPoint) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -165,7 +165,7 @@ TEST(testSuiteName, startPointIsGoalPoint) {
 	ASSERT_EQ(path.size(), 1);
 }
 
-TEST(testSuiteName, startNodeIsNotFree) {
+TEST(A_Star_Planner, startNodeIsNotFree) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -180,7 +180,7 @@ TEST(testSuiteName, startNodeIsNotFree) {
 }
 
 /* Give an illegal path. Let it fail. Then re-plan */
-TEST(testSuiteName, replanning_1) {
+TEST(A_Star_Planner, replanning_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -200,7 +200,7 @@ TEST(testSuiteName, replanning_1) {
 }
 
 /* Give multipl illegal paths. Let it fail. Then re-plan */
-TEST(testSuiteName, replanning_2) {
+TEST(A_Star_Planner, replanning_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -214,14 +214,13 @@ TEST(testSuiteName, replanning_2) {
         ASSERT_EQ(myPlanner.setGoal(2.0, 2.0, 0.0, 0.0), false);
 	ASSERT_EQ(myPlanner.setGoal(2.0, 3.0, 0.0, 0.0), false);
 
-
         myPlanner.setGoal(0.0, 0.0, 3.0, 7.0);
         std::vector<std::tuple<double, double>> path = myPlanner.plan();
         ASSERT_EQ(path.size(), 11);
 }
 
 /* Update the map and make sure correct path is still found*/
-TEST(testSuiteName, updateMap) {
+TEST(A_Star_Planner, updateMap) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -267,7 +266,7 @@ TEST(testSuiteName, updateMap) {
 */
 
 /* Plan a path at variable resolution */ 
-TEST(testSuiteName, variableResolution_1) {
+TEST(A_Star_Planner, variableResolution_1) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -282,7 +281,7 @@ TEST(testSuiteName, variableResolution_1) {
 }
 
 /* Plan a path at variable resolution */
-TEST(testSuiteName, variableResolution_2) {
+TEST(A_Star_Planner, variableResolution_2) {
         using namespace std;
 
         // Must use the absolute path because where the binary runs is not in this folder with the source file
@@ -295,6 +294,11 @@ TEST(testSuiteName, variableResolution_2) {
         std::vector<std::tuple<double, double>> path = myPlanner.plan();
         ASSERT_EQ(path.size(), 17);
 }
+
+
+
+
+
 
 
 int main(int argc, char **argv){

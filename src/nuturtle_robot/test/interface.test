@@ -1,0 +1,13 @@
+<launch>
+
+	<!-- Load all the params needed into the server -->
+        <rosparam command="load" file="$(find tsim)/config/params_waypoints.yaml"/>
+	<rosparam command="load" file="$(find nuturtle_description)/config/diff_params.yaml"/>			
+
+	<!-- Launch the needed nodes -->	
+	<node pkg="nuturtle_robot" name="turtle_interface" type="turtle_interface"/>
+
+	<!-- Launch our test node -->
+	<test test-name="test_turtle_interface" pkg="nuturtle_robot" time-limit="60.0" type="test_turtle_interface"/>
+
+</launch>

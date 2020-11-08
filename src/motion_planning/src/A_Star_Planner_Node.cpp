@@ -1,23 +1,36 @@
 /** @brief  
  */
 #include "motion_planning/A_Star_Planner.hpp"
+#include "motion_planning/plan.h"
+#include "ros/ros.h"
+
 #include <nav_msgs/Odometry.h>
 #include <nav_msgs/OccupancyGrid.h>
-
 #include <sstream>
 #include <stdlib.h>
 #include <tf/tf.h>
-#include "ros/ros.h"
 
-void processMap(const nav_msgs::OccupancyGrid& map) {
+/*
+class Plan_Node { 
 
-        // std::cout << std::endl << (int)map.data[0] << std::endl;     
+	public:
+		void processMap(const nav_msgs::OccupancyGrid& map);
+		bool startPlanning(motion_planning::plan::Request& request, motion_planning::plan::Response& response);
+		//A_Star_Planner myPlanner = A_Star_Planner(nullptr, 1, 1, 100);
+};
 
-
-
-
-        return;
+void Plan_Node::processMap(const nav_msgs::OccupancyGrid& map) {
+	// std::cout << std::endl << (int)map.data[0] << std::endl;
+	return;
 }
+
+bool Plan_Node::startPlanning(motion_planning::plan::Request& request, motion_planning::plan::Response& response) {
+
+	// setGoal(double start_map_x, double start_map_y, double goal_map_x, double goal_map_y)
+	response.isPlanLegal = myPlanner.setGoal(request.start_map_x, request.start_map_y, request.goal_map_x, request.goal_map_y);
+	return true; 
+}
+*/
 
 int main(int argc, char **argv) {
 
@@ -36,15 +49,15 @@ int main(int argc, char **argv) {
 	*/
 		
         //A_Star_Planner(int* map, int height, int width, int resolution);
-        A_Star_Planner myPlanner = A_Star_Planner(nullptr, 1, 1, 100);
-        ros::Subscriber map_sub = n.subscribe("/map", 1, processMap);
-
-
+        //A_Star_Planner myPlanner = A_Star_Planner(nullptr, 1, 1, 100);
+        //ros::Subscriber map_sub = n.subscribe("/map", 1, processMap);
+		
+	
         while (ros::ok()) {
                 ros::spinOnce();
                 // Check if there are new map messages, if so, refresh data/look to refresh data
-        }
-
+        }	
+	
 
         return 0;
 }

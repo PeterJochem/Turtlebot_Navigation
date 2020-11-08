@@ -1,0 +1,22 @@
+<launch>
+	
+	<!-- Need to pass the first 4 in to the nuturtle_gazebo launch file -->
+	<arg name='robot' default='0' doc='Indicates which robot is being used. 0 to uses local machine. 1 uses Turtlebot1, etc'/>
+        <arg name="use_jsp_gui" default="false"/>
+        <arg name="use_jsp" default="false" />
+        <arg name="use_gmapping" default="true" />
+		
+
+	<arg name="use_Astar" default="true" />
+
+	<include file="$(find nuturtle_gazebo)/launch/diff_drive_gazebo.launch"/>
+	
+	<group if="$(arg use_Astar)">
+           	<node name="AStar_Planning_Node" pkg="motion_planning" type="A_Star_Planner_Node" machine="PeterJochem">
+                        <!-- param name="use_gui" value="$(arg use_jsp_gui)" / -->
+           	</node>
+	</group>
+
+	
+
+</launch>

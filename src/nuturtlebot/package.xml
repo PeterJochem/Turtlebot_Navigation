@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>nuturtlebot</name>
+  <version>0.0.1</version>
+  <description>
+      Helper package for ME495 Navigation.
+
+      Contains messages and other code for a turtlebot3 that runs custom control firmware.
+      The firmware is intentionally minimal so that students need to handle lower level calculations.
+  </description>
+
+  <maintainer email="elwin@northwestern.edu">Matthew Elwin</maintainer>
+  <license>GPLv3</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>roscpp</depend>
+  <build_depend>message_generation</build_depend> 
+  <exec_depend>message_runtime</exec_depend>
+  <exec_depend>gazebo_ros</exec_depend>
+  <export>
+    <gazebo_ros
+        gazebo_model_path="${prefix}/models"
+        gazebo_media_path="${prefix}/models" />
+  </export>
+</package>

@@ -27,7 +27,7 @@ A_Star_Planner::A_Star_Planner(int* map, int grid_height, int grid_width, double
 
         this->map = map;
         frontier = priority_queue<gridCell*, std::vector<gridCell*>, gridCellCompare>();
-
+	
         this->grid_height = grid_height;
         this->grid_width = grid_width;
         this->grid_resolution = grid_resolution;
@@ -36,12 +36,14 @@ A_Star_Planner::A_Star_Planner(int* map, int grid_height, int grid_width, double
         // Remember to delete this
         grid = vector<gridCell>();
         grid.reserve(grid_width * grid_height);
+	
+	if (this->map) {
+       		for (int i = 0; i < grid_width * grid_height; i++) {
 
-        for (int i = 0; i < grid_width * grid_height; i++) {
-
-                auto[nextX, nextY] = indexToCoords(i);
-                grid.push_back(gridCell(nextX, nextY, map[i]));
-        }
+                	auto[nextX, nextY] = indexToCoords(i);
+                	grid.push_back(gridCell(nextX, nextY, map[i]));
+		}
+	}
 }
 
 /** @brief Determine if the (x, y) pair in grid coordinates 
@@ -292,9 +294,6 @@ bool A_Star_Planner::setGoal(double start_map_x, double start_map_y, double goal
 	std::tie(goal_grid_x, goal_grid_y) = goalToGrid(goal_map_x, goal_map_y);    
 	auto[start_grid_x, start_grid_y] = metersToGrid(start_map_x, start_map_y);	
 		
-	//std::cout << start_grid_x << ", " << start_grid_y << std::endl;
-	//std::cout << goal_grid_x << ", " << goal_grid_y << std::endl;
-
 	// Make sure the goal is legal
 	if (!isLegal(start_grid_x, start_grid_y) || !isFree(start_grid_x, start_grid_y) || 
 			!isLegal(goal_grid_x, goal_grid_y) || !isFree(goal_grid_x, goal_grid_y)) {
