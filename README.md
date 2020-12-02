@@ -44,7 +44,7 @@ After I graduate, I want to implement Feature-Based Kalman Filtering SLAM on the
 I used the gtest framework for testing my Rigid2D library. This was extremly helpful for debugging and I will definitely use gtest again! I also used rostest to test that my ROS nodes were being set up correctly. More details about testing can be found in the rigid2d package. 
 
 # Doxygen
-I also used Doxygen to generate documentation of files, classes, and methods. The Doxygen documentation is available at 
+I also used Doxygen to generate documentation of files, classes, and methods. The Doxygen documentation is available [here](https://peterjochem.github.io/Turtlebot_Navigation/html/index.html). 
 
 # ROS Packages
 I implemented a few ROS packages for this project. Below is a quick description of each. More details can be found in the README.md for each package. 
